@@ -1,0 +1,98 @@
+version 3.2.0
+- consolidated the documentation
+- to be first CRAN version
+
+
+version 3.1.x
+- clean-up for CRAN submission
+
+
+version 3.0.0
+- renewal constructor + formula + methods
+- dePril convolution added
+- changed the way built in distributions are called.
+
+
+version 2.0.3
+- inclusion of covariates using formula.
+- Burr (weibull-gamma) distribution added
+- delayed first arrival included.
+
+version 2.0.1
+- dePril convolution option added.
+
+version 2.0.0
+- headers files added taking advantage of Rcpp attributes.
+
+- conv_utils.cpp added (contains the convolution general methods).
+
+- weibull, gamma, gengamma counting processes added.
+
+- option to add user based inter-arrival times distribution using
+routines getProbs_directConv, getProbs_minConv; see tests for examples.
+
+
+version 1.1.9
+- incorporated the concvolution computations from Tarak's paper.
+
+
+version 1.1.8
+- introduced file .Rbuildignore in the root directory of the package.
+
+- shortened the name of subdirectory `Euler-van ...' to remove the complaint
+  from `R CMD build' about long paths. Also, to remove the warning by 'R CMD
+  check' about `not fully portable file names, replaced space with undescore in
+  the directory name and the pdf file in it.
+
+- in file `DESCRIPTION' - moved Rcpp from DEPENDS to IMPORTS:
+
+- completed the roxigen argument descriptions (in the sense that `R CMD check'
+  doesn't complain).
+
+
+version 1.1.7
+- gam_weiH and gam_weiA renamed ccX and ccY
+
+- vectorial version dWeibullInterArrivalCountInd and
+dWeibullInterArrivalCountFrankCopula improved
+
+- vectorial version with gamma heterogeinity added: Note that you only
+pass X %*% beta and not the exponential
+
+- tests added based on Examples from McShane(2008) Paper
+
+- tests added for bivariate vectorial functions
+
+- cRes object removed from R/ to free some space
+
+version 1.1.5
+
+- pkg renamed from BivCount to Countr
+
+- alphagen2 changed to alphagen
+
+- oldCpp file removed
+
+- gamma-heterogeneity functions added to the origanal and fast version
+
+- covariates-heterogeneity functions added to the origanal and fast version
+
+version 1.1.0
+
+- renamed alphagen to alphagenOrig
+
+
+- the signatures of the cpp functions now have namespace prefixes for namespaces
+  other than Rcpp. In this way RcppExports.cpp does not need 'using namespace
+  arma' which is not included by cRcpp::compileAttributes and devtools::test()
+  and so needed to ber added manually after these calls.
+
+  I actually used search and replace to replace occurences in the body of the
+  functions in our cpp files, but since we can put the 'using namespace'
+  directives in them, only the signatures of exported functions are important
+  for the abovde purpose.
+
+
+- replaced std::cout with calls to Rprintf() in C++ code, since direct printing
+  from C++ inside R can cause problems (and is caught by R CMD check).
+  Also removed <iostream.
