@@ -2,11 +2,15 @@
 % Please edit documentation in R/convCount_moments.R
 \name{evCount_conv_bi}
 \alias{evCount_conv_bi}
-\title{renewal count expected value and variance (bi)}
+\alias{evCount_conv_user}
+\title{Expected value and variance of renewal count process}
 \usage{
 evCount_conv_bi(xmax, distPars, dist = c("weibull", "gamma", "gengamma",
   "burr"), method = c("dePril", "direct", "naive"), nsteps = 100,
   time = 1, extrap = TRUE)
+
+evCount_conv_user(xmax, distPars, extrapolPars, survR, method = c("dePril",
+  "direct", "naive"), nsteps = 100, time = 1, extrap = TRUE)
 }
 \arguments{
 \item{xmax}{unsigned integer maximum count to be used.}
@@ -17,19 +21,37 @@ evCount_conv_bi(xmax, distPars, dist = c("weibull", "gamma", "gengamma",
 
 \item{method}{TODO}
 
-\item{nsteps}{unsiged integer number of steps used to compute the integral.}
+\item{nsteps}{unsiged integer, number of steps used to compute the integral.}
 
-\item{time}{double time at wich to compute the probabilities. Set to 1 by
+\item{time}{double, time at wich to compute the probabilities. Set to 1 by
 default.}
 
-\item{extrap}{logical if \code{TRUE}, Richardson extrapolation will be
+\item{extrap}{logical, if \code{TRUE}, Richardson extrapolation will be
 applied to improve accuracy.}
+
+\item{extrapolPars}{ma::vec of length 2. The extrapolation values.}
+
+\item{survR}{function, user supplied survival function; should have signature
+\code{function(t, distPars)}, where \code{t} is a positive real number
+(the time where the survival function is evaluated) and \code{distPars}
+is a list of distribution parameters. It should return a double value.}
 }
 \value{
-List named vector with ExpectedValue and Variance
+a named list with components \code{"ExpectedValue"} and \code{"Variance"}.
+
+% List named vector with ExpectedValue and Variance
 }
 \description{
-Expcted value and varinace of the renewal count process computed numerically
+Compute numerically expected values and variances of renewal count processes.
+
+% Expected value and variance of the renewal count process computed numerically
+}
+\details{
+\code{evCount_conv_bi} computes the expected value and variance of renewal
+count processes for the builtin distirbutions of inter-arrival times.
+
+\code{evCount_conv_user} computes the expected value and variance for a user
+specified distirbution of the inter-arrival times.
 }
 \examples{
 pwei_user <- function(tt, distP) {

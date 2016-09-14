@@ -14,9 +14,10 @@ dCount_allProbs_user(x, distPars, extrapolPars, survR, nsteps = 100L,
 \arguments{
 \item{x}{integer (vector), the desired count values.}
 
-\item{distPars}{\code{Rcpp::List} with distribution specific slots. See details.}
+\item{distPars}{\code{Rcpp::List} with distribution specific slots,
+see details.}
 
-\item{dist}{character name of the built-in distribution. See details}
+\item{dist}{character name of the built-in distribution, see details.}
 
 \item{nsteps}{unsiged integer number of steps used to compute the integral.}
 
@@ -47,8 +48,8 @@ Compute count probabilities using simple convolution (section 2) for user
 passed survival functions
 }
 \details{
-The routine does convolutions to produce probabilities \code{probs(0)}, 
-... \code{probs(xmax)} using \code{nsteps} steps, and refines result by  
+The routine does convolutions to produce probabilities \code{probs(0)},
+... \code{probs(xmax)} using \code{nsteps} steps, and refines result by
 Richardson extrapolation if \code{extrap} is \code{TRUE} using the
 algorithm of section 2.
 }

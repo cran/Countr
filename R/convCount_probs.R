@@ -1,7 +1,12 @@
-#' Compute count probabilities using convolution (bi)
+#' Compute count probabilities using convolution
 #'
-#' Compute count probabilities using one of several convolution methods for the
-#' distributions with builtin support in this package.
+#' Compute count probabilities using one of several convolution methods.
+#' \code{dCount_conv_bi} does the computations for the distributions with
+#' builtin support in this package.
+#'
+#' \code{dCount_conv_bi} computes count probabilities using one of several
+#' convolution methods for the distributions with builtin support in this
+#' package.
 #'
 #' The following convolution methods are implemented: "dePril", "direct", and
 #' "naive".
@@ -11,15 +16,15 @@
 #'
 #' @param x integer (vector), the desired count values.
 #' @inheritParams surv
-#' @param nsteps unsiged integer number of steps used to compute the integral.
-#' @param time double time at wich to compute the probabilities. Set to 1 by
-#' default.
-#' @param extrap logical if \code{TRUE}, Richardson extrapolation will be
-#' applied to improve accuracy.
-#' @param log logical if \code{TRUE} the log-probability will be returned.
-#' @param method TODO
-#' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
-#' \code{length} of \code{x}.
+#' @param nsteps unsiged integer, number of steps used to compute the integral.
+#' @param time double, time at wich to compute the probabilities. Set to 1 by
+#'     default.
+#' @param extrap logical, if \code{TRUE}, Richardson extrapolation will be
+#'     applied to improve accuracy.
+#' @param log logical, if \code{TRUE} the log-probability will be returned.
+#' @param method character string, the method to use, see Details.
+#' @return vector of probabilities \eqn{P(x(i),\ i = 1, ..., n)} where \eqn{n}
+#'     is the length of \code{x}.
 #' @examples
 #' x <- 0:10
 #' lambda <- 2.56
@@ -71,37 +76,54 @@ dCount_conv_bi <- function(x, distPars,
     dist <- match.arg(dist)
     method <- match.arg(method)
 
+    vec <- FALSE
+    if (is.null(names(distPars))) {
+        stopifnot(length(x) == length(distPars))
+        vec <- TRUE
+    }
+
     switch(method,
            "direct" = {
-               return(dCount_allProbs_bi(x, distPars, dist,
-                                         nsteps, time, extrap, log))
+               if (vec)
+                   return(dCount_allProbs_vec_bi(x, distPars, dist,
+                                                 nsteps, time, extrap, log))
+               else
+                   return(dCount_allProbs_bi(x, distPars, dist,
+                                             nsteps, time, extrap, log))
            },
            "naive" = {
-               return(dCount_naive_bi(x, distPars, dist,
-                                      nsteps, time, extrap, 0, log))
+               if (vec)
+                   return(dCount_naive_vec_bi(x, distPars, dist,
+                                              nsteps, time, extrap, log))
+               else
+                   return(dCount_naive_bi(x, distPars, dist,
+                                          nsteps, time, extrap, log))
            },
            "dePril" = {
-               return(dCount_dePril_bi(x, distPars, dist,
-                                       nsteps, time, extrap, 0, log))
+               if (vec)
+                   return(dCount_dePril_vec_bi(x, distPars, dist,
+                                               nsteps, time, extrap, log))
+               else
+                   return(dCount_dePril_bi(x, distPars, dist,
+                                           nsteps, time, extrap, log))
            }
            )
 }
 
-#' Compute count probabilities using convolution (user)
+#' % Compute count probabilities using convolution (user)
 #'
-#' Compute count probabilities using one of the convolution methods for user
-#' defined survival functions.
+#' \code{dCount_conv_user} does the same using a user defined survival function.
 #'
-#' @param extrapolPars ma::vec of length 2. The extrapolation values.
-#' @param survR Rcpp::Function user passed survival function; should have the
-#' signature \code{function(t, distPars)} where \code{t} is a real number (>0)
-#' where the survival function is evaluated and \code{distPars} is a list of
-#' distribution parameters. It should return a double value.
+#' % Compute count probabilities using one of the convolution methods for user %
+#' % defined survival functions.
+#'
+#' @param extrapolPars vector of length 2, the extrapolation values.
+#' @param survR function, user supplied survival function; should have signature
+#'     \code{function(t, distPars)}, where \code{t} is a positive real number
+#'     (the time where the survival function is evaluated) and \code{distPars}
+#'     is a list of distribution parameters. It should return a double value.
 #' @inheritParams dCount_conv_bi
-#' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
-#' \code{length} of \code{x}.
-#' @examples
-#' ## see examples for dCount_conv_bi
+#' @rdname dCount_conv_bi
 #' @export
 dCount_conv_user <- function(x, distPars, extrapolPars, survR,
                              method = c( "dePril", "direct", "naive"),
@@ -109,18 +131,45 @@ dCount_conv_user <- function(x, distPars, extrapolPars, survR,
                              extrap = TRUE, log = FALSE) {
 
     method <- match.arg(method)
+
+     vec <- FALSE
+    if (is.null(names(distPars))) {
+        stopifnot(length(x) == length(distPars),
+                  length(x) == length(extrapolPars)
+                  )
+        vec <- TRUE
+    }
+
     switch(method,
            "direct" = {
-               return(dCount_allProbs_user(x, distPars, extrapolPars, survR,
-                                           nsteps, time, extrap, log))
+               if (vec)
+                   return(dCount_allProbs_vec_user(x, distPars, extrapolPars,
+                                                   survR,
+                                                   nsteps, time, extrap, log))
+               else
+                   return(dCount_allProbs_user(x, distPars, extrapolPars,
+                                               survR,
+                                               nsteps, time, extrap, log))
            },
            "naive" = {
-               return(dCount_naive_user(x, distPars, extrapolPars, survR,
-                                        nsteps, time, extrap, 0, log))
+               if (vec)
+                   return(dCount_naive_vec_user(x, distPars, extrapolPars,
+                                                survR,
+                                                nsteps, time, extrap, log))
+               else
+                   return(dCount_allProbs_user(x, distPars, extrapolPars,
+                                               survR,
+                                               nsteps, time, extrap, log))
            },
            "dePril" = {
-               return(dCount_dePril_user(x, distPars, extrapolPars, survR,
-                                         nsteps, time, extrap, 0, log))
+               if (vec)
+                   return(dCount_dePril_vec_user(x, distPars, extrapolPars,
+                                                 survR,
+                                                 nsteps, time, extrap, log))
+               else
+                   return(dCount_allProbs_user(x, distPars, extrapolPars,
+                                               survR,
+                                               nsteps, time, extrap, log))
            }
            )
 }

@@ -149,7 +149,7 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   
@@ -160,7 +160,6 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   }
 
   if (extrap) {
-    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -239,7 +238,7 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   Rcpp::NumericVector rTemp;
@@ -252,7 +251,6 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   }
 
   if (extrap) {
-    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -335,12 +333,11 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   
   if (extrap) {
-    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -419,13 +416,12 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   Rcpp::NumericVector rTemp;
   
   if (extrap) {
-    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -537,20 +533,22 @@ arma::vec getProbsmodified_dePril(unsigned xnum,
 //'
 //' Compute count probabilities based on modified renewal process using
 //' dePril algorithm.
+//' \code{dmodifiedCount_bi} does it for the builtin distributions.
 //'
-//' The process is assumed to have a different distribution for the first
-//' arrival. The renewal assumption is conserved.
+//' For the modified renewal process the first arrival is allowed to have
+//' a different distribution from the  time between subsequent arrivals.
+//' The renewal assumption is kept.
 //'
 //' @param x integer (vector), the desired count values.
 //' @param distPars0,distPars \code{Rcpp::List} with distribution specific slots
-//' for the first arrival and the rest of the process respectively.
-//' @param dist0,dist character name of the first and following survival
-//' distributions.
+//'     for the first arrival and the rest of the process respectively.
+//' @param dist0,dist character, name of the first and following survival
+//'     distributions.
 //' @param cdfout TODO
 //' @inheritParams dCount_allProbs_bi
-//' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
-//' \code{length} of \code{x}.
 //'
+//' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
+//'     the length of \code{x}.
 //' @export
 // [[Rcpp::export]]
 arma::vec dmodifiedCount_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
@@ -583,26 +581,23 @@ arma::vec dmodifiedCount_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 }
 
 
-//' Compute count probabilities based on modified renewal process (user)
+//' % Compute count probabilities based on modified renewal process (user)
 //'
-//' Compute count probabilities based on modified renewal process using
-//' dePril algorithm.
-//'
-//' The process is assumed to have a different distribution for the first
-//' arrival. The renewal assumption is conserved.
-//'
-//' @param survR0,survR Rcpp::Function user passed survival function; should have the
-//' signature \code{function(t, distPars)} where \code{t} is a real number (>0)
-//' where the survival function is evaluated and \code{distPars} is a list of
-//' distribution parameters. It should return a double value (first arrival and
-//' following arrivals respectively).
-//' @param extrapolPars list of same length as x where each slot is a vector
-//' of length 2 (the extrapolation values to be used) corresponding to
-//' \code{x[i]}.
+//' % Compute count probabilities based on modified renewal process using
+//' % dePril algorithm.
+//' \code{dmodifiedCount_user} does the same for a user specified distribution.
+//' 
+//' @param survR0,survR user supplied survival function; should have 
+//'     signature \code{function(t, distPars)}, where \code{t} is a positive real
+//'     number (the time at which the survival function is evaluated) and
+//'     \code{distPars} is a list of distribution parameters. It should return a
+//'     double value (first arrival and following arrivals respectively).
+//' @param extrapolPars list of same length as \code{x}, where each slot is a
+//'     vector of length 2 (the extrapolation values to be used) corresponding to
+//'     \code{x[i]}.
 //' @inheritParams dmodifiedCount_bi
-//' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
-//' \code{length} of \code{x}.
 //'
+//' @rdname dmodifiedCount_bi
 // [[Rcpp::export]]
 arma::vec dmodifiedCount_user(arma::Col<unsigned> x, const Rcpp::List distPars,
 			      Rcpp::Function survR, const Rcpp::List distPars0,

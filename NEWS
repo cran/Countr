@@ -1,3 +1,22 @@
+Version 3.2.4
+- merged changes done separately by T. and G. to Version 3.2.2
+- fixed some bugs introduced in 3.2.3
+
+Version 3.2.3
+- all count functions vectorized in c++
+- likelihood functions improved
+
+version 3.2.2
+- minor bug fixed in .checkInitialValues in the anc parameters
+- all bivariate functionalities removed.
+- fertility dataset now exported with data()
+
+version 3.2.1
+- minor bugs fixed in .objectiveFunction and predict with std.error
+- last location/... vectorial parameters returned
+- sign in the Frank Copula package changed to be more consistent with
+the intuitive results: theta <0 -> negative dependence.
+
 version 3.2.0
 - consolidated the documentation
 - to be first CRAN version
@@ -33,7 +52,7 @@ routines getProbs_directConv, getProbs_minConv; see tests for examples.
 
 
 version 1.1.9
-- incorporated the concvolution computations from Tarak's paper.
+- incorporated the convolution computations from Tarak's paper.
 
 
 version 1.1.8

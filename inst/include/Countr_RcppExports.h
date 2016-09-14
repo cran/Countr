@@ -26,44 +26,6 @@ namespace Countr {
         }
     }
 
-    inline arma::vec dRenewalFrankCopula_user(arma::Col <unsigned> x, arma::Col <unsigned> y, Rcpp::Function survX, Rcpp::Function survY, Rcpp::List distParsX, Rcpp::List distParsY, Rcpp::List extrapolParsX, Rcpp::List extrapolParsY, double theta, double time = 1.0, bool logFlag = false, unsigned nsteps = 100, bool extrap = true) {
-        typedef SEXP(*Ptr_dRenewalFrankCopula_user)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_dRenewalFrankCopula_user p_dRenewalFrankCopula_user = NULL;
-        if (p_dRenewalFrankCopula_user == NULL) {
-            validateSignature("arma::vec(*dRenewalFrankCopula_user)(arma::Col <unsigned>,arma::Col <unsigned>,Rcpp::Function,Rcpp::Function,Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::List,double,double,bool,unsigned,bool)");
-            p_dRenewalFrankCopula_user = (Ptr_dRenewalFrankCopula_user)R_GetCCallable("Countr", "Countr_dRenewalFrankCopula_user");
-        }
-        RObject __result;
-        {
-            RNGScope __rngScope;
-            __result = p_dRenewalFrankCopula_user(Rcpp::wrap(x), Rcpp::wrap(y), Rcpp::wrap(survX), Rcpp::wrap(survY), Rcpp::wrap(distParsX), Rcpp::wrap(distParsY), Rcpp::wrap(extrapolParsX), Rcpp::wrap(extrapolParsY), Rcpp::wrap(theta), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(nsteps), Rcpp::wrap(extrap));
-        }
-        if (__result.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (__result.inherits("try-error"))
-            throw Rcpp::exception(as<std::string>(__result).c_str());
-        return Rcpp::as<arma::vec >(__result);
-    }
-
-    inline arma::vec dRenewalFrankCopula_bi(arma::Col <unsigned> x, arma::Col <unsigned> y, const std::string distX, const std::string distY, Rcpp::List distParsX, Rcpp::List distParsY, double theta, double time = 1.0, bool logFlag = false, unsigned nsteps = 100, bool extrap = true) {
-        typedef SEXP(*Ptr_dRenewalFrankCopula_bi)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_dRenewalFrankCopula_bi p_dRenewalFrankCopula_bi = NULL;
-        if (p_dRenewalFrankCopula_bi == NULL) {
-            validateSignature("arma::vec(*dRenewalFrankCopula_bi)(arma::Col <unsigned>,arma::Col <unsigned>,const std::string,const std::string,Rcpp::List,Rcpp::List,double,double,bool,unsigned,bool)");
-            p_dRenewalFrankCopula_bi = (Ptr_dRenewalFrankCopula_bi)R_GetCCallable("Countr", "Countr_dRenewalFrankCopula_bi");
-        }
-        RObject __result;
-        {
-            RNGScope __rngScope;
-            __result = p_dRenewalFrankCopula_bi(Rcpp::wrap(x), Rcpp::wrap(y), Rcpp::wrap(distX), Rcpp::wrap(distY), Rcpp::wrap(distParsX), Rcpp::wrap(distParsY), Rcpp::wrap(theta), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(nsteps), Rcpp::wrap(extrap));
-        }
-        if (__result.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (__result.inherits("try-error"))
-            throw Rcpp::exception(as<std::string>(__result).c_str());
-        return Rcpp::as<arma::vec >(__result);
-    }
-
     inline arma::vec dWeibullgammaCount_mat(arma::Col<unsigned> x, double shape, double r, double alpha, double time = 1.0, bool logFlag = false, unsigned jmax = 100) {
         typedef SEXP(*Ptr_dWeibullgammaCount_mat)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_dWeibullgammaCount_mat p_dWeibullgammaCount_mat = NULL;
@@ -75,6 +37,25 @@ namespace Countr {
         {
             RNGScope __rngScope;
             __result = p_dWeibullgammaCount_mat(Rcpp::wrap(x), Rcpp::wrap(shape), Rcpp::wrap(r), Rcpp::wrap(alpha), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(jmax));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<arma::vec >(__result);
+    }
+
+    inline arma::vec dWeibullgammaCount_mat_vec(arma::Col<unsigned> x, arma::vec shape, double r, double alpha, double time = 1.0, bool logFlag = false, unsigned jmax = 100) {
+        typedef SEXP(*Ptr_dWeibullgammaCount_mat_vec)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullgammaCount_mat_vec p_dWeibullgammaCount_mat_vec = NULL;
+        if (p_dWeibullgammaCount_mat_vec == NULL) {
+            validateSignature("arma::vec(*dWeibullgammaCount_mat_vec)(arma::Col<unsigned>,arma::vec,double,double,double,bool,unsigned)");
+            p_dWeibullgammaCount_mat_vec = (Ptr_dWeibullgammaCount_mat_vec)R_GetCCallable("Countr", "Countr_dWeibullgammaCount_mat_vec");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_dWeibullgammaCount_mat_vec(Rcpp::wrap(x), Rcpp::wrap(shape), Rcpp::wrap(r), Rcpp::wrap(alpha), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(jmax));
         }
         if (__result.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -102,6 +83,25 @@ namespace Countr {
         return Rcpp::as<arma::vec >(__result);
     }
 
+    inline arma::vec dWeibullgammaCount_mat_Covariates_vec(arma::Col<unsigned> x, arma::vec cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t = 1.0, bool logFlag = false, unsigned jmax = 100) {
+        typedef SEXP(*Ptr_dWeibullgammaCount_mat_Covariates_vec)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullgammaCount_mat_Covariates_vec p_dWeibullgammaCount_mat_Covariates_vec = NULL;
+        if (p_dWeibullgammaCount_mat_Covariates_vec == NULL) {
+            validateSignature("arma::vec(*dWeibullgammaCount_mat_Covariates_vec)(arma::Col<unsigned>,arma::vec,double,double,arma::mat,arma::vec,double,bool,unsigned)");
+            p_dWeibullgammaCount_mat_Covariates_vec = (Ptr_dWeibullgammaCount_mat_Covariates_vec)R_GetCCallable("Countr", "Countr_dWeibullgammaCount_mat_Covariates_vec");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_dWeibullgammaCount_mat_Covariates_vec(Rcpp::wrap(x), Rcpp::wrap(cc), Rcpp::wrap(r), Rcpp::wrap(alpha), Rcpp::wrap(Xcovar), Rcpp::wrap(beta), Rcpp::wrap(t), Rcpp::wrap(logFlag), Rcpp::wrap(jmax));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<arma::vec >(__result);
+    }
+
     inline arma::vec dWeibullgammaCount_acc(arma::Col<unsigned> x, double shape, double r, double alpha, double time = 1.0, bool logFlag = false, unsigned jmax = 100, int nmax = 300, double eps = 1e-10, bool printa = false) {
         typedef SEXP(*Ptr_dWeibullgammaCount_acc)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_dWeibullgammaCount_acc p_dWeibullgammaCount_acc = NULL;
@@ -121,6 +121,25 @@ namespace Countr {
         return Rcpp::as<arma::vec >(__result);
     }
 
+    inline arma::vec dWeibullgammaCount_acc_vec(arma::Col<unsigned> x, arma::vec shape, double r, double alpha, double time = 1.0, bool logFlag = false, unsigned jmax = 100, int nmax = 300, double eps = 1e-10, bool printa = false) {
+        typedef SEXP(*Ptr_dWeibullgammaCount_acc_vec)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullgammaCount_acc_vec p_dWeibullgammaCount_acc_vec = NULL;
+        if (p_dWeibullgammaCount_acc_vec == NULL) {
+            validateSignature("arma::vec(*dWeibullgammaCount_acc_vec)(arma::Col<unsigned>,arma::vec,double,double,double,bool,unsigned,int,double,bool)");
+            p_dWeibullgammaCount_acc_vec = (Ptr_dWeibullgammaCount_acc_vec)R_GetCCallable("Countr", "Countr_dWeibullgammaCount_acc_vec");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_dWeibullgammaCount_acc_vec(Rcpp::wrap(x), Rcpp::wrap(shape), Rcpp::wrap(r), Rcpp::wrap(alpha), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(jmax), Rcpp::wrap(nmax), Rcpp::wrap(eps), Rcpp::wrap(printa));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<arma::vec >(__result);
+    }
+
     inline arma::vec dWeibullgammaCount_acc_Covariates(arma::Col<unsigned> x, double cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t = 1.0, bool logFlag = false, unsigned jmax = 100, int nmax = 300, double eps = 1e-10, bool printa = false) {
         typedef SEXP(*Ptr_dWeibullgammaCount_acc_Covariates)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_dWeibullgammaCount_acc_Covariates p_dWeibullgammaCount_acc_Covariates = NULL;
@@ -132,6 +151,25 @@ namespace Countr {
         {
             RNGScope __rngScope;
             __result = p_dWeibullgammaCount_acc_Covariates(Rcpp::wrap(x), Rcpp::wrap(cc), Rcpp::wrap(r), Rcpp::wrap(alpha), Rcpp::wrap(Xcovar), Rcpp::wrap(beta), Rcpp::wrap(t), Rcpp::wrap(logFlag), Rcpp::wrap(jmax), Rcpp::wrap(nmax), Rcpp::wrap(eps), Rcpp::wrap(printa));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<arma::vec >(__result);
+    }
+
+    inline arma::vec dWeibullgammaCount_acc_Covariates_vec(arma::Col<unsigned> x, arma::vec cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t = 1.0, bool logFlag = false, unsigned jmax = 100, int nmax = 300, double eps = 1e-10, bool printa = false) {
+        typedef SEXP(*Ptr_dWeibullgammaCount_acc_Covariates_vec)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullgammaCount_acc_Covariates_vec p_dWeibullgammaCount_acc_Covariates_vec = NULL;
+        if (p_dWeibullgammaCount_acc_Covariates_vec == NULL) {
+            validateSignature("arma::vec(*dWeibullgammaCount_acc_Covariates_vec)(arma::Col<unsigned>,arma::vec,double,double,arma::mat,arma::vec,double,bool,unsigned,int,double,bool)");
+            p_dWeibullgammaCount_acc_Covariates_vec = (Ptr_dWeibullgammaCount_acc_Covariates_vec)R_GetCCallable("Countr", "Countr_dWeibullgammaCount_acc_Covariates_vec");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_dWeibullgammaCount_acc_Covariates_vec(Rcpp::wrap(x), Rcpp::wrap(cc), Rcpp::wrap(r), Rcpp::wrap(alpha), Rcpp::wrap(Xcovar), Rcpp::wrap(beta), Rcpp::wrap(t), Rcpp::wrap(logFlag), Rcpp::wrap(jmax), Rcpp::wrap(nmax), Rcpp::wrap(eps), Rcpp::wrap(printa));
         }
         if (__result.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -178,6 +216,44 @@ namespace Countr {
         return Rcpp::as<arma::vec >(__result);
     }
 
+    inline double dWeibullCount_mat_scalar(unsigned x, double shape, double scale, double time = 1.0, bool logFlag = false, unsigned jmax = 50) {
+        typedef SEXP(*Ptr_dWeibullCount_mat_scalar)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullCount_mat_scalar p_dWeibullCount_mat_scalar = NULL;
+        if (p_dWeibullCount_mat_scalar == NULL) {
+            validateSignature("double(*dWeibullCount_mat_scalar)(unsigned,double,double,double,bool,unsigned)");
+            p_dWeibullCount_mat_scalar = (Ptr_dWeibullCount_mat_scalar)R_GetCCallable("Countr", "Countr_dWeibullCount_mat_scalar");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_dWeibullCount_mat_scalar(Rcpp::wrap(x), Rcpp::wrap(shape), Rcpp::wrap(scale), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(jmax));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<double >(__result);
+    }
+
+    inline arma::vec dWeibullCount_mat_vec(arma::Col<unsigned> x, arma::vec shape, arma::vec scale, double time = 1.0, bool logFlag = false, unsigned jmax = 50) {
+        typedef SEXP(*Ptr_dWeibullCount_mat_vec)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullCount_mat_vec p_dWeibullCount_mat_vec = NULL;
+        if (p_dWeibullCount_mat_vec == NULL) {
+            validateSignature("arma::vec(*dWeibullCount_mat_vec)(arma::Col<unsigned>,arma::vec,arma::vec,double,bool,unsigned)");
+            p_dWeibullCount_mat_vec = (Ptr_dWeibullCount_mat_vec)R_GetCCallable("Countr", "Countr_dWeibullCount_mat_vec");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_dWeibullCount_mat_vec(Rcpp::wrap(x), Rcpp::wrap(shape), Rcpp::wrap(scale), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(jmax));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<arma::vec >(__result);
+    }
+
     inline arma::vec dWeibullCount_acc(arma::Col<unsigned> x, double shape, double scale, double time = 1.0, bool logFlag = false, unsigned jmax = 50, int nmax = 300, double eps = 1e-10, bool printa = false) {
         typedef SEXP(*Ptr_dWeibullCount_acc)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_dWeibullCount_acc p_dWeibullCount_acc = NULL;
@@ -197,36 +273,17 @@ namespace Countr {
         return Rcpp::as<arma::vec >(__result);
     }
 
-    inline arma::vec dWeibullInterArrivalCountFrankCopula(arma::Col <unsigned> x, arma::Col <unsigned> y, arma::vec shapeX, arma::vec shapeY, arma::vec scaleX, arma::vec scaleY, double theta, double t, bool logFlag, unsigned jmax, int nmax, double eps) {
-        typedef SEXP(*Ptr_dWeibullInterArrivalCountFrankCopula)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_dWeibullInterArrivalCountFrankCopula p_dWeibullInterArrivalCountFrankCopula = NULL;
-        if (p_dWeibullInterArrivalCountFrankCopula == NULL) {
-            validateSignature("arma::vec(*dWeibullInterArrivalCountFrankCopula)(arma::Col <unsigned>,arma::Col <unsigned>,arma::vec,arma::vec,arma::vec,arma::vec,double,double,bool,unsigned,int,double)");
-            p_dWeibullInterArrivalCountFrankCopula = (Ptr_dWeibullInterArrivalCountFrankCopula)R_GetCCallable("Countr", "Countr_dWeibullInterArrivalCountFrankCopula");
+    inline arma::vec dWeibullCount_acc_vec(arma::Col<unsigned> x, arma::vec shape, arma::vec scale, double time = 1.0, bool logFlag = false, unsigned jmax = 50, int nmax = 300, double eps = 1e-10, bool printa = false) {
+        typedef SEXP(*Ptr_dWeibullCount_acc_vec)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+        static Ptr_dWeibullCount_acc_vec p_dWeibullCount_acc_vec = NULL;
+        if (p_dWeibullCount_acc_vec == NULL) {
+            validateSignature("arma::vec(*dWeibullCount_acc_vec)(arma::Col<unsigned>,arma::vec,arma::vec,double,bool,unsigned,int,double,bool)");
+            p_dWeibullCount_acc_vec = (Ptr_dWeibullCount_acc_vec)R_GetCCallable("Countr", "Countr_dWeibullCount_acc_vec");
         }
         RObject __result;
         {
             RNGScope __rngScope;
-            __result = p_dWeibullInterArrivalCountFrankCopula(Rcpp::wrap(x), Rcpp::wrap(y), Rcpp::wrap(shapeX), Rcpp::wrap(shapeY), Rcpp::wrap(scaleX), Rcpp::wrap(scaleY), Rcpp::wrap(theta), Rcpp::wrap(t), Rcpp::wrap(logFlag), Rcpp::wrap(jmax), Rcpp::wrap(nmax), Rcpp::wrap(eps));
-        }
-        if (__result.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (__result.inherits("try-error"))
-            throw Rcpp::exception(as<std::string>(__result).c_str());
-        return Rcpp::as<arma::vec >(__result);
-    }
-
-    inline arma::vec dWeibullInterArrivalCountFrankCopula_uni(arma::Col <unsigned> x, arma::Col <unsigned> y, double shapeX, double shapeY, arma::vec scaleX, arma::vec scaleY, double theta, double t, bool logFlag, unsigned jmax, int nmax, double eps) {
-        typedef SEXP(*Ptr_dWeibullInterArrivalCountFrankCopula_uni)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
-        static Ptr_dWeibullInterArrivalCountFrankCopula_uni p_dWeibullInterArrivalCountFrankCopula_uni = NULL;
-        if (p_dWeibullInterArrivalCountFrankCopula_uni == NULL) {
-            validateSignature("arma::vec(*dWeibullInterArrivalCountFrankCopula_uni)(arma::Col <unsigned>,arma::Col <unsigned>,double,double,arma::vec,arma::vec,double,double,bool,unsigned,int,double)");
-            p_dWeibullInterArrivalCountFrankCopula_uni = (Ptr_dWeibullInterArrivalCountFrankCopula_uni)R_GetCCallable("Countr", "Countr_dWeibullInterArrivalCountFrankCopula_uni");
-        }
-        RObject __result;
-        {
-            RNGScope __rngScope;
-            __result = p_dWeibullInterArrivalCountFrankCopula_uni(Rcpp::wrap(x), Rcpp::wrap(y), Rcpp::wrap(shapeX), Rcpp::wrap(shapeY), Rcpp::wrap(scaleX), Rcpp::wrap(scaleY), Rcpp::wrap(theta), Rcpp::wrap(t), Rcpp::wrap(logFlag), Rcpp::wrap(jmax), Rcpp::wrap(nmax), Rcpp::wrap(eps));
+            __result = p_dWeibullCount_acc_vec(Rcpp::wrap(x), Rcpp::wrap(shape), Rcpp::wrap(scale), Rcpp::wrap(time), Rcpp::wrap(logFlag), Rcpp::wrap(jmax), Rcpp::wrap(nmax), Rcpp::wrap(eps), Rcpp::wrap(printa));
         }
         if (__result.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

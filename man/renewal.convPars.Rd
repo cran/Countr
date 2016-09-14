@@ -8,8 +8,8 @@ renewal.convPars(convPars, dist)
 }
 \arguments{
 \item{convPars}{a list of convolution parameters arguments with slots
-\code{nsteps}, \code{extrap} and \code{convMethod}.
-See \code{dCount_conv_bi}. If NULL, default parameters will be applied.}
+\code{nsteps}, \code{extrap} and \code{convMethod}, see
+\code{dCount_conv_bi}. If NULL, default parameters will be applied.}
 
 \item{dist}{TODO}
 }
@@ -17,6 +17,7 @@ See \code{dCount_conv_bi}. If NULL, default parameters will be applied.}
 list convolution inputs.
 }
 \description{
-Check and creates the convolution inputs list
+Checks and creates the convolution inputs list.
 }
+\keyword{internal}
 

@@ -35,7 +35,7 @@ user passed survival function.
 }
 \details{
 The routine does minimum number of convolution to compute the count
-probability P(x) sing \code{nsteps} steps, and refines result by  
+probability P(x) sing \code{nsteps} steps, and refines result by
 Richardson extrapolation if \code{extrap} is \code{TRUE} using the
 algorithm of section 3.1.
 }

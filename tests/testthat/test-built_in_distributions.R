@@ -19,10 +19,9 @@ test_that("test built-in distributions", {
     ## =============================== gengamma ================================
     print("***** generalized gamma ...")
     distP <- list(mu = 0.5, sigma = 0.7, Q = 0.7)
-    expect_equal(flexsurv::pgengamma(q = tt, mu = distP[["mu"]],
+    expect_equal(flexsurv::pgengamma(q = tt, mu = -distP[["mu"]],
                                      sigma = distP[["sigma"]],
                                      Q = distP[["Q"]],
                                      lower.tail = FALSE),
-                 surv(tt, distP, "gengamma"),
-                 tolerance = 1e-3)
+                 surv(tt, distP, "gengamma"))
 })

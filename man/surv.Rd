@@ -2,34 +2,39 @@
 % Please edit documentation in R/RcppExports.R
 \name{surv}
 \alias{surv}
-\title{wrapper to built in survival functions}
+\title{Wrapper to built in survival functions}
 \usage{
 surv(t, distPars, dist)
 }
 \arguments{
-\item{t}{double time point where the survival is to be evaluated at.}
+\item{t}{double, time point where the survival is to be evaluated at.}
 
-\item{distPars}{\code{Rcpp::List} with distribution specific slots. See details.}
+\item{distPars}{\code{Rcpp::List} with distribution specific slots,
+see details.}
 
-\item{dist}{character name of the built-in distribution. See details}
+\item{dist}{character name of the built-in distribution, see details.}
 }
 \value{
 a double giving the value of the survival function at time point
-\code{t} at the parameters value.
+\code{t} at the parameters' values.
 }
 \description{
-wrapper to built in survival functions
+Wrapper to built in survival functions
 }
 \details{
 The function wraps all builtin-survival distributions. User can choose
 between the \code{weibull}, \code{gamma}, \code{gengamma}(generalized gamma)
-and \code{burr} (Burr type X|| distribution). It is the user responsability
+and \code{burr} (Burr type XII distribution). It is the user responsibility
 to pass the appropriate list of parameters as follows:
 \describe{
-\item{weibull}{\code{scale} (the scale) and \code{shape} (the shape) parameters.}
-\item{burr}{\code{scale} (the scale) and \code{shape1} (the shape1) and \code{shape2} (the shape2)parameters.}
-\item{gamma}{ \code{scale} (the scale) and \code{shape} (the shape) parameter.}
-\item{gengamma}{\code{mu} (location), \code{sigma} (scale) and \code{Q} (shape) parameters.}
+\item{weibull}{\code{scale} (the scale) and \code{shape} (the shape)
+    parameters.}
+\item{burr}{\code{scale} (the scale) and \code{shape1} (the shape1) and
+    \code{shape2} (the shape2) parameters.} 
+\item{gamma}{ \code{scale} (the scale) and \code{shape} (the shape)
+    parameter.}
+\item{gengamma}{\code{mu} (location), \code{sigma} (scale) and \code{Q}
+    (shape) parameters.}
 }
 }
 \examples{
@@ -55,5 +60,6 @@ flexsurv::pgengamma(q = tt, mu = distP[["mu"]],
                     Q = distP[["Q"]],
                     lower.tail = FALSE)
 surv(tt, distP, "gengamma")  ## (almost) same
+
 }
 

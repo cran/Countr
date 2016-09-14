@@ -3,17 +3,15 @@
 ## =============================================================================
 #' Extract Standard Errors of Model Coefficients
 #'
-#' These functions extract standard errors of model coefficients
-#' from objects returned by count-modeling functions.
+#' Extract standard errors of model coefficients from objects returned by
+#' count-modeling functions.
 #'
-#' When bootsrap standard error are required, the function cheks for the
-#' bootsrap sample in \code{object}. If it is not found, the bootsrap
-#' sample is created and a warning is sent.
 #' @param object object returned by one of the count-modeling functions
-#' @param parm parameters name or index
-#' @param type type of standard error. User can choose between asymtotic
-#' normal standard errors (\code{asymptotic}) or bootsrap (\code{boot}).
-#' @param ... TODO
+#' @param parm parameter's name or index
+#' @param type type of standard error: asymtotic normal standard errors
+#'     (\code{"asymptotic"}) or bootsrap (\code{"boot"}).
+#' @param ... further arguments for methods.
+#' 
 #' @return a named numeric vector
 #' @export
 se.coef <- function(object, parm, type, ...) {
@@ -28,7 +26,15 @@ se.coef <- function(object, parm, type, ...) {
 #'
 #' Methods for renewal objects.
 #'
-#' @param object,...,type,parm,level,bootType,x,digits TODO
+#' Objects from class \code{"renewal"} represent fitted count renewal models and
+#' are created by calls to \code{"renewal()"}. There are methods for this class
+#' for many of the familiar functions for interacting with fitted models.
+#' 
+#' @param object an object from class \code{"renewal"}.
+#' @param ... further arguments for methods
+#' @param type,parm,level,bootType,x,digits see the corresponding generics and section
+#'     Details.
+#' 
 #' @examples
 #' fn <- system.file("extdata", "McShane_Wei_results_boot.RDS", package = "Countr")
 #' object <- readRDS(fn)
@@ -91,22 +97,26 @@ fitted.renewal <- function (object, ...) {
     object$fitted.values
 }
 
-#' Extract Standard Errors of Model Coefficients
+#' % Extract Standard Errors of Model Coefficients
 #'
-#' These functions extract standard errors of model coefficients
-#' from objects returned by \code{renewal} functions.
+#' % Extract Standard Errors of Model Coefficients
 #'
-#' When bootsrap standard error are required, the function cheks for the
-#' bootsrap sample in \code{object}. If it is not found, the bootsrap
-#' sample is created and a warning is sent.
-#' @param object object returned by \code{renewal}.
-#' @param parm parameters name or index
-#' @param type type of standard error. User can choose between asymtotic
-#' normal standard errors (\code{asymptotic}) or bootsrap (\code{boot}).
-#' @param ... TODO
-#' @return an named numeric vector
+#' The method for class \code{"renewal"} extracts standard errors of model
+#' coefficients from objects returned by \code{renewal}.  When bootsrap standard
+#' error are requested, the function checks for the bootsrap sample in
+#' \code{object}. If it is not found, the bootsrap sample is created and a
+#' warning is issued. Users can choose between asymtotic normal standard errors
+#' (\code{asymptotic}) or bootsrap (\code{boot}).
+#'
+#' % param object object returned by \code{renewal}.
+#' % param parm parameters name or index
+#' % param type type of standard error. User can choose between asymtotic normal
+#' %    standard errors (\code{asymptotic}) or bootsrap (\code{boot}).
+#' @inheritParams se.coef
+#' 
 #' @examples
 #' ## see examples for renewal_methods
+#' @rdname se.coef
 #' @export
 se.coef.renewal <- function(object, parm, type = c("asymptotic", "boot"), ...) {
     type <- match.arg(type)
@@ -197,11 +207,15 @@ summary.renewal <- function(object, ...) {
 #' print(object)
 #' @rdname renewal_methods
 #' @export
+#' 
 print.renewal <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+
     cat("\nCall:", deparse(x$call, width.cutoff = floor(getOption("width") *
-        0.85)), "", sep = "\n")
+                                                            0.85)), "", sep = "\n")
+
+    
     if (!x$converged) {
-        cat("model did not converge\n")
+        cat("optimisation did not converge\n")
     } else {
         ##--------------- prepare links char
         textLink <- .summarizeLinkInformation(x$link)
@@ -217,11 +231,12 @@ print.renewal <- function(x, digits = max(3, getOption("digits") - 3), ...) {
 
 #' @rdname renewal_methods
 #' @method print summary.renewal
+#' @param width numeric width length
 #' @export
 print.summary.renewal <- function(x, digits = max(3, getOption("digits") - 3),
+                                  width = floor(getOption("width") * 0.85),
                                   ...) {
-    cat("\nCall:", deparse(x$call, width.cutoff = floor(getOption("width") *
-        0.85)), "", sep = "\n")
+    cat("\nCall:", deparse(x$call, width.cutoff = width), "", sep = "\n")
     if (!x$converged) {
         cat("model did not converge\n")
     } else {
@@ -233,8 +248,13 @@ print.summary.renewal <- function(x, digits = max(3, getOption("digits") - 3),
         ## dist & link functions
         ##--------------- prepare links char
         textLink <- .summarizeLinkInformation(x$link)
-        cat(paste0("\nCount model coefficients (inter-arrival ", x$dist,
-                   " with ", textLink, "):\n"))
+
+        ## cat(paste0("\nCount model coefficients (inter-arrival ", x$dist,
+        ##            " with ", textLink, "):\n"))
+        cat("Inter-arrival dist.:", x$dist, "\n")
+        cat("              Links:", textLink, "\n")
+
+        cat("\nCount model coefficients\n")
 
         ##---------------- print coefficients
         printCoefmat(x$coefficients, digits = digits, signif.legend = FALSE)
@@ -287,25 +307,28 @@ logLik.renewal <- function (object, ...) {
 ## @param object an object from class \code{renewal}
 ## @param ... not used
 #' @method nobs renewal
-#' @rdname renewal_methods
 #' @examples
 #' ## see renewal_methods
+#' @rdname renewal_methods
 #' @export
 nobs.renewal <- function (object, ...) {
     object$n
 }
 
-#' extractAIC method for class renewal
+#' % extractAIC method for class renewal
 #'
-#' extractAIC method for class renewal
+#' % extractAIC method for class renewal
 #'
-#' @param fit an object from class \code{renewal}
-#' @param scale TODO
-#' @param k TODO
-#' @param ... not used
+#' % param fit an object from class \code{renewal}
+#' % param scale TODO
+#' % param k TODO
+#' % param ... not used
+#' @param fit,scale,k same as in the generic.
+#' 
 #' @method extractAIC renewal
 #' @examples
 #' ## see renewal_methods
+#' @rdname renewal_methods
 #' @export
 extractAIC.renewal <- function (fit, scale, k = 2, ...) {
      c(attr(logLik(fit), "df"), AIC(fit, k = k))
@@ -389,7 +412,7 @@ predict.renewal <- function(object, newdata = NULL, type = c("response", "prob")
                            "probability predictions !"))
         } else {
             out <- object$fitted.values
-            se <- NA
+            se_out <- NA
             if (se.fit) {
                 ## C <- .modelData(modelMatrixList, object$dist, customPars)
                 ## se <- sqrt(diag(C %*% vcov(object) %*% t(C)))
@@ -397,7 +420,7 @@ predict.renewal <- function(object, newdata = NULL, type = c("response", "prob")
                 se_out <- .getPredictionStd(modelMatrixList, vcov(object),
                                             object$dist, object$link, customPars)
             }
-
+            
             return(list(values = as.numeric(out), se = se_out))
         }
     } else { ## data provided
@@ -419,7 +442,7 @@ predict.renewal <- function(object, newdata = NULL, type = c("response", "prob")
     if (type == "response") ## extract the mean response
         out <- sapply(out, .extractElem, ind = "ExpectedValue")
 
-    se <- NA
+    se_out <- NA
     if (se.fit) {
         ## C <- .modelData(modelMatrixList, object$dist, customPars)
         ## se <- sqrt(diag(C %*% vcov(object) %*% t(C)))

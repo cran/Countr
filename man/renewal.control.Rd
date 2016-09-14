@@ -8,20 +8,19 @@ renewal.control(method = "nlminb", maxit = 1000, trace = 1,
   start = NULL, kkt = FALSE, ...)
 }
 \arguments{
-\item{method}{character one of the optimization method accepted by
-\code{optimx}}
+\item{method}{character, one of the optimization methods accepted by
+\code{optimx}.}
 
-\item{maxit}{numeric the maximum number of iterations in the
-optimization routine.}
+\item{maxit}{numeric, the maximum number of iterations in the optimization
+routine.}
 
-\item{trace}{Non-negative integer. Should tracing information by
-printed to the screen.}
+\item{trace}{Non-negative integer. Should tracing information be printed to
+the screen.}
 
 \item{start}{(named) numeric, vector of starting values.}
 
-\item{kkt}{locical should the Kuhn, Karush, Tucker optimality
-conditions be tested ? default to \code{FALSE} to avoid numerical
-hessian computation.}
+\item{kkt}{locical should the Kuhn, Karush, Tucker optimality conditions be
+tested? Default is \code{FALSE} to avoid numerical hessian computation.}
 
 \item{...}{TODO}
 }
@@ -29,11 +28,12 @@ hessian computation.}
 a list with the control parameters used by \code{renewal}
 }
 \description{
-Creates the renewal control list used by \code{renewal}
+Creates the renewal control list used by \code{renewal}.
 }
 \details{
-The function usues user passed inputs, checks them and return an
-appropriate lists that is used inside \code{renewal} by the optimization
-rourine \code{optimx} among others
+The function takes the user passed inputs, checks them (todo: actually, it
+doesn't!) and returns an appropriate list that is used inside \code{renewal}
+by the optimization routine, such as \code{optimx} among others.
 }
+\keyword{internal}
 

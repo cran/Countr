@@ -10,88 +10,6 @@
 
 using namespace Rcpp;
 
-// dRenewalFrankCopula_user
-arma::vec dRenewalFrankCopula_user(arma::Col <unsigned> x, arma::Col <unsigned> y, Rcpp::Function survX, Rcpp::Function survY, Rcpp::List distParsX, Rcpp::List distParsY, Rcpp::List extrapolParsX, Rcpp::List extrapolParsY, double theta, double time, bool logFlag, unsigned nsteps, bool extrap);
-static SEXP Countr_dRenewalFrankCopula_user_try(SEXP xSEXP, SEXP ySEXP, SEXP survXSEXP, SEXP survYSEXP, SEXP distParsXSEXP, SEXP distParsYSEXP, SEXP extrapolParsXSEXP, SEXP extrapolParsYSEXP, SEXP thetaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP nstepsSEXP, SEXP extrapSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< Rcpp::Function >::type survX(survXSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Function >::type survY(survYSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type distParsX(distParsXSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type distParsY(distParsYSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type extrapolParsX(extrapolParsXSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type extrapolParsY(extrapolParsYSEXP);
-    Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
-    Rcpp::traits::input_parameter< unsigned >::type nsteps(nstepsSEXP);
-    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
-    __result = Rcpp::wrap(dRenewalFrankCopula_user(x, y, survX, survY, distParsX, distParsY, extrapolParsX, extrapolParsY, theta, time, logFlag, nsteps, extrap));
-    return __result;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP Countr_dRenewalFrankCopula_user(SEXP xSEXP, SEXP ySEXP, SEXP survXSEXP, SEXP survYSEXP, SEXP distParsXSEXP, SEXP distParsYSEXP, SEXP extrapolParsXSEXP, SEXP extrapolParsYSEXP, SEXP thetaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP nstepsSEXP, SEXP extrapSEXP) {
-    SEXP __result;
-    {
-        Rcpp::RNGScope __rngScope;
-        __result = PROTECT(Countr_dRenewalFrankCopula_user_try(xSEXP, ySEXP, survXSEXP, survYSEXP, distParsXSEXP, distParsYSEXP, extrapolParsXSEXP, extrapolParsYSEXP, thetaSEXP, timeSEXP, logFlagSEXP, nstepsSEXP, extrapSEXP));
-    }
-    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
-    if (__isInterrupt) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    Rboolean __isError = Rf_inherits(__result, "try-error");
-    if (__isError) {
-        SEXP __msgSEXP = Rf_asChar(__result);
-        UNPROTECT(1);
-        Rf_error(CHAR(__msgSEXP));
-    }
-    UNPROTECT(1);
-    return __result;
-}
-// dRenewalFrankCopula_bi
-arma::vec dRenewalFrankCopula_bi(arma::Col <unsigned> x, arma::Col <unsigned> y, const std::string distX, const std::string distY, Rcpp::List distParsX, Rcpp::List distParsY, double theta, double time, bool logFlag, unsigned nsteps, bool extrap);
-static SEXP Countr_dRenewalFrankCopula_bi_try(SEXP xSEXP, SEXP ySEXP, SEXP distXSEXP, SEXP distYSEXP, SEXP distParsXSEXP, SEXP distParsYSEXP, SEXP thetaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP nstepsSEXP, SEXP extrapSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const std::string >::type distX(distXSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type distY(distYSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type distParsX(distParsXSEXP);
-    Rcpp::traits::input_parameter< Rcpp::List >::type distParsY(distParsYSEXP);
-    Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
-    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
-    Rcpp::traits::input_parameter< unsigned >::type nsteps(nstepsSEXP);
-    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
-    __result = Rcpp::wrap(dRenewalFrankCopula_bi(x, y, distX, distY, distParsX, distParsY, theta, time, logFlag, nsteps, extrap));
-    return __result;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP Countr_dRenewalFrankCopula_bi(SEXP xSEXP, SEXP ySEXP, SEXP distXSEXP, SEXP distYSEXP, SEXP distParsXSEXP, SEXP distParsYSEXP, SEXP thetaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP nstepsSEXP, SEXP extrapSEXP) {
-    SEXP __result;
-    {
-        Rcpp::RNGScope __rngScope;
-        __result = PROTECT(Countr_dRenewalFrankCopula_bi_try(xSEXP, ySEXP, distXSEXP, distYSEXP, distParsXSEXP, distParsYSEXP, thetaSEXP, timeSEXP, logFlagSEXP, nstepsSEXP, extrapSEXP));
-    }
-    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
-    if (__isInterrupt) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    Rboolean __isError = Rf_inherits(__result, "try-error");
-    if (__isError) {
-        SEXP __msgSEXP = Rf_asChar(__result);
-        UNPROTECT(1);
-        Rf_error(CHAR(__msgSEXP));
-    }
-    UNPROTECT(1);
-    return __result;
-}
 // sWeibull
 double sWeibull(double t, const Rcpp::List distPars);
 RcppExport SEXP Countr_sWeibull(SEXP tSEXP, SEXP distParsSEXP) {
@@ -205,6 +123,23 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// dCount_allProbs_vec_bi
+arma::vec dCount_allProbs_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars, const std::string dist, const unsigned& nsteps, double time, bool extrap, bool logFlag);
+RcppExport SEXP Countr_dCount_allProbs_vec_bi(SEXP xSEXP, SEXP distParsSEXP, SEXP distSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type distPars(distParsSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< const unsigned& >::type nsteps(nstepsSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    __result = Rcpp::wrap(dCount_allProbs_vec_bi(x, distPars, dist, nsteps, time, extrap, logFlag));
+    return __result;
+END_RCPP
+}
 // dCount_allProbs_scalar_user
 double dCount_allProbs_scalar_user(unsigned x, const Rcpp::List distPars, arma::vec extrapolPars, Rcpp::Function survR, const unsigned& nsteps, double time, bool extrap, bool logFlag);
 RcppExport SEXP Countr_dCount_allProbs_scalar_user(SEXP xSEXP, SEXP distParsSEXP, SEXP extrapolParsSEXP, SEXP survRSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
@@ -220,6 +155,24 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
     Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
     __result = Rcpp::wrap(dCount_allProbs_scalar_user(x, distPars, extrapolPars, survR, nsteps, time, extrap, logFlag));
+    return __result;
+END_RCPP
+}
+// dCount_allProbs_vec_user
+arma::vec dCount_allProbs_vec_user(arma::Col<unsigned> x, const Rcpp::List distPars, const Rcpp::List extrapolPars, Rcpp::Function survR, const unsigned& nsteps, double time, bool extrap, bool logFlag);
+RcppExport SEXP Countr_dCount_allProbs_vec_user(SEXP xSEXP, SEXP distParsSEXP, SEXP extrapolParsSEXP, SEXP survRSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type distPars(distParsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type extrapolPars(extrapolParsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Function >::type survR(survRSEXP);
+    Rcpp::traits::input_parameter< const unsigned& >::type nsteps(nstepsSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    __result = Rcpp::wrap(dCount_allProbs_vec_user(x, distPars, extrapolPars, survR, nsteps, time, extrap, logFlag));
     return __result;
 END_RCPP
 }
@@ -277,6 +230,23 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// dCount_dePril_vec_bi
+arma::vec dCount_dePril_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars, const std::string dist, const unsigned& nsteps, double time, bool extrap, bool logFlag);
+RcppExport SEXP Countr_dCount_dePril_vec_bi(SEXP xSEXP, SEXP distParsSEXP, SEXP distSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type distPars(distParsSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< const unsigned& >::type nsteps(nstepsSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    __result = Rcpp::wrap(dCount_dePril_vec_bi(x, distPars, dist, nsteps, time, extrap, logFlag));
+    return __result;
+END_RCPP
+}
 // dCount_dePril_scalar_user
 double dCount_dePril_scalar_user(unsigned x, const Rcpp::List distPars, arma::vec extrapolPars, Rcpp::Function survR, const unsigned& nsteps, double time, bool extrap, bool logFlag);
 RcppExport SEXP Countr_dCount_dePril_scalar_user(SEXP xSEXP, SEXP distParsSEXP, SEXP extrapolParsSEXP, SEXP survRSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
@@ -292,6 +262,24 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
     Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
     __result = Rcpp::wrap(dCount_dePril_scalar_user(x, distPars, extrapolPars, survR, nsteps, time, extrap, logFlag));
+    return __result;
+END_RCPP
+}
+// dCount_dePril_vec_user
+arma::vec dCount_dePril_vec_user(arma::Col<unsigned> x, const Rcpp::List distPars, const Rcpp::List extrapolPars, Rcpp::Function survR, const unsigned& nsteps, double time, bool extrap, bool logFlag);
+RcppExport SEXP Countr_dCount_dePril_vec_user(SEXP xSEXP, SEXP distParsSEXP, SEXP extrapolParsSEXP, SEXP survRSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type distPars(distParsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type extrapolPars(extrapolParsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Function >::type survR(survRSEXP);
+    Rcpp::traits::input_parameter< const unsigned& >::type nsteps(nstepsSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    __result = Rcpp::wrap(dCount_dePril_vec_user(x, distPars, extrapolPars, survR, nsteps, time, extrap, logFlag));
     return __result;
 END_RCPP
 }
@@ -349,6 +337,23 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// dCount_naive_vec_bi
+arma::vec dCount_naive_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars, const std::string dist, const unsigned& nsteps, double time, bool extrap, bool logFlag);
+RcppExport SEXP Countr_dCount_naive_vec_bi(SEXP xSEXP, SEXP distParsSEXP, SEXP distSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type distPars(distParsSEXP);
+    Rcpp::traits::input_parameter< const std::string >::type dist(distSEXP);
+    Rcpp::traits::input_parameter< const unsigned& >::type nsteps(nstepsSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    __result = Rcpp::wrap(dCount_naive_vec_bi(x, distPars, dist, nsteps, time, extrap, logFlag));
+    return __result;
+END_RCPP
+}
 // dCount_naive_scalar_user
 double dCount_naive_scalar_user(unsigned x, const Rcpp::List distPars, arma::vec extrapolPars, Rcpp::Function survR, const unsigned& nsteps, double time, bool extrap, bool logFlag);
 RcppExport SEXP Countr_dCount_naive_scalar_user(SEXP xSEXP, SEXP distParsSEXP, SEXP extrapolParsSEXP, SEXP survRSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
@@ -364,6 +369,24 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
     Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
     __result = Rcpp::wrap(dCount_naive_scalar_user(x, distPars, extrapolPars, survR, nsteps, time, extrap, logFlag));
+    return __result;
+END_RCPP
+}
+// dCount_naive_vec_user
+arma::vec dCount_naive_vec_user(arma::Col<unsigned> x, const Rcpp::List distPars, const Rcpp::List extrapolPars, Rcpp::Function survR, const unsigned& nsteps, double time, bool extrap, bool logFlag);
+RcppExport SEXP Countr_dCount_naive_vec_user(SEXP xSEXP, SEXP distParsSEXP, SEXP extrapolParsSEXP, SEXP survRSEXP, SEXP nstepsSEXP, SEXP timeSEXP, SEXP extrapSEXP, SEXP logFlagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type distPars(distParsSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::List >::type extrapolPars(extrapolParsSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Function >::type survR(survRSEXP);
+    Rcpp::traits::input_parameter< const unsigned& >::type nsteps(nstepsSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type extrap(extrapSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    __result = Rcpp::wrap(dCount_naive_vec_user(x, distPars, extrapolPars, survR, nsteps, time, extrap, logFlag));
     return __result;
 END_RCPP
 }
@@ -503,6 +526,42 @@ RcppExport SEXP Countr_dWeibullgammaCount_mat(SEXP xSEXP, SEXP shapeSEXP, SEXP r
     UNPROTECT(1);
     return __result;
 }
+// dWeibullgammaCount_mat_vec
+arma::vec dWeibullgammaCount_mat_vec(arma::Col<unsigned> x, arma::vec shape, double r, double alpha, double time, bool logFlag, unsigned jmax);
+static SEXP Countr_dWeibullgammaCount_mat_vec_try(SEXP xSEXP, SEXP shapeSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
+    __result = Rcpp::wrap(dWeibullgammaCount_mat_vec(x, shape, r, alpha, time, logFlag, jmax));
+    return __result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP Countr_dWeibullgammaCount_mat_vec(SEXP xSEXP, SEXP shapeSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(Countr_dWeibullgammaCount_mat_vec_try(xSEXP, shapeSEXP, rSEXP, alphaSEXP, timeSEXP, logFlagSEXP, jmaxSEXP));
+    }
+    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
+    if (__isInterrupt) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
 // dWeibullgammaCount_mat_Covariates
 arma::vec dWeibullgammaCount_mat_Covariates(arma::Col<unsigned> x, double cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t, bool logFlag, unsigned jmax);
 static SEXP Countr_dWeibullgammaCount_mat_Covariates_try(SEXP xSEXP, SEXP ccSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP XcovarSEXP, SEXP betaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
@@ -526,6 +585,44 @@ RcppExport SEXP Countr_dWeibullgammaCount_mat_Covariates(SEXP xSEXP, SEXP ccSEXP
     {
         Rcpp::RNGScope __rngScope;
         __result = PROTECT(Countr_dWeibullgammaCount_mat_Covariates_try(xSEXP, ccSEXP, rSEXP, alphaSEXP, XcovarSEXP, betaSEXP, tSEXP, logFlagSEXP, jmaxSEXP));
+    }
+    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
+    if (__isInterrupt) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// dWeibullgammaCount_mat_Covariates_vec
+arma::vec dWeibullgammaCount_mat_Covariates_vec(arma::Col<unsigned> x, arma::vec cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t, bool logFlag, unsigned jmax);
+static SEXP Countr_dWeibullgammaCount_mat_Covariates_vec_try(SEXP xSEXP, SEXP ccSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP XcovarSEXP, SEXP betaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cc(ccSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Xcovar(XcovarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type t(tSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
+    __result = Rcpp::wrap(dWeibullgammaCount_mat_Covariates_vec(x, cc, r, alpha, Xcovar, beta, t, logFlag, jmax));
+    return __result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP Countr_dWeibullgammaCount_mat_Covariates_vec(SEXP xSEXP, SEXP ccSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP XcovarSEXP, SEXP betaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(Countr_dWeibullgammaCount_mat_Covariates_vec_try(xSEXP, ccSEXP, rSEXP, alphaSEXP, XcovarSEXP, betaSEXP, tSEXP, logFlagSEXP, jmaxSEXP));
     }
     Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
     if (__isInterrupt) {
@@ -580,6 +677,45 @@ RcppExport SEXP Countr_dWeibullgammaCount_acc(SEXP xSEXP, SEXP shapeSEXP, SEXP r
     UNPROTECT(1);
     return __result;
 }
+// dWeibullgammaCount_acc_vec
+arma::vec dWeibullgammaCount_acc_vec(arma::Col<unsigned> x, arma::vec shape, double r, double alpha, double time, bool logFlag, unsigned jmax, int nmax, double eps, bool printa);
+static SEXP Countr_dWeibullgammaCount_acc_vec_try(SEXP xSEXP, SEXP shapeSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
+    Rcpp::traits::input_parameter< int >::type nmax(nmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< bool >::type printa(printaSEXP);
+    __result = Rcpp::wrap(dWeibullgammaCount_acc_vec(x, shape, r, alpha, time, logFlag, jmax, nmax, eps, printa));
+    return __result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP Countr_dWeibullgammaCount_acc_vec(SEXP xSEXP, SEXP shapeSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(Countr_dWeibullgammaCount_acc_vec_try(xSEXP, shapeSEXP, rSEXP, alphaSEXP, timeSEXP, logFlagSEXP, jmaxSEXP, nmaxSEXP, epsSEXP, printaSEXP));
+    }
+    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
+    if (__isInterrupt) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
 // dWeibullgammaCount_acc_Covariates
 arma::vec dWeibullgammaCount_acc_Covariates(arma::Col<unsigned> x, double cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t, bool logFlag, unsigned jmax, int nmax, double eps, bool printa);
 static SEXP Countr_dWeibullgammaCount_acc_Covariates_try(SEXP xSEXP, SEXP ccSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP XcovarSEXP, SEXP betaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
@@ -606,6 +742,47 @@ RcppExport SEXP Countr_dWeibullgammaCount_acc_Covariates(SEXP xSEXP, SEXP ccSEXP
     {
         Rcpp::RNGScope __rngScope;
         __result = PROTECT(Countr_dWeibullgammaCount_acc_Covariates_try(xSEXP, ccSEXP, rSEXP, alphaSEXP, XcovarSEXP, betaSEXP, tSEXP, logFlagSEXP, jmaxSEXP, nmaxSEXP, epsSEXP, printaSEXP));
+    }
+    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
+    if (__isInterrupt) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// dWeibullgammaCount_acc_Covariates_vec
+arma::vec dWeibullgammaCount_acc_Covariates_vec(arma::Col<unsigned> x, arma::vec cc, double r, double alpha, arma::mat Xcovar, arma::vec beta, double t, bool logFlag, unsigned jmax, int nmax, double eps, bool printa);
+static SEXP Countr_dWeibullgammaCount_acc_Covariates_vec_try(SEXP xSEXP, SEXP ccSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP XcovarSEXP, SEXP betaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type cc(ccSEXP);
+    Rcpp::traits::input_parameter< double >::type r(rSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Xcovar(XcovarSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< double >::type t(tSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
+    Rcpp::traits::input_parameter< int >::type nmax(nmaxSEXP);
+    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
+    Rcpp::traits::input_parameter< bool >::type printa(printaSEXP);
+    __result = Rcpp::wrap(dWeibullgammaCount_acc_Covariates_vec(x, cc, r, alpha, Xcovar, beta, t, logFlag, jmax, nmax, eps, printa));
+    return __result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP Countr_dWeibullgammaCount_acc_Covariates_vec(SEXP xSEXP, SEXP ccSEXP, SEXP rSEXP, SEXP alphaSEXP, SEXP XcovarSEXP, SEXP betaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(Countr_dWeibullgammaCount_acc_Covariates_vec_try(xSEXP, ccSEXP, rSEXP, alphaSEXP, XcovarSEXP, betaSEXP, tSEXP, logFlagSEXP, jmaxSEXP, nmaxSEXP, epsSEXP, printaSEXP));
     }
     Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
     if (__isInterrupt) {
@@ -688,6 +865,76 @@ RcppExport SEXP Countr_dWeibullCount_mat(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleS
     UNPROTECT(1);
     return __result;
 }
+// dWeibullCount_mat_scalar
+double dWeibullCount_mat_scalar(unsigned x, double shape, double scale, double time, bool logFlag, unsigned jmax);
+static SEXP Countr_dWeibullCount_mat_scalar_try(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::traits::input_parameter< unsigned >::type x(xSEXP);
+    Rcpp::traits::input_parameter< double >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< double >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
+    __result = Rcpp::wrap(dWeibullCount_mat_scalar(x, shape, scale, time, logFlag, jmax));
+    return __result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP Countr_dWeibullCount_mat_scalar(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(Countr_dWeibullCount_mat_scalar_try(xSEXP, shapeSEXP, scaleSEXP, timeSEXP, logFlagSEXP, jmaxSEXP));
+    }
+    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
+    if (__isInterrupt) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// dWeibullCount_mat_vec
+arma::vec dWeibullCount_mat_vec(arma::Col<unsigned> x, arma::vec shape, arma::vec scale, double time, bool logFlag, unsigned jmax);
+static SEXP Countr_dWeibullCount_mat_vec_try(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
+    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
+    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
+    __result = Rcpp::wrap(dWeibullCount_mat_vec(x, shape, scale, time, logFlag, jmax));
+    return __result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP Countr_dWeibullCount_mat_vec(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(Countr_dWeibullCount_mat_vec_try(xSEXP, shapeSEXP, scaleSEXP, timeSEXP, logFlagSEXP, jmaxSEXP));
+    }
+    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
+    if (__isInterrupt) {
+        UNPROTECT(1);
+        Rf_onintr();
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
 // dWeibullCount_acc
 arma::vec dWeibullCount_acc(arma::Col<unsigned> x, double shape, double scale, double time, bool logFlag, unsigned jmax, int nmax, double eps, bool printa);
 static SEXP Countr_dWeibullCount_acc_try(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
@@ -726,73 +973,29 @@ RcppExport SEXP Countr_dWeibullCount_acc(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleS
     UNPROTECT(1);
     return __result;
 }
-// dWeibullInterArrivalCountFrankCopula
-arma::vec dWeibullInterArrivalCountFrankCopula(arma::Col <unsigned> x, arma::Col <unsigned> y, arma::vec shapeX, arma::vec shapeY, arma::vec scaleX, arma::vec scaleY, double theta, double t, bool logFlag, unsigned jmax, int nmax, double eps);
-static SEXP Countr_dWeibullInterArrivalCountFrankCopula_try(SEXP xSEXP, SEXP ySEXP, SEXP shapeXSEXP, SEXP shapeYSEXP, SEXP scaleXSEXP, SEXP scaleYSEXP, SEXP thetaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP) {
+// dWeibullCount_acc_vec
+arma::vec dWeibullCount_acc_vec(arma::Col<unsigned> x, arma::vec shape, arma::vec scale, double time, bool logFlag, unsigned jmax, int nmax, double eps, bool printa);
+static SEXP Countr_dWeibullCount_acc_vec_try(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type shapeX(shapeXSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type shapeY(shapeYSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type scaleX(scaleXSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type scaleY(scaleYSEXP);
-    Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< double >::type t(tSEXP);
+    Rcpp::traits::input_parameter< arma::Col<unsigned> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type shape(shapeSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< double >::type time(timeSEXP);
     Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
     Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
     Rcpp::traits::input_parameter< int >::type nmax(nmaxSEXP);
     Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
-    __result = Rcpp::wrap(dWeibullInterArrivalCountFrankCopula(x, y, shapeX, shapeY, scaleX, scaleY, theta, t, logFlag, jmax, nmax, eps));
+    Rcpp::traits::input_parameter< bool >::type printa(printaSEXP);
+    __result = Rcpp::wrap(dWeibullCount_acc_vec(x, shape, scale, time, logFlag, jmax, nmax, eps, printa));
     return __result;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP Countr_dWeibullInterArrivalCountFrankCopula(SEXP xSEXP, SEXP ySEXP, SEXP shapeXSEXP, SEXP shapeYSEXP, SEXP scaleXSEXP, SEXP scaleYSEXP, SEXP thetaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP) {
+RcppExport SEXP Countr_dWeibullCount_acc_vec(SEXP xSEXP, SEXP shapeSEXP, SEXP scaleSEXP, SEXP timeSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP, SEXP printaSEXP) {
     SEXP __result;
     {
         Rcpp::RNGScope __rngScope;
-        __result = PROTECT(Countr_dWeibullInterArrivalCountFrankCopula_try(xSEXP, ySEXP, shapeXSEXP, shapeYSEXP, scaleXSEXP, scaleYSEXP, thetaSEXP, tSEXP, logFlagSEXP, jmaxSEXP, nmaxSEXP, epsSEXP));
-    }
-    Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
-    if (__isInterrupt) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    Rboolean __isError = Rf_inherits(__result, "try-error");
-    if (__isError) {
-        SEXP __msgSEXP = Rf_asChar(__result);
-        UNPROTECT(1);
-        Rf_error(CHAR(__msgSEXP));
-    }
-    UNPROTECT(1);
-    return __result;
-}
-// dWeibullInterArrivalCountFrankCopula_uni
-arma::vec dWeibullInterArrivalCountFrankCopula_uni(arma::Col <unsigned> x, arma::Col <unsigned> y, double shapeX, double shapeY, arma::vec scaleX, arma::vec scaleY, double theta, double t, bool logFlag, unsigned jmax, int nmax, double eps);
-static SEXP Countr_dWeibullInterArrivalCountFrankCopula_uni_try(SEXP xSEXP, SEXP ySEXP, SEXP shapeXSEXP, SEXP shapeYSEXP, SEXP scaleXSEXP, SEXP scaleYSEXP, SEXP thetaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::Col <unsigned> >::type y(ySEXP);
-    Rcpp::traits::input_parameter< double >::type shapeX(shapeXSEXP);
-    Rcpp::traits::input_parameter< double >::type shapeY(shapeYSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type scaleX(scaleXSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type scaleY(scaleYSEXP);
-    Rcpp::traits::input_parameter< double >::type theta(thetaSEXP);
-    Rcpp::traits::input_parameter< double >::type t(tSEXP);
-    Rcpp::traits::input_parameter< bool >::type logFlag(logFlagSEXP);
-    Rcpp::traits::input_parameter< unsigned >::type jmax(jmaxSEXP);
-    Rcpp::traits::input_parameter< int >::type nmax(nmaxSEXP);
-    Rcpp::traits::input_parameter< double >::type eps(epsSEXP);
-    __result = Rcpp::wrap(dWeibullInterArrivalCountFrankCopula_uni(x, y, shapeX, shapeY, scaleX, scaleY, theta, t, logFlag, jmax, nmax, eps));
-    return __result;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP Countr_dWeibullInterArrivalCountFrankCopula_uni(SEXP xSEXP, SEXP ySEXP, SEXP shapeXSEXP, SEXP shapeYSEXP, SEXP scaleXSEXP, SEXP scaleYSEXP, SEXP thetaSEXP, SEXP tSEXP, SEXP logFlagSEXP, SEXP jmaxSEXP, SEXP nmaxSEXP, SEXP epsSEXP) {
-    SEXP __result;
-    {
-        Rcpp::RNGScope __rngScope;
-        __result = PROTECT(Countr_dWeibullInterArrivalCountFrankCopula_uni_try(xSEXP, ySEXP, shapeXSEXP, shapeYSEXP, scaleXSEXP, scaleYSEXP, thetaSEXP, tSEXP, logFlagSEXP, jmaxSEXP, nmaxSEXP, epsSEXP));
+        __result = PROTECT(Countr_dWeibullCount_acc_vec_try(xSEXP, shapeSEXP, scaleSEXP, timeSEXP, logFlagSEXP, jmaxSEXP, nmaxSEXP, epsSEXP, printaSEXP));
     }
     Rboolean __isInterrupt = Rf_inherits(__result, "interrupted-error");
     if (__isInterrupt) {
@@ -813,34 +1016,40 @@ RcppExport SEXP Countr_dWeibullInterArrivalCountFrankCopula_uni(SEXP xSEXP, SEXP
 static int Countr_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("arma::vec(*dRenewalFrankCopula_user)(arma::Col <unsigned>,arma::Col <unsigned>,Rcpp::Function,Rcpp::Function,Rcpp::List,Rcpp::List,Rcpp::List,Rcpp::List,double,double,bool,unsigned,bool)");
-        signatures.insert("arma::vec(*dRenewalFrankCopula_bi)(arma::Col <unsigned>,arma::Col <unsigned>,const std::string,const std::string,Rcpp::List,Rcpp::List,double,double,bool,unsigned,bool)");
         signatures.insert("arma::vec(*dWeibullgammaCount_mat)(arma::Col<unsigned>,double,double,double,double,bool,unsigned)");
+        signatures.insert("arma::vec(*dWeibullgammaCount_mat_vec)(arma::Col<unsigned>,arma::vec,double,double,double,bool,unsigned)");
         signatures.insert("arma::vec(*dWeibullgammaCount_mat_Covariates)(arma::Col<unsigned>,double,double,double,arma::mat,arma::vec,double,bool,unsigned)");
+        signatures.insert("arma::vec(*dWeibullgammaCount_mat_Covariates_vec)(arma::Col<unsigned>,arma::vec,double,double,arma::mat,arma::vec,double,bool,unsigned)");
         signatures.insert("arma::vec(*dWeibullgammaCount_acc)(arma::Col<unsigned>,double,double,double,double,bool,unsigned,int,double,bool)");
+        signatures.insert("arma::vec(*dWeibullgammaCount_acc_vec)(arma::Col<unsigned>,arma::vec,double,double,double,bool,unsigned,int,double,bool)");
         signatures.insert("arma::vec(*dWeibullgammaCount_acc_Covariates)(arma::Col<unsigned>,double,double,double,arma::mat,arma::vec,double,bool,unsigned,int,double,bool)");
+        signatures.insert("arma::vec(*dWeibullgammaCount_acc_Covariates_vec)(arma::Col<unsigned>,arma::vec,double,double,arma::mat,arma::vec,double,bool,unsigned,int,double,bool)");
         signatures.insert("arma::mat(*alphagen)(double,unsigned,unsigned)");
         signatures.insert("arma::vec(*dWeibullCount_mat)(arma::Col<unsigned>,double,double,double,bool,unsigned)");
+        signatures.insert("double(*dWeibullCount_mat_scalar)(unsigned,double,double,double,bool,unsigned)");
+        signatures.insert("arma::vec(*dWeibullCount_mat_vec)(arma::Col<unsigned>,arma::vec,arma::vec,double,bool,unsigned)");
         signatures.insert("arma::vec(*dWeibullCount_acc)(arma::Col<unsigned>,double,double,double,bool,unsigned,int,double,bool)");
-        signatures.insert("arma::vec(*dWeibullInterArrivalCountFrankCopula)(arma::Col <unsigned>,arma::Col <unsigned>,arma::vec,arma::vec,arma::vec,arma::vec,double,double,bool,unsigned,int,double)");
-        signatures.insert("arma::vec(*dWeibullInterArrivalCountFrankCopula_uni)(arma::Col <unsigned>,arma::Col <unsigned>,double,double,arma::vec,arma::vec,double,double,bool,unsigned,int,double)");
+        signatures.insert("arma::vec(*dWeibullCount_acc_vec)(arma::Col<unsigned>,arma::vec,arma::vec,double,bool,unsigned,int,double,bool)");
     }
     return signatures.find(sig) != signatures.end();
 }
 
 // registerCCallable (register entry points for exported C++ functions)
 RcppExport SEXP Countr_RcppExport_registerCCallable() { 
-    R_RegisterCCallable("Countr", "Countr_dRenewalFrankCopula_user", (DL_FUNC)Countr_dRenewalFrankCopula_user_try);
-    R_RegisterCCallable("Countr", "Countr_dRenewalFrankCopula_bi", (DL_FUNC)Countr_dRenewalFrankCopula_bi_try);
     R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_mat", (DL_FUNC)Countr_dWeibullgammaCount_mat_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_mat_vec", (DL_FUNC)Countr_dWeibullgammaCount_mat_vec_try);
     R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_mat_Covariates", (DL_FUNC)Countr_dWeibullgammaCount_mat_Covariates_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_mat_Covariates_vec", (DL_FUNC)Countr_dWeibullgammaCount_mat_Covariates_vec_try);
     R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_acc", (DL_FUNC)Countr_dWeibullgammaCount_acc_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_acc_vec", (DL_FUNC)Countr_dWeibullgammaCount_acc_vec_try);
     R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_acc_Covariates", (DL_FUNC)Countr_dWeibullgammaCount_acc_Covariates_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullgammaCount_acc_Covariates_vec", (DL_FUNC)Countr_dWeibullgammaCount_acc_Covariates_vec_try);
     R_RegisterCCallable("Countr", "Countr_alphagen", (DL_FUNC)Countr_alphagen_try);
     R_RegisterCCallable("Countr", "Countr_dWeibullCount_mat", (DL_FUNC)Countr_dWeibullCount_mat_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullCount_mat_scalar", (DL_FUNC)Countr_dWeibullCount_mat_scalar_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullCount_mat_vec", (DL_FUNC)Countr_dWeibullCount_mat_vec_try);
     R_RegisterCCallable("Countr", "Countr_dWeibullCount_acc", (DL_FUNC)Countr_dWeibullCount_acc_try);
-    R_RegisterCCallable("Countr", "Countr_dWeibullInterArrivalCountFrankCopula", (DL_FUNC)Countr_dWeibullInterArrivalCountFrankCopula_try);
-    R_RegisterCCallable("Countr", "Countr_dWeibullInterArrivalCountFrankCopula_uni", (DL_FUNC)Countr_dWeibullInterArrivalCountFrankCopula_uni_try);
+    R_RegisterCCallable("Countr", "Countr_dWeibullCount_acc_vec", (DL_FUNC)Countr_dWeibullCount_acc_vec_try);
     R_RegisterCCallable("Countr", "Countr_RcppExport_validate", (DL_FUNC)Countr_RcppExport_validate);
     return R_NilValue;
 }

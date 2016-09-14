@@ -8,17 +8,17 @@ using namespace Rcpp;
 
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// Paper refers to the The Paper by Baker & Kharrat: Discrete 
+// Paper refers to the The Paper by Baker & Kharrat: Discrete
 // distributions from renewal processes: fast computation of probabilities
 // This file corresponds to Section 2
 
 // get the convolution of 2 pdfs of different order
-// 
+//
 // convolves the pdf of some number of events with another pdf to get the new
 // order pdf.
 //
-// This routine convolves \code{p}, the pdf of some number 
-// of events occurring, with \code{df} (ditto) to get the resulting 
+// This routine convolves \code{p}, the pdf of some number
+// of events occurring, with \code{df} (ditto) to get the resulting
 // new order pdf. See section 2 of the paper for more details.
 // @param p double vector (passed by reference in the c++ code). First pdf
 // @param df double vector (passed by cte reference in the c++ code)
@@ -31,7 +31,7 @@ using namespace Rcpp;
 arma::vec convolve(unsigned nprobs, const arma::vec& df, arma::vec& p,
 		   const unsigned& nsteps) {
   unsigned klow = 1;
-  unsigned n, np, k, j;
+  unsigned n, np, k;
   double ptemp;
   arma::vec probs(nprobs + 1, fill::zeros);
 
@@ -39,27 +39,27 @@ arma::vec convolve(unsigned nprobs, const arma::vec& df, arma::vec& p,
     np = n + 1;
     if (np == nprobs)
       klow = nsteps;
-    
+
     for(k = nsteps; k >= klow; k --) {
       ptemp = 0.0;
-      for (unsigned j = 1; j<=k; j++) 
+      for (unsigned j = 1; j<=k; j++)
 	ptemp = ptemp + p(k - j + 1) * df(j);
-      
+
       p(k) = ptemp;
     }
-    probs(np) = p(nsteps); 
+    probs(np) = p(nsteps);
     if (np != nprobs) {
-      for(k = nsteps; k >= 1; k --) 
+      for(k = nsteps; k >= 1; k --)
 	p(k) = 0.5 * (p(k) + p(k - 1));
     }
   }
-  
+
   return(probs);
 }
 
-arma::vec doOneConvolution(unsigned xmax, arma::vec& p, 
-			   arma::vec& df, 
-			   const arma::vec& fwork, const unsigned& nsteps, 
+arma::vec doOneConvolution(unsigned xmax, arma::vec& p,
+			   arma::vec& df,
+			   const arma::vec& fwork, const unsigned& nsteps,
 			   const unsigned fact) {
   double sth;
   unsigned i, ik;
@@ -72,7 +72,7 @@ arma::vec doOneConvolution(unsigned xmax, arma::vec& p,
       stl = sth;
       p(i) = fwork(ik - fact2);
   }
-  
+
   return(convolve(xmax, df, p, nsteps));
 }
 
@@ -81,8 +81,8 @@ arma::vec doOneConvolution(unsigned xmax, arma::vec& p,
 // Compute all probabilities up to \code{xmax} by convolution (and eventually
 // improved by Richardson extrapolation).
 //
-// The routine does convolutions to produce probabilities \code{probs(0)}, 
-// ... \code{probs(xmax)} using \code{nsteps} steps, and refines result by  
+// The routine does convolutions to produce probabilities \code{probs(0)},
+// ... \code{probs(xmax)} using \code{nsteps} steps, and refines result by
 // Richardson extrapolation if \code{extrap} is \code{TRUE}.
 // @param xmax unsigned integer maximun probability required.
 // @param distPars Rcpp::List list of parameters for the desired distribution
@@ -93,22 +93,21 @@ arma::vec doOneConvolution(unsigned xmax, arma::vec& p,
 // @param extrap logical if \code{TRUE}, Richardson extrapolation will be
 // applied to improve accuracy.
 // @return vector of probabilities \code{probs(0)}, ... \code{probs(xmax)}.
-arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars, 
+arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
 		      arma::vec extrapolPars, const std::string dist,
 		      const unsigned& nsteps = 100,
 		      double time = 1.0, bool extrap = true) {
-  
+
   arma::vec probs(xmax + 1, fill::zeros);
-  
+
   double stl = 1.0;
+  double sth = 1.0;
   double en = (double) nsteps;
-  double h = time / en;
-  double xi, th, sth, tee;
-  unsigned i; 
+  double xi, th, tee;
+  unsigned i;
   vec df, p;
 
   if (extrap) { // use Richardson extrapolation to reduce the error
-    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -120,7 +119,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     p = zeros<vec> (needed + 1);
     df = zeros<vec> (needed + 1);
     vec fwork(needed + 1, fill::zeros);
-    
+
     for(i = 1; i <= needed; i++) {
       xi = double (i);
       tee = time * xi / en;
@@ -128,14 +127,14 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     }
 
     // =========================== concolutions ================================
-    // ---------- conv1 
+    // ---------- conv1
     arma::vec probs1 = doOneConvolution(xmax, p, df, fwork, nsteps1, 8);
-    // ---------- conv2 
+    // ---------- conv2
     arma::vec probs2 = doOneConvolution(xmax, p, df, fwork, nsteps2, 4);
-    // ---------- conv3 
+    // ---------- conv3
     probs = doOneConvolution(xmax, p, df, fwork, nsteps3, 2);
     // =============== Richardson extrapolation ================================
-    double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4 
+    double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
     vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
@@ -145,7 +144,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   } else {
     p = zeros<vec> (nsteps + 1);
     df = zeros<vec> (nsteps + 1);
-    
+
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
       xi = (double) i;
@@ -162,23 +161,22 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   return(probs);
 }
 
-arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars, 
+arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
 		      arma::vec extrapolPars, Rcpp::Function survR,
 		      const unsigned& nsteps = 100,
 		      double time = 1.0, bool extrap = true) {
-  
+
   arma::vec probs(xmax + 1, fill::zeros);
-  
+
   double stl = 1.0;
+  double sth = 1.0;
   double en = (double) nsteps;
-  double h = time / en;
-  double xi, th, sth, tee;
-  unsigned i; 
+  double xi, th, tee;
+  unsigned i;
   vec df, p;
   Rcpp::NumericVector rTemp;
 
   if (extrap) { // use Richardson extrapolation to reduce the error
-    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -190,7 +188,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     p = zeros<vec> (needed + 1);
     df = zeros<vec> (needed + 1);
     vec fwork(needed + 1, fill::zeros);
-    
+
     for(i = 1; i <= needed; i++) {
       xi = double (i);
       tee = time * xi / en;
@@ -199,14 +197,14 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     }
 
     // =========================== concolutions ================================
-    // ---------- conv1 
+    // ---------- conv1
     arma::vec probs1 = doOneConvolution(xmax, p, df, fwork, nsteps1, 8);
-    // ---------- conv2 
+    // ---------- conv2
     arma::vec probs2 = doOneConvolution(xmax, p, df, fwork, nsteps2, 4);
-    // ---------- conv3 
+    // ---------- conv3
     probs = doOneConvolution(xmax, p, df, fwork, nsteps3, 2);
     // =============== Richardson extrapolation ================================
-    double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4 
+    double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
     vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
@@ -216,7 +214,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   } else {
     p = zeros<vec> (nsteps + 1);
     df = zeros<vec> (nsteps + 1);
-    
+
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
       xi = (double) i;
@@ -240,8 +238,8 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
 //' Compute count probabilities using simple convolution (section 2) for the
 //' built-in distributions
 //'
-//' The routine does convolutions to produce probabilities \code{probs(0)}, 
-//' ... \code{probs(xmax)} using \code{nsteps} steps, and refines result by  
+//' The routine does convolutions to produce probabilities \code{probs(0)},
+//' ... \code{probs(xmax)} using \code{nsteps} steps, and refines result by
 //' Richardson extrapolation if \code{extrap} is \code{TRUE} using the
 //' algorithm of section 2.
 //'
@@ -258,20 +256,20 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
 //'
 //' @keywords internal
 // [[Rcpp::export]]
-arma::vec dCount_allProbs_bi(arma::Col<unsigned> x, const Rcpp::List distPars, 
+arma::vec dCount_allProbs_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 			     const std::string dist,
-			     const unsigned& nsteps = 100, 
+			     const unsigned& nsteps = 100,
 			     double time = 1.0, bool extrap = true,
 			     bool logFlag = false) {
-  
+
   double xmax = max(x);
   arma::vec extrapolPars = getextrapolPars(distPars, dist);
-  arma::vec all = getAllProbs(xmax, distPars, extrapolPars, dist, nsteps, 
+  arma::vec all = getAllProbs(xmax, distPars, extrapolPars, dist, nsteps,
 			      time, extrap);
   arma::vec vals(x.n_elem, fill::zeros);
   arma::Col<unsigned> x_unique = unique(x);
   double xk;
-  
+
    for (unsigned k = 0; k < x_unique.n_elem; k ++) {
      xk = x_unique(k);
      uvec ind = find(x == xk);
@@ -299,19 +297,19 @@ arma::vec dCount_allProbs_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 //' @rdname dCount_allProbs_bi
 //' @keywords internal
 // [[Rcpp::export]]
-arma::vec dCount_allProbs_user(arma::Col<unsigned> x, const Rcpp::List distPars, 
+arma::vec dCount_allProbs_user(arma::Col<unsigned> x, const Rcpp::List distPars,
 			      arma::vec extrapolPars, Rcpp::Function survR,
-			      const unsigned& nsteps = 100, 
+			      const unsigned& nsteps = 100,
 			      double time = 1.0, bool extrap = true,
 			      bool logFlag = false) {
 
   double xmax = max(x);
-  arma::vec all = getAllProbs(xmax, distPars, extrapolPars, survR, nsteps, 
+  arma::vec all = getAllProbs(xmax, distPars, extrapolPars, survR, nsteps,
 			      time, extrap);
   arma::vec vals(x.n_elem, fill::zeros);
   arma::Col<unsigned> x_unique = unique(x);
   double xk;
-  
+
    for (unsigned k = 0; k < x_unique.n_elem; k ++) {
      xk = x_unique(k);
      uvec ind = find(x == xk);
@@ -325,42 +323,91 @@ arma::vec dCount_allProbs_user(arma::Col<unsigned> x, const Rcpp::List distPars,
     return(vals);
 }
 
-
-
 //' @keywords internal
 // [[Rcpp::export]]
-double dCount_allProbs_scalar_bi(unsigned x, const Rcpp::List distPars, 
+double dCount_allProbs_scalar_bi(unsigned x, const Rcpp::List distPars,
 				 const std::string dist,
-				 const unsigned& nsteps = 100, 
+				 const unsigned& nsteps = 100,
 				 double time = 1.0, bool extrap = true,
 				 bool logFlag = false) {
 
   arma::vec extrapolPars = getextrapolPars(distPars, dist);
-  arma::vec all = getAllProbs(x, distPars, extrapolPars, dist, nsteps, 
+  arma::vec all = getAllProbs(x, distPars, extrapolPars, dist, nsteps,
 			      time, extrap);
-  
+
   double out = all(all.n_elem - 1);
   if (logFlag)
     out = log(out);
-      
+
   return(out);
 }
 
 //' @keywords internal
 // [[Rcpp::export]]
-double dCount_allProbs_scalar_user(unsigned x, const Rcpp::List distPars, 
+arma::vec dCount_allProbs_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
+				 const std::string dist,
+				 const unsigned& nsteps = 100,
+				 double time = 1.0, bool extrap = true,
+				 bool logFlag = false) {
+  arma::uword lnt = x.n_elem;
+  arma::vec pbs(lnt, fill::zeros);
+  Rcpp::List distParsi;
+
+  if (lnt != distPars.size())
+    stop("x and distPars should have same length !");
+
+  for (unsigned i = 0; i < lnt; i++) {
+    distParsi = distPars[i];
+    pbs[i] = dCount_allProbs_scalar_bi(x[i], distParsi, dist, nsteps, time,
+				       extrap, logFlag);
+  }
+
+  return(pbs);
+}
+
+//' @keywords internal
+// [[Rcpp::export]]
+double dCount_allProbs_scalar_user(unsigned x, const Rcpp::List distPars,
 				  arma::vec extrapolPars, Rcpp::Function survR,
-				  const unsigned& nsteps = 100, 
+				  const unsigned& nsteps = 100,
 				  double time = 1.0, bool extrap = true,
 				  bool logFlag = false) {
 
-  arma::vec all = getAllProbs(x, distPars, extrapolPars, survR, nsteps, 
+  arma::vec all = getAllProbs(x, distPars, extrapolPars, survR, nsteps,
 			      time, extrap);
-  
+
   double out = all(all.n_elem - 1);
   if (logFlag)
     out = log(out);
-      
+
   return(out);
 }
 
+//' @keywords internal
+// [[Rcpp::export]]
+arma::vec dCount_allProbs_vec_user(arma::Col<unsigned> x,
+				   const Rcpp::List distPars,
+				   const Rcpp::List extrapolPars,
+				   Rcpp::Function survR,
+				   const unsigned& nsteps = 100,
+				   double time = 1.0, bool extrap = true,
+				   bool logFlag = false) {
+  arma::uword lnt = x.n_elem;
+  arma::vec pbs(lnt, fill::zeros);
+  Rcpp::List distParsi;
+
+  if (lnt != distPars.size())
+    stop("x and distPars should have same length !");
+
+  if (lnt != extrapolPars.size())
+    stop("x and distPars should have same length !");
+
+  for (unsigned i = 0; i < lnt; i++) {
+    distParsi = distPars[i];
+    arma::vec extrapolParsi = extrapolPars[i];
+    pbs[i] = dCount_allProbs_scalar_user(x[i], distParsi, extrapolParsi, survR,
+					 nsteps, time, extrap, logFlag);
+  }
+
+  return(pbs);
+}

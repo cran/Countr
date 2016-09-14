@@ -2,110 +2,157 @@
 #'
 #' Fit renewal regression models for count data via maximum likelihood.
 #'
-#' \code{renewal} re-uses design and functionality of the basic R tools
-#' for fitting regression model (\code{lm}, \code{glm}) and is highly
-#' inspired from \code{hurdle()} and \code{zeroinfl()} from package
-#' \code{pscl}. Package \code{Formula} was used to handle formulae.
+#' \code{renewal} re-uses design and functionality of the basic R tools for
+#' fitting regression model (\code{lm}, \code{glm}) and is highly inspired by
+#' \code{hurdle()} and \code{zeroinfl()} from package \code{pscl}. Package
+#' \code{Formula} is used to handle formulas.
 #'
-#' If User wants to pass his own inter-arrival
-#' distribution i.e, \code{dist = "custom"}, he needs to provides his own
-#' initial values as well as the \code{customPars} list as follows:
+#' Distributions for inter-arrival times supported internally by this package can
+#' be chosen by setting argument \code{"dist"} to a suitable character string.
+#' Currently the built-in distributions are \code{"weibull"},
+#' \code{"weibullgam"}, \code{"gamma"}, \code{"gengamma"} (generalized-gamma)
+#' and \code{"burr"}.
+#'
+#' Users can also provide their own inter-arrival distribution.  This is done by
+#' setting argument \code{"dist"} to \code{"custom"}, specifying the initial
+#' values and giving argument \code{customPars} as a list with the following
+#' components:
+#'
 #' \describe{
-#' \item{parNames}{character vector the distribution parameters name.
-#' Location parameter should be passed first.}
+#'
+#' \item{parNames}{character, the names of the parameters of the distribution.
+#'     The location parameter should be the first one.}
+#'
 #' \item{survivalFct}{function object containing the survival function. It
-#' should have the signature \code{function(t, distPars)} where $t$ is the
-#' point where the survival function is evaluated and distPars is the list
-#' of the distribution parameters. It should return a double value.}
+#'     should have signature \code{function(t, distPars)} where \code{t} is the
+#'     point where the survival function is evaluated and \code{distPars} is the
+#'     list of the distribution parameters. It should return a double value.}
+#'
 #' \item{extrapolFct}{function object computing the extrapolation values
-#' (numeric of length 2) from the value of the distribution parameters
-#' (in \code{distPars}). It should have the signature
-#' \code{function(distPars)} and returns a numeric vector of length 2. Only
-#' required if the extrapolation is set to \code{TRUE} in \code{convPars}.}
+#'     (numeric of length 2) from the value of the distribution parameters (in
+#'     \code{distPars}). It should have signature \code{function(distPars)} and
+#'     return a numeric vector of length 2. Only required if the extrapolation
+#'     is set to \code{TRUE} in \code{convPars}.}
 #' }
-#' Some checks will be used to validate the \code{customPars} input but
-#' it is user responsability to make sure the different functions have the
-#' appropriate signatures.
-#' \strong{Note:} The weibull gamma is an experimental version and user should
-#' use it with care! It is very sensitive to initials values and there is no
-#' guarantee of convergence. It has also been reparametrized in terms of
-#' (1/r, 1/alpha, c) instead of (r, alpha, c) where r and alpha are the
-#' shape and scale of the gamma distribution and c is the shape of the
-#' weibull distribution.
+#'
+#' Some checks are done to validate \code{customPars} but it is user's
+#' responsibility to make sure the the functions have the appropriate
+#' signatures.
+#'
+#' \strong{Note:} The Weibull-gamma distribution is an experimental version and
+#' should be used with care! It is very sensitive to initial values and there is no
+#' guarantee of convergence. It has also been reparameterized in terms of
+#' \eqn{(1/r, 1/\alpha, c)}{(1/r, 1/alpha, c)} instead of \eqn{(r, \alpha,
+#' c)}{(r, alpha, c)}, where \eqn{r} and \eqn{\alpha}{alpha} are the shape
+#' and scale of the gamma distribution and \eqn{c} is the shape of the Weibull
+#' distribution.
+#' 
 #' @param formula single response formula object.
-#' @param data,subset,na.action, arguments controlling formula processing
-#' via \code{model.frame}. 
+#' @param data,subset,na.action, arguments controlling formula processing via
+#'     \code{model.frame}.
 #' @param weights optional numeric vector of weights.
-#' @param offset optional numeric vector with an a priori known component
-#' to be included in the linear predictor of the count model. Currently
-#' not used.
-#' @param dist character built-in distribution to be used for the inter-
-#' arrival time distribution. Currently built in distribution are \code{weibull},
-#' \code{weibullgam}, \code{gamma}, \code{gengamma} (generalized-gamma)
-#' and \code{burr}. User can provide his own distribution
-#' by setting \code{dist} to \code{custom}.
-#' @param anc list (named) of formulae to model regression on ancillary
-#' parameters. If \code{NULL}, no regression is modelled. Otherwise, the
-#' formulae associated with the (exact) parameter name is used.
-#' @param link list (named) of character specifiying the name of the link function
-#' to be used in the regression. If \code{NULL}, the canonical
-#' link function will be used, i.e, \code{log} if the parameter is supposed
-#' to be positive, identity otherwise.
-#' @param time numeric time at which the count is observed; default to unit (1)
-#' @param convPars a list of convolution parameters argumentswith slots
-#' \code{nsteps}, \code{extrap} and \code{convMethod}.
-#' See \code{dCount_conv_bi}. If NULL, default parameters will be applied.
+#' @param offset optional numeric vector with an a priori known component to be
+#'     included in the linear predictor of the count model. Currently not used.
+#' @param dist character, built-in distribution to be used as the inter-arrival
+#'     time distribution or \code{"custom"} for a user defined distribution, see
+#'     Details. Currently the built-in distributions are \code{"weibull"},
+#'     \code{"weibullgam"}, \code{"gamma"}, \code{"gengamma"}
+#'     (generalized-gamma) and \code{"burr"}.
+#' @param anc named list of formulas for ancillary regressions, if any,
+#'     otherwise \code{NULL}. The formulas associated with the (exact) parameter
+#'     names are used.
+#' @param link named list of character strings specifying the name of the link
+#'     functions to be used in the regression. If \code{NULL}, the canonical
+#'     link function will be used, i.e, \code{log} if the parameter is supposed
+#'     to be positive, identity otherwise.
+#' @param time numeric, time at which the count is observed; default to unity
+#'     (1).
+#' @param convPars a list of convolution parameters arguments with slots
+#'     \code{nsteps}, \code{extrap} and \code{convMethod}, see
+#'     \code{dCount_conv_bi}. If NULL, default parameters will be applied.
 #' @param control a list of control arguments specified via
-#' \code{renewal.control}.
-#' @param customPars list user inputs if \code{dist = "custom"}. See details
-#' @param seriesPars list series expansion input parameters with slots
-#' \code{terms} (number of terms in the series expansion),
-#' \code{iter} (number of iteration in the accelerated series expansion
-#' algorithm) and \code{eps} (tolerance in the accelerated series expansion
-#' algorithm), Only used if \code{dist = "weibull"} and
-#' \code{weiMethod = c("series_mat", "series_acc")}.
-#' @param weiMethod character computation method to be used if
-#' \code{dist = c("weibull", "weibullgam")}. See \code{dWeibullCount} and
-#' \code{dWeibullgammaCount}.
-#' @param computeHessian logical should the hessian (and hence the covariance
-#' matrix) be computed numerically at the fitted values.
-#' @param model,y,x logicals. If \code{TRUE} the  corresponding  components
-#' of  the  fit  (model  frame,  response, model matrix) are returned.
+#'     \code{renewal.control}.
+#' @param customPars list, user inputs if \code{dist = "custom"}, see details.
+#' @param seriesPars list, series expansion input parameters with slots
+#'     \code{terms} (number of terms in the series expansion), \code{iter}
+#'     (number of iteration in the accelerated series expansion algorithm) and
+#'     \code{eps} (tolerance in the accelerated series expansion algorithm),
+#'     Only used if \code{dist = "weibull"} and \code{weiMethod =
+#'     c("series_mat", "series_acc")}.
+#' @param weiMethod character, computation method to be used if \code{dist =
+#'     "weibull"} or \code{"weibullgam"}, see \code{dWeibullCount} and
+#'     \code{dWeibullgammaCount}.
+#' @param computeHessian logical, should the hessian (and hence the covariance
+#'     matrix) be computed numerically at the fitted values.
+#' @param model,y,x logicals. If \code{TRUE} the corresponding components of the
+#'     fit (model frame, response, model matrix) are returned.
 #' @param ... arguments passed to \code{renewal.control} in the default setup.
-#' @return An \code{S3} object of class "renewal", i.e., a list with components
-#' including:
-#' \describe{
-#' \item{coefficients}{value of the fitted coefficients}
-#' \item{residuals}{vector of weighted residuals \eqn{\omega * (observed - fitted)}}
-#' \item{fitted.values}{vector of fitted means}
-#' \item{optim}{data.frame output of \code{optimx}}
-#' \item{method}{optimisation algorithm}
-#' \item{control}{the control arguments passed to \code{optimx}}
-#' \item{start}{starting values  passed to \code{optimx}}
-#' \item{weights}{weights applied if any}
-#' \item{n}{number of observation (with weights > 0)}
-#' \item{iterations}{number of iterations in the optimisation algorithm}
-#' \item{execTime}{duration of the optimisation}
-#' \item{loglik}{log-likelihood of the fitted model}
-#' \item{df.residual}{residuals degrees of freedom for the fitted model}
-#' \item{vcoc}{convariance matrix of all coefficients computed numerically from the
-#' hessian at the fitted coefficients (if \code{computeHessian} ois \code{TRUE}).}
-#' \item{dist}{name of inter-arrival distribution.}
-#' \item{link}{list inverse link function corresponding to each parameter in the
-#' inter-arrival distribution}
-#' \item{converged}{logical did the optimisation algorithm converged ?}
-#' \item{data}{data used to fit the model}
-#' \item{formula}{the original formula}
-#' \item{call}{the original function call}
-#' \item{anc}{list (named) of formulae to model regression on ancillary
-#' parameters.}
-#' \item{convPars}{convolution inputs used}
-#' \item{customPars}{user passed distribution inputs. See details}
-#' \item{time}{observed window used. default to 1.0 (see inputs)}
-#' \item{model}{the full model frame (if \code{model = TRUE}}
-#' \item{y}{the response count vector (if \code{y = TRUE}}
-#' \item{x}{the model matrix if \code{x = TRUE}}
+#'    
+#' @return An \code{S3} object of class "renewal", which is a list with
+#'     components including:
+#'     \describe{
+#'
+#'     \item{coefficients}{values of the fitted coefficients.}
+#'    
+#'     \item{residuals}{vector of weighted residuals \eqn{\omega * (observed -
+#'     fitted)}.}
+#'
+#'     \item{fitted.values}{vector of fitted means.}
+#'
+#'     \item{optim}{data.frame output of \code{optimx}.}
+#'
+#'     \item{method}{optimisation algorithm.}
+#'
+#'     \item{control}{the control arguments, passed to \code{optimx}.}
+#'    
+#'     \item{start}{starting values, passed to \code{optimx}.}
+#'
+#'     \item{weights}{weights to apply, if any.}
+#'
+#'     \item{n}{number of observations (with weights > 0).}
+#'    
+#'     \item{iterations}{number of iterations in the optimisation algorithm.}
+#'
+#'     \item{execTime}{duration of the optimisation.}
+#'
+#'     \item{loglik}{log-likelihood of the fitted model.}
+#'
+#'     \item{df.residual}{residuals' degrees of freedom for the fitted model.}
+#'
+#'     \item{vcoc}{convariance matrix of all coefficients, computed numerically
+#'     from the hessian at the fitted coefficients (if \code{computeHessian} is
+#'     \code{TRUE}).}
+#'
+#'     \item{dist}{name of the inter-arrival distribution.}
+#'
+#'     \item{link}{list, inverse link function corresponding to each parameter in
+#'     the inter-arrival distribution.}
+#'
+#'     \item{converged}{logical, did the optimisation algorithm converge?}
+#'    
+#'     \item{data}{data used to fit the model.}
+#'
+#'     \item{formula}{the original formula.}
+#'
+#'     \item{call}{the original function call.}
+#'    
+#'     \item{anc}{named list of formulas to model regression on ancillary
+#'     parameters.}
+#'
+#'     \item{convPars}{convolution inputs used.}
+#'
+#'     \item{customPars}{named list, user passed distribution inputs, see
+#'     Details.}
+#'
+#'     \item{time}{observed window used, default is 1.0 (see inputs).}
+#'
+#'     \item{model}{the full model frame (if \code{model = TRUE}.}
+#'
+#'     \item{y}{the response count vector (if \code{y = TRUE}.}
+#'    
+#'     \item{x}{the model matrix if \code{x = TRUE}.}
 #' }
+#'    
 #' @export
 #' @importFrom numDeriv hessian
 #' @importFrom MASS ginv
@@ -115,8 +162,9 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
                         "gamma", "gengamma", "burr"),  
                     anc = NULL, convPars = NULL, link = NULL, time = 1.0,
                     control = renewal.control(...), customPars = NULL,
-                    seriesPars = NULL, weiMethod = NULL, computeHessian = TRUE,
-                    model = TRUE, y = TRUE, x = FALSE, ...) {
+                    seriesPars = NULL, weiMethod = NULL,
+                    computeHessian = TRUE, model = TRUE, y = TRUE, x = FALSE,
+                    ...) {
 
     dist <- match.arg(dist)
     ## check convolution parameters
@@ -183,6 +231,8 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
     weights <- as.vector(weights)
     names(weights) <- rownames(mf)
 
+    
+
     ## get the inverse link function
     if (class(link) == "InverseLink")
         linkList <- link
@@ -205,7 +255,7 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
     ## check initilas values
     start <- control$start
     start <- .checkInitialValues(dist, start, modelMatrixList, weights, Y,
-                                 anc, customPars)
+                                 customPars)
     nmPars <- gsub('\\(Intercept\\)', "", names(start))
     ## run optimazation routine
     
@@ -249,8 +299,9 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
     resTemp <-  .objectiveFunction(coefs, dist, modelMatrixList,
                                    linkList, time, convPars, Y, weights,
                                    TRUE, FALSE, seriesPars, weiMethod,
-                                   customPars)
-        
+                                   customPars) 
+    vecDistParsList <- attr(resTemp, "distPars")
+    
     Yhat <- sapply(resTemp, .extractElem, ind = "ExpectedValue")
     wi <- sapply(resTemp, .extractElem, ind = "Variance")
     res <- sqrt(weights) * (Y - Yhat)
@@ -261,6 +312,7 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
     rval <- list(
         coefficients = coefs, residuals = res, fitted.values = Yhat, wi = wi,
         optim = fitCount, method = method, control = control, start = start,
+        vecDistParsList = vecDistParsList,
         weights =
         if (identical(as.vector(weights), rep.int(1L, n))) NULL else weights,
         n = nobs, iterations = fitCount$niter, execTime = fitCount$xtimes, 

@@ -1,32 +1,34 @@
-#' wrapper to the weibull count probability
+#' Probability calculations for Weibull count models
 #'
-#' wrapper to the univariate weibull count probability
+#' Probability computations for the univariate Weibull count process. Several
+#' methods are provided.
+#' \code{dWeibullCount} computes probabilities.
 #'
-#' User could choose between one of the following methods:
+#' Argument \code{method} can be used to specify the desired method, as follows:
 #' \describe{
-#' \item{series_mat}{series expansion using matrix techniques.}
-#' \item{series_acc}{Euler-van Wijngaarden accelerated series expansion}
-#' \item{conv_direct}{direct convolution method of section 2.}
-#' \item{conv_naive}{naive convolurion described in section 3.1}
-#' \item{conv_dePril}{dePril convolution described in section 3.2}
+#' \item{\code{"series_mat"}}{- series expansion using matrix techniques,}
+#' \item{\code{"series_acc"}}{- Euler-van Wijngaarden accelerated series expansion (default),}
+#' \item{\code{"conv_direc"t}}{- direct convolution method of section 2,}
+#' \item{\code{"conv_naive"}}{- naive convolurion described in section 3.1,}
+#' \item{\code{"conv_dePril"}}{- dePril convolution described in section 3.2.}
 #' }
-#' The valiue of the inputs can be left to their default value if user
-#' is not aware of the algorithm details.
+#' The arguments have sensible default values.
+#'
 #' @param scale numeric (length 1), scale parameter of the Weibull count.
 #' @param shape numeric (length 1), shape parameter of the Weibull count.
 #' @param x integer (vector), the desired count values.
 #' @param time double, length of the observation window (defaults to 1).
 #' @param log logical, if TRUE, the log of the probability will be returned.
-#' @param method character one of the available methods. See details.
-#' @param conv_steps numeric number of steps used for the extrapolation.
-#' @param conv_extrap logical should Richardson extrappolation be applied ?
-#' @param series_terms numeric number of terms in the series expansion.
-#' @param series_acc_niter numeric number of iteration in the
-#' Euler-van Wijngaarden algorithm.
-#' @param series_acc_eps numeric tolerance of convergence in the
-#' Euler-van Wijngaarden algorithm.
-#' @return vector of probabilities \eqn{P(x(i)), i = 1, \dots n} where
-#' \code{n = length(x)}.
+#' @param method character, one of the available methods, see details.
+#' @param conv_steps numeric, number of steps used for the extrapolation.
+#' @param conv_extrap logical, should Richardson extrappolation be applied ?
+#' @param series_terms numeric, number of terms in the series expansion.
+#' @param series_acc_niter numeric, number of iterations in the
+#'     Euler-van Wijngaarden algorithm.
+#' @param series_acc_eps numeric, tolerance of convergence in the
+#'     Euler-van Wijngaarden algorithm.
+#' @return for \code{dWeibullCount}, a vector of probabilities
+#'     \eqn{P(x(i)), i = 1, \dots n}, where \eqn{n =} \code{length(x)}.
 #' @export
 dWeibullCount <- function(x, shape, scale,
                           method = c("series_acc", "series_mat",
@@ -36,51 +38,108 @@ dWeibullCount <- function(x, shape, scale,
                           series_acc_niter = 300, series_acc_eps = 1e-10) {
 
     method <- match.arg(method)
-    distPars <- list(scale = scale, shape = shape)
+
+     .dist <- function(i, scale, shape)
+        list(scale = scale[i], shape = shape[i])
+
+    vec <- FALSE
+    if (length(x) == 1)
+        distPars <- list(scale = scale, shape = shape)
+    else {
+        if (length(shape) == 1 & length(scale) == 1)
+            distPars <- list(scale = scale, shape = shape)
+        else if (length(shape) == 1 & length(scale) > 1) {
+            shape <- rep(shape, length(scale))
+            distPars <- lapply(1:length(shape), .dist,
+                               scale = scale, shape = shape)
+            vec <- TRUE
+        } else if (length(shape) > 1 & length(scale) == 1) {
+            scale <- rep(scale, length(shape))
+            distPars <- lapply(1:length(shape), .dist,
+                               scale = scale, shape = shape)
+            vec <- TRUE
+        } else {
+            distPars <- lapply(1:length(shape), .dist,
+                               scale = scale, shape = shape)
+            vec <- TRUE
+        }
+    }
     dist <- "weibull"
-    
+
     switch(method,
            "conv_direct" = {
-               return(dCount_allProbs_bi(x, distPars, dist,
-                                         conv_steps, time, conv_extrap, log)
-                      )
+              if (vec)
+                   return(dCount_allProbs_vec_bi(x, distPars, dist,
+                                                 conv_steps, time, conv_extrap,
+                                                 log)
+                          )
+               else
+                   return(dCount_allProbs_bi(x, distPars, dist,
+                                             conv_steps, time, conv_extrap, log)
+                          )
            },
            "conv_naive" = {
-               return(dCount_naive_bi(x, distPars, dist,
-                                      conv_steps, time, conv_extrap, 0, log))
+               if (vec)
+                   return(dCount_naive_vec_bi(x, distPars, dist,
+                                              conv_steps, time, conv_extrap,
+                                              log))
+               else
+                   return(dCount_naive_bi(x, distPars, dist,
+                                          conv_steps, time, conv_extrap, log))
            },
            "conv_dePril" = {
-               return(dCount_dePril_bi(x, distPars, dist,
-                                       conv_steps, time, conv_extrap, 0, log))
+               if (vec)
+                   return(dCount_dePril_vec_bi(x, distPars, dist,
+                                               conv_steps, time, conv_extrap,
+                                               log))
+               else
+                   return(dCount_dePril_bi(x, distPars, dist,
+                                           conv_steps, time, conv_extrap,
+                                           log))
            },
            "series_mat" = {
-               return(dWeibullCount_mat(x, shape, scale, time, log,
-                                        series_terms))
+               if (vec)
+                   return(dWeibullCount_mat_vec(x, shape, scale, time, log,
+                                                series_terms))
+               else
+                   return(dWeibullCount_mat(x, shape, scale, time, log,
+                                            series_terms))
            },
            "series_acc" = {
-               return(dWeibullCount_acc(x, shape, scale, time, log,
-                                        series_terms, series_acc_niter,
-                                        series_acc_eps)
-                   )
+               if (vec)
+                   return(dWeibullCount_acc_vec(x, shape, scale, time, log,
+                                                series_terms, series_acc_niter,
+                                                series_acc_eps)
+                          )
+               else
+                   return(dWeibullCount_acc(x, shape, scale, time, log,
+                                            series_terms, series_acc_niter,
+                                            series_acc_eps)
+                          )
            }
            )
 }
 
 
-#' wrapper to the weibull count log-likelihood
+
+#' % Log-likelihood of the the Weibull count process
+#' % Compute the log-likelihood of the univariate Weibull count process. Several
+#' % methods are provided.
 #'
-#' wrapper to the univariate weibull log-likelihood
+#' \code{dWeibullCount_loglik} computes the log-likelihood.
 #'
-#' @param na.rm logical if TRUE, the \code{NA} (produced by taking the log of
-#' very small probabilities) will be replaced by the smallest allowed probaility;
-#' default = \code{TRUE}
-#' @param weights numeric vector of weights to apply. If \code{NULL}, one will
-#' be applied.
+#' @param na.rm logical, if TRUE \code{NA}'s (produced by taking the log of very
+#'     small probabilities) will be replaced by the smallest allowed probaility;
+#'     default is \code{TRUE}.
+#' @param weights numeric, vector of weights to apply. If \code{NULL}, a vector
+#'     of one's will be applied.
 #' @inheritParams dWeibullCount
-#' @return double log-likelihood of the count process
+#'
+#' @return for \code{dWeibullCount_loglik},
+#'     a double, the log-likelihood of the count process.
 #' @rdname dWeibullCount
 #' @export
-dWeibullCount_loglik <- function(x, shape, scale, 
+dWeibullCount_loglik <- function(x, shape, scale,
                                  method = c("series_acc", "series_mat",
                                      "conv_direct", "conv_naive", "conv_dePril"),
                                  time = 1, na.rm = TRUE, conv_steps = 100,
@@ -89,77 +148,36 @@ dWeibullCount_loglik <- function(x, shape, scale,
                                  series_acc_eps = 1e-10, weights = NULL) {
     if (is.null(weights))
         weights <- rep(1, length(x))
-    
+
     method <- match.arg(method)
-    
-    ## -------------- rescale parameters if needed
-    if (length(x) != length(scale))
-        stop("length x should be the same as length scale !")
 
-    if (length(shape) == 1)
-        shape <- rep(shape, length(x))
-    else if (length(x) != length(shape))
-        stop("shape should be length 1 or same as length x !")
+   pbs <- dWeibullCount(x, shape, scale, method,
+                         time = time, log = TRUE, conv_steps = conv_steps,
+                         conv_extrap = conv_extrap, series_terms = series_terms,
+                         series_acc_niter = series_acc_niter,
+                         series_acc_eps = series_acc_eps)
 
-    .getDistPars <- function(ind)
-        list(scale = scale[ind], shape = shape[ind])
-    
-    distPars <- lapply(seq(along = x), .getDistPars)
-    dist <- "weibull"
-    
-    switch(method,
-           "conv_direct" = {
-               .computeOneProb <- function(ind)
-                   dCount_allProbs_scalar_bi(x[ind], distPars[[ind]],
-                                             dist, conv_steps, time,
-                                             conv_extrap, logFlag = TRUE)
-           },
-           "conv_naive" = {
-               .computeOneProb <- function(ind)
-                   dCount_naive_scalar_bi(x[ind], distPars[[ind]],
-                                          dist, conv_steps, time,
-                                          conv_extrap, logFlag = TRUE)
-
-           },
-           "conv_dePril" = {
-               .computeOneProb <- function(ind)
-                   dCount_dePril_scalar_bi(x[ind], distPars[[ind]],
-                                           dist, conv_steps, time,
-                                           conv_extrap, logFlag = TRUE)   
-           },
-           "series_mat" = {
-               .computeOneProb <- function(ind)
-                   dWeibullCount_mat(x[ind], shape[ind], scale[ind],
-                                     time, TRUE,
-                                     series_terms)
-           },
-           "series_acc" = {
-               .computeOneProb <- function(ind)
-                   dWeibullCount_acc(x[ind], shape[ind], scale[ind],
-                                     time, TRUE,
-                                     series_terms, series_acc_niter,
-                                     series_acc_eps)
-               
-           })
-
-     pbs <- sapply(seq(along = x), .computeOneProb) * weights
+    pbs <- pbs * weights
      if (na.rm)
          pbs[is.na(pbs)] <- .logNaReplace()
-     
+
      sum(pbs)
 }
 
 
-#' Weibull count expected value and variance
+#' % Weibull count expected value and variance
+#' % Expected value and variance of the weibull count process
 #'
-#' Expcted value and varinace of the weibull count process
+#' \code{evWeibullCount} computes the expected value and variance.
 #'
-#' @param xmax unsigned integer maximum count to be used.
+#' @param xmax unsigned integer, maximum count to be used.
 #' @inheritParams dWeibullCount
-#' @return double log-likelihood of the count process
+#' @return for \code{evWeibullCount}, a list with components:
+#'     \item{ExpectedValue}{expected value,}
+#'     \item{Variance}{variance.}
 #' @rdname dWeibullCount
 #' @export
-evWeibullCount <- function(xmax, shape, scale, 
+evWeibullCount <- function(xmax, shape, scale,
                            method = c("series_acc", "series_mat",
                                "conv_direct", "conv_naive", "conv_dePril"),
                            time = 1, conv_steps = 100,
@@ -173,7 +191,7 @@ evWeibullCount <- function(xmax, shape, scale,
     px <- dWeibullCount(x, shape, scale, method, time, FALSE,
                         conv_steps, conv_extrap, series_terms,
                         series_acc_niter, series_acc_eps)
-    
+
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2

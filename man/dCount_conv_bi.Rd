@@ -2,45 +2,68 @@
 % Please edit documentation in R/convCount_probs.R
 \name{dCount_conv_bi}
 \alias{dCount_conv_bi}
-\title{Compute count probabilities using convolution (bi)}
+\alias{dCount_conv_user}
+\title{Compute count probabilities using convolution}
 \usage{
 dCount_conv_bi(x, distPars, dist = c("weibull", "gamma", "gengamma", "burr"),
   method = c("dePril", "direct", "naive"), nsteps = 100, time = 1,
   extrap = TRUE, log = FALSE)
+
+dCount_conv_user(x, distPars, extrapolPars, survR, method = c("dePril",
+  "direct", "naive"), nsteps = 100, time = 1, extrap = TRUE,
+  log = FALSE)
 }
 \arguments{
 \item{x}{integer (vector), the desired count values.}
 
-\item{distPars}{\code{Rcpp::List} with distribution specific slots. See details.}
+\item{distPars}{\code{Rcpp::List} with distribution specific slots,
+see details.}
 
-\item{dist}{character name of the built-in distribution. See details}
+\item{dist}{character name of the built-in distribution, see details.}
 
-\item{method}{TODO}
+\item{method}{character string, the method to use, see Details.}
 
-\item{nsteps}{unsiged integer number of steps used to compute the integral.}
+\item{nsteps}{unsiged integer, number of steps used to compute the integral.}
 
-\item{time}{double time at wich to compute the probabilities. Set to 1 by
+\item{time}{double, time at wich to compute the probabilities. Set to 1 by
 default.}
 
-\item{extrap}{logical if \code{TRUE}, Richardson extrapolation will be
+\item{extrap}{logical, if \code{TRUE}, Richardson extrapolation will be
 applied to improve accuracy.}
 
-\item{log}{logical if \code{TRUE} the log-probability will be returned.}
+\item{log}{logical, if \code{TRUE} the log-probability will be returned.}
+
+\item{extrapolPars}{vector of length 2, the extrapolation values.}
+
+\item{survR}{function, user supplied survival function; should have signature
+\code{function(t, distPars)}, where \code{t} is a positive real number
+(the time where the survival function is evaluated) and \code{distPars}
+is a list of distribution parameters. It should return a double value.}
 }
 \value{
-vector of probabilities P(x(i)) for i = 1, ..., n where n is
-\code{length} of \code{x}.
+vector of probabilities \eqn{P(x(i),\ i = 1, ..., n)} where \eqn{n}
+    is the length of \code{x}.
 }
 \description{
-Compute count probabilities using one of several convolution methods for the
-distributions with builtin support in this package.
+Compute count probabilities using one of several convolution methods.
+\code{dCount_conv_bi} does the computations for the distributions with
+builtin support in this package.
+
+\code{dCount_conv_user} does the same using a user defined survival function.
 }
 \details{
+\code{dCount_conv_bi} computes count probabilities using one of several
+convolution methods for the distributions with builtin support in this
+package.
+
 The following convolution methods are implemented: "dePril", "direct", and
 "naive".
 
 The builtin distributions currently are Weibull, gamma, generalised gamma and
 Burr.
+
+% Compute count probabilities using one of the convolution methods for user %
+% defined survival functions.
 }
 \examples{
 x <- 0:10

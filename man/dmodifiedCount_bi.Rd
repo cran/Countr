@@ -2,10 +2,15 @@
 % Please edit documentation in R/RcppExports.R
 \name{dmodifiedCount_bi}
 \alias{dmodifiedCount_bi}
+\alias{dmodifiedCount_user}
 \title{Compute count probabilities based on modified renewal process (bi)}
 \usage{
 dmodifiedCount_bi(x, distPars, dist, distPars0, dist0, nsteps = 100L,
   time = 1, extrap = TRUE, cdfout = FALSE, logFlag = FALSE)
+
+dmodifiedCount_user(x, distPars, survR, distPars0, survR0, extrapolPars,
+  nsteps = 100L, time = 1, extrap = TRUE, cdfout = FALSE,
+  logFlag = FALSE)
 }
 \arguments{
 \item{x}{integer (vector), the desired count values.}
@@ -13,7 +18,7 @@ dmodifiedCount_bi(x, distPars, dist, distPars0, dist0, nsteps = 100L,
 \item{distPars0, distPars}{\code{Rcpp::List} with distribution specific slots
 for the first arrival and the rest of the process respectively.}
 
-\item{dist0, dist}{character name of the first and following survival
+\item{dist0, dist}{character, name of the first and following survival
 distributions.}
 
 \item{nsteps}{unsiged integer number of steps used to compute the integral.}
@@ -27,17 +32,33 @@ applied to improve accuracy.}
 \item{cdfout}{TODO}
 
 \item{logFlag}{logical if \code{TRUE} the log-probability will be returned.}
+
+\item{survR0, survR}{user supplied survival function; should have 
+signature \code{function(t, distPars)}, where \code{t} is a positive real
+number (the time at which the survival function is evaluated) and
+\code{distPars} is a list of distribution parameters. It should return a
+double value (first arrival and following arrivals respectively).}
+
+\item{extrapolPars}{list of same length as \code{x}, where each slot is a
+vector of length 2 (the extrapolation values to be used) corresponding to
+\code{x[i]}.}
 }
 \value{
 vector of probabilities P(x(i)) for i = 1, ..., n where n is
-\code{length} of \code{x}.
+    the length of \code{x}.
 }
 \description{
 Compute count probabilities based on modified renewal process using
 dePril algorithm.
+\code{dmodifiedCount_bi} does it for the builtin distributions.
+
+% Compute count probabilities based on modified renewal process using
+% dePril algorithm.
+\code{dmodifiedCount_user} does the same for a user specified distribution.
 }
 \details{
-The process is assumed to have a different distribution for the first
-arrival. The renewal assumption is conserved.
+For the modified renewal process the first arrival is allowed to have
+a different distribution from the  time between subsequent arrivals.
+The renewal assumption is kept.
 }
 

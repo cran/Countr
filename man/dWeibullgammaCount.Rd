@@ -3,6 +3,7 @@
 \name{dWeibullgammaCount_acc}
 \alias{dWeibullgammaCount}
 \alias{dWeibullgammaCount_acc}
+\alias{dWeibullgammaCount_loglik}
 \alias{evWeibullgammaCount}
 \title{Fast Univariate Weibull Count Probability with gamma heterogeneity}
 \usage{
@@ -12,6 +13,11 @@ dWeibullgammaCount_acc(x, shape, r, alpha, time = 1, logFlag = FALSE,
 dWeibullgammaCount(x, shape, shapeGam, scaleGam, Xcovar = NULL, beta = NULL,
   method = c("series_acc", "series_mat"), time = 1, log = FALSE,
   series_terms = 50, series_acc_niter = 300, series_acc_eps = 1e-10)
+
+dWeibullgammaCount_loglik(x, shape, shapeGam, scaleGam, Xcovar = NULL,
+  beta = NULL, method = c("series_acc", "series_mat"), time = 1,
+  na.rm = TRUE, series_terms = 50, series_acc_niter = 300,
+  series_acc_eps = 1e-10, weights = NULL)
 
 evWeibullgammaCount(xmax, shape, shapeGam, scaleGam, Xcovar = NULL,
   beta = NULL, method = c("series_acc", "series_mat"), time = 1,
@@ -43,11 +49,11 @@ the Euler-van Wijngaarden sum; default is 300 terms.}
 \item{shapeGam, scaleGam}{numeric shape and scale parameters of the gamma
 heterogeity function.}
 
-\item{Xcovar}{matrix the regressor values. Should have the same number
-of rows as \code{length(x)}. If NULL, no regression will be considered.}
+\item{Xcovar}{matrix the regressor values. Should have the same number of
+rows as \code{length(x)}. If NULL, no regression will be considered.}
 
-\item{beta}{numeric regression coefficients. If NULL, no regression
-will be considered.}
+\item{beta}{numeric regression coefficients. If NULL, no regression will be
+considered.}
 
 \item{method}{character one of the available methods. See details.}
 
@@ -55,13 +61,20 @@ will be considered.}
 
 \item{series_terms}{numeric number of terms in the series expansion.}
 
-\item{series_acc_niter}{numeric number of iteration in the
-Euler-van Wijngaarden algorithm.}
+\item{series_acc_niter}{numeric number of iteration in the Euler-van
+Wijngaarden algorithm.}
 
-\item{series_acc_eps}{numeric tolerance of convergence in the
-Euler-van Wijngaarden algorithm.}
+\item{series_acc_eps}{numeric tolerance of convergence in the Euler-van
+Wijngaarden algorithm.}
 
-\item{xmax}{unsigned integer maximum count to be used.}
+\item{na.rm}{logical, if TRUE, \code{NA}'s (produced by taking the log of
+very small probabilities) will be replaced by the smallest allowed
+probaility; default = \code{TRUE}.}
+
+\item{weights}{numeric, vector of weights to apply. If \code{NULL}, one will
+be applied.}
+
+\item{xmax}{unsigned integer, maximum count to be used.}
 
 \item{shape}{numeric (length 1), shape parameter of the Weibull count.}
 
@@ -70,26 +83,33 @@ Euler-van Wijngaarden algorithm.}
 \item{time}{double, length of the observation window (defaults to 1).}
 }
 \value{
-vector of probabilities \eqn{P(x(i)), i = 1, \dots n} where
-\code{n = length(x)}.
+for \code{dWeibullgammaCount}, a vector of probabilities
+    \eqn{P(x(i)), i = 1, \dots n} where \code{n = length(x)}.
 
-double log-likelihood of the count process
+for \code{dWeibullgammaCount_loglik}, double,
+    log-likelihood of the count process
+
+for \code{evWeibullgammaCount}, a list with components
+    \code{"ExpectedValue"} and \code{"Variance"}.
 }
 \description{
 Fast Univariate Weibull Count Probability with gamma heterogeneity
 
-wrapper to the univariate weibull-gamma count probability
+Probability computations for the univariate Weibull-gamma count processes. Several
+methods are provided.
+\code{dWeibullgammaCount} computes probabilities.
 
-Expcted value and varinace of the weibull-gamma count process
+\code{dWeibullgammaCount_loglik} computes the log-likelihood.
+
+\code{evWeibullgammaCount} computes the expected value and variance.
 }
 \details{
-User could choose between one of the following methods:
+The desired method can be specified by argument \code{method}, as follows:
 \describe{
-\item{series_mat}{series expansion using matrix techniques.}
-\item{series_acc}{Euler-van Wijngaarden accelerated series expansion}
+\item{\code{"series_mat"}}{series expansion using matrix techniques.}
+\item{\code{"series_acc"}}{Euler-van Wijngaarden accelerated series expansion.}
 }
-The value of the inputs can be left to their default value if user
-is not aware of the algorithm details.
+The arguments have sensible default values.
 }
 \keyword{internal}
 

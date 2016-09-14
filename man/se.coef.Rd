@@ -2,30 +2,46 @@
 % Please edit documentation in R/Renewal_methods.R
 \name{se.coef}
 \alias{se.coef}
+\alias{se.coef.renewal}
 \title{Extract Standard Errors of Model Coefficients}
 \usage{
 se.coef(object, parm, type, ...)
+
+\method{se.coef}{renewal}(object, parm, type = c("asymptotic", "boot"), ...)
 }
 \arguments{
 \item{object}{object returned by one of the count-modeling functions}
 
-\item{parm}{parameters name or index}
+\item{parm}{parameter's name or index}
 
-\item{type}{type of standard error. User can choose between asymtotic
-normal standard errors (\code{asymptotic}) or bootsrap (\code{boot}).}
+\item{type}{type of standard error: asymtotic normal standard errors
+(\code{"asymptotic"}) or bootsrap (\code{"boot"}).}
 
-\item{...}{TODO}
+\item{...}{further arguments for methods.}
 }
 \value{
 a named numeric vector
 }
 \description{
-These functions extract standard errors of model coefficients
-from objects returned by count-modeling functions.
+Extract standard errors of model coefficients from objects returned by
+count-modeling functions.
+
+% Extract Standard Errors of Model Coefficients
 }
 \details{
-When bootsrap standard error are required, the function cheks for the
-bootsrap sample in \code{object}. If it is not found, the bootsrap
-sample is created and a warning is sent.
+The method for class \code{"renewal"} extracts standard errors of model
+coefficients from objects returned by \code{renewal}.  When bootsrap standard
+error are requested, the function checks for the bootsrap sample in
+\code{object}. If it is not found, the bootsrap sample is created and a
+warning is issued. Users can choose between asymtotic normal standard errors
+(\code{asymptotic}) or bootsrap (\code{boot}).
+
+% param object object returned by \code{renewal}.
+% param parm parameters name or index
+% param type type of standard error. User can choose between asymtotic normal
+%    standard errors (\code{asymptotic}) or bootsrap (\code{boot}).
+}
+\examples{
+## see examples for renewal_methods
 }
 

@@ -1,5 +1,4 @@
 library("Countr")
-         # object <- readRDS("McShane_Wei_results_boot.RDS")
 fn <- system.file("extdata", "McShane_Wei_results_boot.RDS", package = "Countr")
 object <- readRDS(fn)
 data <- object$data

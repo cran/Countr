@@ -69,6 +69,33 @@ arma::vec dWeibullgammaCount_mat(arma::Col<unsigned> x, double shape,
   return(prob);
 }
 
+//' @keywords internal
+// [[Rcpp::export]]
+arma::vec dWeibullgammaCount_mat_vec(arma::Col<unsigned> x,
+				     arma::vec shape,
+				     double r, double alpha,
+				     double time = 1.0,
+				     bool logFlag = false,
+				     unsigned jmax = 100) {
+
+  unsigned lnt = x.n_elem;
+  arma::vec pbs(lnt, fill::zeros);
+  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbi;
+  
+  if (lnt != shape.n_elem)
+    stop("x and shape should have same length !");
+
+  for (unsigned i = 0; i < lnt; i++) {
+    xi[0] = x[i];
+    pbi = dWeibullgammaCount_mat(xi, shape[i], r, alpha,  time,
+				 logFlag, jmax);
+    pbs[i] = pbi[0];
+  }
+  
+  return(pbs);
+}
+
 //' Univariate Weibull Count Probability with gamma and
 //' covariate heterogeneity
 //'
@@ -84,7 +111,6 @@ arma::vec dWeibullgammaCount_mat_Covariates(arma::Col<unsigned> x, double cc,
 					    arma::mat Xcovar, arma::vec beta,
 					    double t = 1.0, bool logFlag = false,
 					    unsigned jmax = 100) {
-
   unsigned lnt = x.n_elem;
   arma::vec tVec(lnt, fill::zeros);
   tVec.fill(t);
@@ -122,6 +148,32 @@ arma::vec dWeibullgammaCount_mat_Covariates(arma::Col<unsigned> x, double cc,
   return(prob);
 }
 
+//' @keywords internal
+// [[Rcpp::export]]
+arma::vec dWeibullgammaCount_mat_Covariates_vec(arma::Col<unsigned> x,
+						arma::vec cc,
+						double r, double alpha,
+						arma::mat Xcovar, arma::vec beta,
+						double t = 1.0,
+						bool logFlag = false,
+						unsigned jmax = 100) {
+  unsigned lnt = x.n_elem;
+  arma::vec pbs(lnt, fill::zeros);
+  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbi;
+  
+  if (lnt != cc.n_elem)
+    stop("x and shape should have same length !");
+
+  for (unsigned i = 0; i < lnt; i++) {
+    xi[0] = x[i];
+    pbi = dWeibullgammaCount_mat_Covariates(xi, cc[i], r, alpha, Xcovar, beta,
+					    t, logFlag, jmax);
+    pbs[i] = pbi[0];
+  }
+  
+  return(pbs);
+}
 
 // =============================================================================
 // -------------------------- Weibull-Count Euler ------------------------------
@@ -302,6 +354,33 @@ arma::vec dWeibullgammaCount_acc(arma::Col<unsigned> x, double shape,
     return(vals);
 }
 
+//' @keywords internal
+// [[Rcpp::export]]
+arma::vec dWeibullgammaCount_acc_vec(arma::Col<unsigned> x, arma::vec shape,
+				     double r, double alpha, double time = 1.0,
+				     bool logFlag = false, unsigned jmax = 100,
+				     int nmax = 300, double eps = 1e-10,
+				     bool printa = false) {
+  unsigned lnt = x.n_elem;
+  arma::vec pbs(lnt, fill::zeros);
+  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbi;
+  
+  if (lnt != shape.n_elem)
+    stop("x and shape should have same length !");
+
+  for (unsigned i = 0; i < lnt; i++) {
+    xi[0] = x[i];
+    pbi = dWeibullgammaCount_acc(xi, shape[i], r, alpha,
+				 time, logFlag, jmax, nmax, eps, printa);
+    pbs[i] = pbi[0];
+  }
+  
+  return(pbs);
+}
+
+
+
 // Fast Univariate Weibull Count Probability with gamma and covariate
 // heterogeneity
 //
@@ -353,4 +432,33 @@ arma::vec dWeibullgammaCount_acc_Covariates(arma::Col<unsigned> x, double cc,
     return(log(vals));
   else
     return(vals);
+}
+
+//' @keywords internal
+// [[Rcpp::export]]
+arma::vec dWeibullgammaCount_acc_Covariates_vec(arma::Col<unsigned> x,
+						arma::vec cc,
+						double r, double alpha,
+						arma::mat Xcovar, arma::vec beta,
+						double t = 1.0,
+						bool logFlag = false,
+						unsigned jmax = 100,
+						int nmax = 300, double eps = 1e-10,
+						bool printa = false) {
+  unsigned lnt = x.n_elem;
+  arma::vec pbs(lnt, fill::zeros);
+  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbi;
+  
+  if (lnt != cc.n_elem)
+    stop("x and cc should have same length !");
+
+  for (unsigned i = 0; i < lnt; i++) {
+    xi[0] = x[i];
+    pbi = dWeibullgammaCount_acc_Covariates(xi, cc[i], r, alpha, Xcovar, beta,
+					    t, logFlag, jmax, nmax, eps, printa);
+    pbs[i] = pbi[0];
+  }
+  
+  return(pbs);
 }

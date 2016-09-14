@@ -7,12 +7,13 @@
 renewal.weiMethod(weiMethod)
 }
 \arguments{
-\item{weiMethod}{character weibull method desired.}
+\item{weiMethod}{character, desired  weibull method.}
 }
 \value{
 a valid weibull computation method.
 }
 \description{
-Check weibull computation algorithm
+Check weibull computation algorithm.
 }
+\keyword{internal}
 

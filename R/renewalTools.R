@@ -1,34 +1,38 @@
 .distDescr <- list(
-    ##        "custom" = {
-    ##            customPars <- list(...)[[1]]
-    ##            parNames <- customPars[["parNames"]]
-    ##            linkDefaultNames <- rep("identity", length(parNames))
-    ##            names(linkDefaultNames) <- parNames
-    ##        },
     "weibull" = list(
         parNames         = c("scale", "shape"),
         linkDefaultNames = c(scale = "log", shape = "log")
-    ),
+        ),
+    
+    "weibullgam"  = list(
+        parNames = c("scale", "shape", "shapeGam", "scaleGam"),
+        linkDefaultNames = c(scale = "log", shape = "log",
+            shapeGam = "identity", scaleGam = "identity")
+        ),
 
     "gamma" = list(
         parNames         = c("rate", "shape"),
         linkDefaultNames = c(rate = "log", shape = "log")
-    ),
-
+        ),
+    
     "gengamma" = list(
         parNames         = c("mu", "sigma", "Q"),
         linkDefaultNames = c(mu = "identity", sigma = "log", Q = "identity")
-    ),
-
+        ),
+    
     "burr" = list(
         parNames         = c("scale", "shape1", "shape2"),
         linkDefaultNames = c(scale = "log", shape1 = "log", shape2 = "log")
+        )
     )
-)
 
-
-
-.getParNames <- function(dist, ...) {
+#' return the name of the distribution parameters 
+#'
+#' @param dist character name of the distribution
+#' @param ... parameters to pass when dist == "custom"
+#' @return character vector with the name of the distribution parameters
+#' @export
+getParNames <- function(dist, ...) {
     switch(dist,
            "custom" = {
                customPars <- list(...)[[1]]
@@ -59,14 +63,13 @@
     "probit"   = function(x) probit(x, inverse = TRUE),
     "logit"    = function(x) logit(x, inverse = TRUE),
     "identity" = function(x) x
-)
-## set attribute "functionName" for the functions in .inverseLinks
-##  (note the non-local assignment)
-lapply(names(.inverseLinks),
-       function(link) attr(.inverseLinks[[link]], "functionName") <<- link
-       )
+    )
 
 ## compute the link function inverse.
+#' @importFrom VGAM cauchit
+#' @importFrom VGAM cloglog
+#' @importFrom VGAM probit
+#' @importFrom VGAM logit
 .computeInverseLink <- function(link = c("log", "cauchit", "cloglog",
                                     "probit", "logit", "identity")) {
     link <- match.arg(link)
@@ -82,6 +85,13 @@ lapply(names(.inverseLinks),
     obj
 }
 
+
+## set attribute "functionName" for the functions in .inverseLinks
+##  (note the non-local assignment)
+lapply(names(.inverseLinks),
+       function(link) attr(.inverseLinks[[link]], "functionName") <<- link
+       )
+
 ## TODO: remove after testing and replace the calls to  .computeInverseLink() accordingly.
 stopifnot(all(sapply(names(.inverseLinks),
     function(link)
@@ -90,9 +100,6 @@ stopifnot(all(sapply(names(.inverseLinks),
         identical(attr(.inverseLinks[[link]], "functionName"),
                   attr(.computeInverseLink(link), "functionName"))
     )))
-
-
-
 
 ## create a string with link function information
 .summarizeLinkInformation <- function(linkObj) {
@@ -103,27 +110,27 @@ stopifnot(all(sapply(names(.inverseLinks),
     paste0(res, collapse = ", ")
 }
 
-
-
 #' Creates the renewal control list
 #'
-#' Creates the renewal control list used by \code{renewal}
+#' Creates the renewal control list used by \code{renewal}.
 #'
-#' The function usues user passed inputs, checks them and return an
-#' appropriate lists that is used inside \code{renewal} by the optimization
-#' rourine \code{optimx} among others
-#' @param method character one of the optimization method accepted by
-#' \code{optimx}
-#' @param maxit numeric the maximum number of iterations in the
-#' optimization routine.
-#' @param trace Non-negative integer. Should tracing information by
-#' printed to the screen.
+#' The function takes the user passed inputs, checks them (todo: actually, it
+#' doesn't!) and returns an appropriate list that is used inside \code{renewal}
+#' by the optimization routine, such as \code{optimx} among others.
+#'
+#' @param method character, one of the optimization methods accepted by
+#'     \code{optimx}.
+#' @param maxit numeric, the maximum number of iterations in the optimization
+#'     routine.
+#' @param trace Non-negative integer. Should tracing information be printed to
+#'     the screen.
 #' @param start (named) numeric, vector of starting values.
-#' @param kkt locical should the Kuhn, Karush, Tucker optimality
-#' conditions be tested ? default to \code{FALSE} to avoid numerical
-#' hessian computation.
+#' @param kkt locical should the Kuhn, Karush, Tucker optimality conditions be
+#'     tested? Default is \code{FALSE} to avoid numerical hessian computation.
 #' @param ... TODO
+#'    
 #' @return a list with the control parameters used by \code{renewal}
+#' @keywords internal
 #' @export
 renewal.control <- function(method = "nlminb", maxit = 1000, trace = 1,
                             start = NULL, kkt = FALSE, ...) {
@@ -138,13 +145,15 @@ renewal.control <- function(method = "nlminb", maxit = 1000, trace = 1,
 
 #' Creates the convolution inputs setting
 #'
-#' Check and creates the convolution inputs list
+#' Checks and creates the convolution inputs list.
 #'
-#' @param convPars  a list of convolution parameters arguments with slots
-#' \code{nsteps}, \code{extrap} and \code{convMethod}.
-#' See \code{dCount_conv_bi}. If NULL, default parameters will be applied.
+#' @param convPars a list of convolution parameters arguments with slots
+#'     \code{nsteps}, \code{extrap} and \code{convMethod}, see
+#'     \code{dCount_conv_bi}. If NULL, default parameters will be applied.
 #' @param dist TODO
+#' 
 #' @return list convolution inputs.
+#' @keywords internal
 #' @export
 renewal.convPars <- function(convPars, dist) {
     extrap <- ifelse(!is.null(convPars$extrap), convPars$extrap,
@@ -191,16 +200,18 @@ renewal.convPars <- function(convPars, dist) {
 
 #' Creates the series expansion inputs setting
 #'
-#' Check and creates the series expansion inputs list
+#' Check and creates the series expansion inputs list.
 #'
 #' @param seriesPars list series expansion input parameters with slots
-#' \code{terms} (number of terms in the series expansion),
-#' \code{iter} (number of iteration in the accelerated series expansion
-#' algorithm) and \code{eps} (tolerance in the accelerated series expansion
-#' algorithm), Only used if \code{dist = "weibull"} and
-#' \code{weiMethod = c("series_mat", "series_acc")}.
+#'     \code{terms} (number of terms in the series expansion), \code{iter}
+#'     (number of iteration in the accelerated series expansion algorithm) and
+#'     \code{eps} (tolerance in the accelerated series expansion algorithm),
+#'     Only used if \code{dist = "weibull"} and \code{weiMethod =
+#'     c("series_mat", "series_acc")}.
 #' @param long TODO
+#' 
 #' @return list series expansion inputs.
+#' @keywords internal
 #' @export
 renewal.seriesPars <- function(seriesPars, long = FALSE) {
     terms <- ifelse(!is.null(seriesPars$terms), seriesPars$terms,
@@ -213,10 +224,11 @@ renewal.seriesPars <- function(seriesPars, long = FALSE) {
 
 #' Check weibull computation algorithm
 #'
-#' Check weibull computation algorithm
+#' Check weibull computation algorithm.
 #'
-#' @param weiMethod character weibull method desired.
+#' @param weiMethod character, desired  weibull method.
 #' @return a valid weibull computation method.
+#' @keywords internal
 #' @export
 renewal.weiMethod <- function(weiMethod) {
     if (is.null(weiMethod))
@@ -229,27 +241,6 @@ renewal.weiMethod <- function(weiMethod) {
     }
 
     weiMethod
-}
-
-
-## compute the link function inverse.
-#' @importFrom VGAM cauchit
-#' @importFrom VGAM cloglog
-#' @importFrom VGAM probit
-#' @importFrom VGAM logit
-.computeInverseLink <- function(link = c("log", "cauchit", "cloglog",
-                                    "probit", "logit", "identity")) {
-    link <- match.arg(link)
-    obj <- switch(link,
-                  "log" = {function(x) exp(x)},
-                  "cauchit" = {function(x) cauchit(x, inverse = TRUE)},
-                  "cloglog" = {function(x) cloglog(x, inverse = TRUE)},
-                  "probit" = {function(x) probit(x, inverse = TRUE)},
-                  "logit" = {function(x) logit(x, inverse = TRUE)},
-                  "identity" = {function(x) x}
-                  )
-    attr(obj, "functionName") <- link
-    obj
 }
 
 ## create a string with link function information
@@ -283,7 +274,6 @@ renewal.weiMethod <- function(weiMethod) {
     }
     se
 }
-
 
 .getDistParNames <- function(dist = c("weibull", "weibullgam",
                                  "gamma", "gengamma", "burr")) {
@@ -398,243 +388,12 @@ renewal.weiMethod <- function(weiMethod) {
     modelMatRes
 }
 
-## check initial values
-.checkInitialValues <- function(dist, start, modelMatrixList, weights, Y,
-                                anc, ...) {
-    switch(dist,
-           "weibullgam" ={
-               X <- modelMatrixList[["scale"]]
-               nm <- c(paste0("scale_", colnames(X)),
-                       "shape_", "shapeGam_", "scaleGam_")
-
-               valid <- FALSE
-               if (!is.null(start)) {
-                   if(all(names(start) == nm))
-                       valid <- TRUE
-                   else if (length(start) == length(nm) &
-                            all(!is.na(start))) {
-                       warning(paste("unamed initial values found !",
-                                     "They will be used as they are")
-                               )
-                       names(start) <- nm
-                       valid <- TRUE
-                   }
-               }
-
-               if (!valid) {
-                   IV <- glm.fit(X, Y, family = poisson(), weights = weights)
-                   ## change parametrization in terms of 1/r and 1/alpha (the gamma pars)
-                   start <- c(IV$coefficients, 1, 0.061, 0.061 * 3)
-                   names(start) <- nm
-               }
-
-           },
-           "weibull" = {
-               X <- modelMatrixList[["scale"]]
-               nm <- paste0("scale_", colnames(X))
-               if ("shape" %in% names(modelMatrixList))
-                   nm <- c(nm, paste0("shape_",
-                                      colnames(modelMatrixList[["shape"]])
-                                      )
-                           )
-               else
-                   nm <- c(nm, "shape_")
-
-               valid <- FALSE
-               if (!is.null(start)) {
-                   if(all(names(start) == nm))
-                       valid <- TRUE
-                   else if (length(start) == length(nm) &
-                            all(!is.na(start))) {
-                       warning(paste("unamed initial values found !",
-                                     "They will be used as they are")
-                               )
-                       names(start) <- nm
-                       valid <- TRUE
-                   }
-               }
-
-               if (!valid) {
-                   if (!"shape" %in% names(modelMatrixList)) {
-                       IV <- glm.fit(X, Y, family = poisson(), weights = weights)
-                       start <- c(IV$coefficients, 1)
-                       names(start) <- nm
-                   } else
-                       stop(paste("initial values should be provided in control",
-                                  "when regression on ancillary parameters !"))
-               }
-           },
-           "gamma" = {
-               X <- modelMatrixList[["rate"]]
-               nm <- paste0("rate_", colnames(X))
-               if ("shape" %in% names(modelMatrixList))
-                   nm <- c(nm, paste0("shape_",
-                                      colnames(modelMatrixList[["shape"]])
-                                      )
-                           )
-               else
-                   nm <- c(nm, "shape_")
-
-               valid <- FALSE
-               if (!is.null(start)) {
-                   if(all(names(start) == nm))
-                       valid <- TRUE
-                   else if (length(start) == length(nm) &
-                            all(!is.na(start))) {
-                       warning(paste("unamed initial values found !",
-                                     "They will be used as they are")
-                               )
-                       names(start) <- nm
-                       valid <- TRUE
-                   }
-               }
-
-               if (!valid) {
-                   if (!"shape" %in% names(modelMatrixList)) {
-                       IV <- glm.fit(X, Y, family = poisson(), weights = weights)
-                       start <- c(IV$coefficients, 1)
-                       names(start) <- nm
-                   } else
-                       stop(paste("initial values should be provided in control",
-                                  "when regression on ancillary parameters !"))
-               }
-           },
-           "gengamma" = {
-               X <- modelMatrixList[["mu"]]
-               nm <- paste0("mu_", colnames(X))
-
-               if ("sigma" %in% names(modelMatrixList))
-                   nm <- c(nm, paste0("sigma_",
-                                      colnames(modelMatrixList[["sigma"]])))
-               else
-                   nm <- c(nm, "sigma_")
-
-               if ("Q" %in% names(modelMatrixList))
-                   nm <- c(nm, paste0("Q_",
-                                      colnames(modelMatrixList[["Q"]])))
-               else
-                   nm <- c(nm, "Q_")
-
-               valid <- FALSE
-               if (!is.null(start)) {
-                   if (all(names(start) == nm))
-                       valid <- TRUE
-                   else if (length(start) == length(nm) &
-                            all(!is.na(start))) {
-                       warning(paste("unamed initial values found !",
-                                     "They will be used as they are")
-                               )
-                       names(start) <- nm
-                       valid <- TRUE
-                   }
-               }
-
-               if (!valid) {
-                   if (!any(c("sigma" %in%  names(modelMatrixList),
-                              "Q" %in%  names(modelMatrixList))
-                            )
-                       ) {
-                       IV <- glm.fit(X, Y, family = poisson(), weights = weights)
-                       start <- c(IV$coefficients, 1, 1)
-                       names(start) <- nm
-                   } else
-                       stop(paste("initial values should be provided in control",
-                                  "when regression on ancillary parameters !"))
-               }
-           },
-           "custom" = {
-               customPars <- list(...)[[1]]
-               parNames <- customPars[["parNames"]]
-
-               location <- parNames[1]
-               X <- modelMatrixList[[location]]
-               nm <- paste0(location, "_", colnames(X))
-
-                if (length(parNames) > 1) {
-                   for (i in 2:length(parNames)) {
-                       pari <- parNames[i]
-                       if (pari %in% names(anc)) {
-                           nm <- c(nm, paste0(pari, "_",
-                                              colnames(modelMatrixList[[pari]])
-                                              )
-                                   )
-                       } else
-                           nm <- c(nm, paste0(pari, "_"))
-                   }
-               }
-
-               valid <- FALSE
-               if (!is.null(start)) {
-                   if (all(names(start) == nm))
-                       valid <- TRUE
-                   else if (length(start) == length(nm) &
-                            all(!is.na(start))) {
-                       warning(paste("unamed initial values found !",
-                                     "They will be used as they are")
-                               )
-                       names(start) <- nm
-                       valid <- TRUE
-                   }
-               }
-
-               if (!valid)
-                   stop(paste("initial values should be provided in control",
-                              "when custom survival functions are passed !"))
-           },
-           "burr" = {
-               X <- modelMatrixList[["scale"]]
-               nm <- paste0("scale_", colnames(X))
-
-               if ("shape1" %in% names(modelMatrixList))
-                   nm <- c(nm, paste0("shape1_",
-                                      colnames(modelMatrixList[["shape1"]])))
-               else
-                   nm <- c(nm, "shape1_")
-
-               if ("shape2" %in% names(modelMatrixList))
-                   nm <- c(nm, paste0("shape2_",
-                                      colnames(modelMatrixList[["shape2"]])))
-               else
-                   nm <- c(nm, "shape2_")
-
-               valid <- FALSE
-               if (!is.null(start)) {
-                   if (all(names(start) == nm))
-                       valid <- TRUE
-                   else if (length(start) == length(nm) &
-                            all(!is.na(start))) {
-                       warning(paste("unamed initial values found !",
-                                     "They will be used as they are")
-                               )
-                       names(start) <- nm
-                       valid <- TRUE
-                   }
-               }
-
-               if (!valid) {
-                   if (!any(c("shape1" %in%  names(modelMatrixList),
-                              "shape2" %in%  names(modelMatrixList))
-                            )
-                       ) {
-                       IV <- glm.fit(X, Y, family = poisson(), weights = weights)
-                       start <- c(IV$coefficients, 1, 3)
-                       names(start) <- nm
-                   } else
-                       stop(paste("initial values should be provided in control",
-                                  "when regression on ancillary parameters !"))
-               }
-           }
-           )
-    start
-}
-
 ## return the loglikelihood (if Ev = FALSE) or the expected value of the
 ## count if Ev = TRUE
 .objectiveFunction <- function(params, dist, modelMatrixList, linkList,
                                time, convPars, Y = NULL, weights = NULL,
                                Ev = FALSE, summa = TRUE,
-                               seriesPars = NULL, weiMethod = NULL,
-                               ...) {
+                               seriesPars = NULL, weiMethod = NULL, ...) {
 
     ## check if Y is provided when Ev = TRUE
     if (!Ev) {
@@ -728,7 +487,7 @@ renewal.weiMethod <- function(weiMethod) {
                } else
                    .fctExtrap <- function(i) c(2, 2) ## not used
 
-               extrapPrasList <- lapply(seky, .fctExtrap)
+               extrapParsList <- lapply(seky, .fctExtrap)
 
                if (Ev) { ## expected value and variance
                    .evfct <- function(i)
@@ -740,7 +499,9 @@ renewal.weiMethod <- function(weiMethod) {
                                          time = time,
                                          extrap = convPars$extrap)
 
-                   return(lapply(seky, .evfct))
+                   out <- lapply(seky, .evfct)
+                   attr(out, "distPars") <- distParValues
+                   return(out)
 
                } else { ## loglikelihood or probability value
                    if (summa)
@@ -748,7 +509,7 @@ renewal.weiMethod <- function(weiMethod) {
                                                       survR = survFct,
                                                       distPars = distPars,
                                                       extrapolPars =
-                                                      extrapPrasList,
+                                                      extrapParsList,
                                                       nsteps = convPars$nsteps,
                                                       extrap = convPars$extrap,
                                                       method =
@@ -757,18 +518,16 @@ renewal.weiMethod <- function(weiMethod) {
                                                       weights = weights)
                               )
                    else {
-                       .vectoGetProbs <- function(i) {
-                           dCount_conv_user(x = Y[i], survR = survFct,
-                                            distPars = distPars[[i]],
-                                            extrapolPars = .fctExtrap(i),
+                       return(
+                           dCount_conv_user(x = Y, survR = survFct,
+                                            distPars = distPars,
+                                            extrapolPars = extrapParsList,
                                             nsteps = convPars$nsteps,
                                             extrap = convPars$extrap,
                                             method = convPars$convMethod,
                                             time = time)
-                           }
-
-                       return(as.numeric(sapply(seky, .vectoGetProbs)))
-                   }
+                           )
+                  }
                }
            },
            "weibull" = { ## we do weibull separately on purpose
@@ -822,8 +581,13 @@ renewal.weiMethod <- function(weiMethod) {
                                       series_acc_eps = seriesPars$eps
                                       )
 
-                   return(lapply(1:nrow(X), .fct))
-
+                   out <- lapply(1:nrow(X), .fct)
+                   ## distParValues values
+                   distParValues <- list()
+                   distParValues$scale <- scale
+                   distParValues$shape <- shape
+                   attr(out, "distPars") <- distParValues
+                   return(out)
                } else {
                    if (summa) {
                        return(
@@ -838,19 +602,15 @@ renewal.weiMethod <- function(weiMethod) {
                                series_acc_eps = seriesPars$eps)
                               )
                    } else
-                       .vectoGetProbs <- function(i) {
+                       return(
                            dWeibullCount(
-                               x = Y[i], shape = shape[i], scale = scale[i],
+                               x = Y, shape = shape, scale = scale,
                                conv_steps = convPars$nsteps,
                                conv_extrap = convPars$extrap,
                                method = weiMethod, time = time,
                                series_terms = seriesPars$terms,
                                series_acc_niter = seriesPars$iter,
-                               series_acc_eps = seriesPars$eps)
-                       }
-
-                   return(as.numeric(sapply(seq(along = Y),
-                                            .vectoGetProbs))
+                               series_acc_eps = seriesPars$eps)                       
                           )
                }
            },
@@ -886,7 +646,15 @@ renewal.weiMethod <- function(weiMethod) {
                                            series_acc_eps = seriesPars$eps
                                       )
                    }
-                   return(lapply(1:nrow(X), .fct))
+                   out <- lapply(1:nrow(X), .fct)
+                   ## distParValues values
+                   distParValues <- list()
+                   distParValues$scale <- scale
+                   distParValues$shape <- shape
+                   distParValues$scaleGam <- scale
+                   distParValues$shapeGam <- shape
+                   attr(out, "distPars") <- distParValues
+                   return(out)
 
                } else {
                    if (summa) {
@@ -986,7 +754,9 @@ renewal.weiMethod <- function(weiMethod) {
                                        time = time,
                                        extrap = convPars$extrap)
 
-                   return(lapply(seky, .evfct))
+                   out <- lapply(seky, .evfct)
+                   attr(out, "distPars") <- distParValues
+                   return(out)
 
                } else { ## loglikelihood or probability value
                    if (summa)
@@ -1001,17 +771,15 @@ renewal.weiMethod <- function(weiMethod) {
                                                     weights = weights)
                               )
                    else {
-                       .vectoGetProbs <- function(i) {
-                           dCount_conv_bi(x = Y[i],
-                                          distPars = distPars[[i]],
+                       return(
+                           dCount_conv_bi(x = Y,
+                                          distPars = distPars,
                                           dist = dist,
                                           nsteps = convPars$nsteps,
                                           extrap = convPars$extrap,
                                           method = convPars$convMethod,
                                           time = time)
-                           }
-
-                       return(as.numeric(sapply(seky, .vectoGetProbs,)))
+                           )
                    }
                }
            })

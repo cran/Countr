@@ -1,13 +1,17 @@
-#' renewal count expected value and variance (bi)
+#' Expected value and variance of renewal count process
 #'
-#' Expcted value and varinace of the renewal count process computed numerically
+#' Compute numerically expected values and variances of renewal count processes.
 #'
+#' \code{evCount_conv_bi} computes the expected value and variance of renewal
+#' count processes for the builtin distirbutions of inter-arrival times.
+#' 
 #' @param xmax unsigned integer maximum count to be used.
 #' @param dist TODO
 #' @param method TODO
 #' @param distPars TODO
 #' @inheritParams dCount_conv_bi
-#' @return List named vector with ExpectedValue and Variance
+#' @return
+#'     a named list with components \code{"ExpectedValue"} and \code{"Variance"}.
 #' @examples
 #' pwei_user <- function(tt, distP) {
 #'     alpha <- exp(-log(distP[["scale"]]) / distP[["shape"]])
@@ -66,19 +70,21 @@ evCount_conv_bi <- function(xmax, distPars,
     list(ExpectedValue = ev, Variance = var)
 }
 
-#' renewal count expected value and variance (user)
+#' % renewal count expected value and variance (user)
 #'
-#' Expcted value and varinace of the renewal count process computed numerically
+#' % Expected value and variance of the renewal count process computed numerically
 #'
+#' \code{evCount_conv_user} computes the expected value and variance for a user
+#' specified distirbution of the inter-arrival times.
+#' 
 #' @param extrapolPars ma::vec of length 2. The extrapolation values.
-#' @param survR Rcpp::Function user passed survival function; should have the
-#' signature \code{function(t, distPars)} where \code{t} is a real number (>0)
-#' where the survival function is evaluated and \code{distPars} is a list of
-#' distribution parameters. It should return a double value.
+#' @param survR function, user supplied survival function; should have signature
+#'     \code{function(t, distPars)}, where \code{t} is a positive real number
+#'     (the time where the survival function is evaluated) and \code{distPars}
+#'     is a list of distribution parameters. It should return a double value.
 #' @inheritParams evCount_conv_bi
-#' @return List named vector with ExpectedValue and Variance
-#' @examples
-#' ## see evCount_conv_bi
+#' @return % List named vector with ExpectedValue and Variance
+#' @rdname evCount_conv_bi
 #' @export
 evCount_conv_user <- function(xmax, distPars, extrapolPars, survR,
                               method = c( "dePril", "direct", "naive"),

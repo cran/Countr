@@ -18,9 +18,9 @@ dCount_conv_loglik_user(x, distPars, extrapolPars, survR, method = c("dePril",
 
 \item{distPars}{list of the same length as x with each slot being itself a
 named list containing the distribution parameters corresponding to
-\code{x[i]}}
+\code{x[i]}.}
 
-\item{dist}{character name of the built-in distribution. See details}
+\item{dist}{character name of the built-in distribution, see details.}
 
 \item{method}{character, convolution method to be used; choices are
 \code{"dePril"} (section 3.2), \code{"direct"} (section 2) or
@@ -34,11 +34,11 @@ default.}
 \item{extrap}{logical if \code{TRUE}, Richardson extrapolation will be
 applied to improve accuracy.}
 
-\item{na.rm}{logical, if TRUE, the \code{NA}s (produced by taking the log of
+\item{na.rm}{logical, if TRUE, \code{NA}s (produced by taking the log of
 very small probabilities) will be replaced by the smallest allowed
 probability; default is \code{TRUE}.}
 
-\item{weights}{numeric vector of weights to apply. If \code{NULL}, a vector
+\item{weights}{numeric, vector of weights to apply. If \code{NULL}, a vector
 of ones.}
 
 \item{extrapolPars}{list of same length as x where each slot is a vector of

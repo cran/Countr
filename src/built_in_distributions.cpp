@@ -99,15 +99,14 @@ double sgengamma(double t, const Rcpp::List distPars) {
   double sigma = as <double> (distPars["sigma"]);
   double Q = as <double> (distPars["Q"]);
 
-  double res = (log(t) - mu) / sigma;
+  double res = (log(t) + mu) / sigma; // modified to match glm-Poisson
   double Q2 = pow(Q, 2);
-  double invQ2 = 1 / Q2;
+  double invQ2 = 1.0 / Q2;
   double tempGam, out;
 
   if (Q == 0.0) {
     out = 1 - R::pnorm(res, 0, 1, true, false);
-  }
-  else {
+  } else {
     tempGam = R::pgamma(exp(Q * res) * invQ2, invQ2, 1, true, false);
     if (Q > 0) {
       out = 1 - tempGam;
@@ -118,25 +117,31 @@ double sgengamma(double t, const Rcpp::List distPars) {
   return out ;
 }
 
-//' wrapper to built in survival functions
+//' Wrapper to built in survival functions
 //'
-//' wrapper to built in survival functions
+//' Wrapper to built in survival functions
 //'
 //' The function wraps all builtin-survival distributions. User can choose
 //' between the \code{weibull}, \code{gamma}, \code{gengamma}(generalized gamma)
-//' and \code{burr} (Burr type X|| distribution). It is the user responsability
+//' and \code{burr} (Burr type XII distribution). It is the user responsibility
 //' to pass the appropriate list of parameters as follows:
 //' \describe{
-//' \item{weibull}{\code{scale} (the scale) and \code{shape} (the shape) parameters.}
-//' \item{burr}{\code{scale} (the scale) and \code{shape1} (the shape1) and \code{shape2} (the shape2)parameters.}
-//' \item{gamma}{ \code{scale} (the scale) and \code{shape} (the shape) parameter.}
-//' \item{gengamma}{\code{mu} (location), \code{sigma} (scale) and \code{Q} (shape) parameters.}
+//' \item{weibull}{\code{scale} (the scale) and \code{shape} (the shape)
+//'     parameters.}
+//' \item{burr}{\code{scale} (the scale) and \code{shape1} (the shape1) and
+//'     \code{shape2} (the shape2) parameters.} 
+//' \item{gamma}{ \code{scale} (the scale) and \code{shape} (the shape)
+//'     parameter.}
+//' \item{gengamma}{\code{mu} (location), \code{sigma} (scale) and \code{Q}
+//'     (shape) parameters.}
 //' }
-//' @param t double time point where the survival is to be evaluated at.
-//' @param distPars \code{Rcpp::List} with distribution specific slots. See details.
-//' @param dist character name of the built-in distribution. See details
+//' @param t double, time point where the survival is to be evaluated at.
+//' @param distPars \code{Rcpp::List} with distribution specific slots,
+//'     see details.
+//' @param dist character name of the built-in distribution, see details.
 //' @return a double giving the value of the survival function at time point
-//' \code{t} at the parameters value.
+//' \code{t} at the parameters' values.
+//'
 //' @examples
 //' tt <- 2.5
 //' ## weibull
@@ -160,6 +165,7 @@ double sgengamma(double t, const Rcpp::List distPars) {
 //'                     Q = distP[["Q"]],
 //'                     lower.tail = FALSE)
 //' surv(tt, distP, "gengamma")  ## (almost) same
+//'
 //' @export
 // [[Rcpp::export]]
 double surv (double t, const Rcpp::List distPars, const std::string dist) {
@@ -199,4 +205,3 @@ arma::vec getextrapolPars(const Rcpp::List distPars, const std::string dist) {
 
   return(res);
 }
-

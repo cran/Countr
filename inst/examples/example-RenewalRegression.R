@@ -1,6 +1,5 @@
 test_that("test renewal -- McShane results", {
     print("~~~~~~ renewal regression-- McShane results ~~~~~~~~")
-                # res <- readRDS("McShane_paperResults.RDS")
     fn <- system.file("extdata", "McShane_paperResults.RDS", package = "Countr")
     res <- readRDS(fn)
 
@@ -20,7 +19,6 @@ test_that("test renewal -- McShane results", {
 
 test_that("test renewal -- McShane data --- prediction", {
     print("~~~~~~ renewal prediction-- McShane results ~~~~~~~~")
-                # res <- readRDS("McShane_paperResults.RDS")
     fn <- system.file("extdata", "McShane_paperResults.RDS", package = "Countr")
     res <- readRDS(fn)
 
@@ -37,7 +35,6 @@ test_that("test renewal -- McShane data --- prediction", {
     predOld.response <- predict(object, type = "response", se.fit = TRUE)
     predOld.prob <- predict(object, type = "prob", se.fit = TRUE)
 
-    ## newData (extracted from old Data)
     newData <- head(data)
     predNew.response <- predict(object, newdata = newData,
                                 type = "response", se.fit = TRUE)

@@ -7,15 +7,15 @@
 #'
 #' @param distPars list of the same length as x with each slot being itself a
 #'     named list containing the distribution parameters corresponding to
-#'     \code{x[i]}
+#'     \code{x[i]}.
 #' @param method character, convolution method to be used; choices are
 #'     \code{"dePril"} (section 3.2), \code{"direct"} (section 2) or
 #'     \code{"naive"} (section 3.1).
 #' @inheritParams dCount_allProbs_bi
-#' @param na.rm logical, if TRUE, the \code{NA}s (produced by taking the log of
+#' @param na.rm logical, if TRUE, \code{NA}s (produced by taking the log of
 #'     very small probabilities) will be replaced by the smallest allowed
 #'     probability; default is \code{TRUE}.
-#' @param weights numeric vector of weights to apply. If \code{NULL}, a vector
+#' @param weights numeric, vector of weights to apply. If \code{NULL}, a vector
 #'     of ones.
 #' @return numeric, the log-likelihood of the count process
 #' @examples
@@ -64,43 +64,10 @@ dCount_conv_loglik_bi <- function(x, distPars,
     if (is.null(weights))
         weights <- rep(1, length(x))
 
-    ## case length(x) == 1 treated separatly
-    if (length(x) == 1) {
-        ## distPars
-        if ((length(distPars) > 1) | !is.null(names(distPars))) {
-            temp <- list()
-            temp[[1]] <- distPars
-            distPars <- temp
-        }
-    }
+  pbs <- dCount_conv_bi(x, distPars, dist, method, nsteps = nsteps,
+                          time = time, extrap = extrap, log = TRUE)
 
-    ## check inputs length
-    if (length(x) != length(distPars))
-        stop("length x should be the same as length distPars !")
-
-    switch(method,
-           "direct" = {
-               .computeOneProb <- function(ind)
-                   dCount_allProbs_scalar_bi(x[ind], distPars[[ind]],
-                                             dist, nsteps, time,
-                                             extrap, logFlag = TRUE)
-           },
-           "naive" = {
-               .computeOneProb <- function(ind)
-                   dCount_naive_scalar_bi(x[ind], distPars[[ind]],
-                                          dist, nsteps, time,
-                                          extrap, logFlag = TRUE)
-
-           },
-           "dePril" = {
-               .computeOneProb <- function(ind)
-                   dCount_dePril_scalar_bi(x[ind], distPars[[ind]],
-                                           dist, nsteps, time,
-                                           extrap, logFlag = TRUE)
-           }
-           )
-
-    pbs <- sapply(seq(along = x), .computeOneProb) * weights
+    pbs <- pbs * weights
     if (na.rm)
         pbs[is.na(pbs)] <- .logNaReplace()
 
@@ -119,62 +86,30 @@ dCount_conv_loglik_bi <- function(x, distPars,
 #'     distribution parameters. It should return a double value.
 #' @inheritParams dCount_conv_loglik_bi
 ## @return double, the log-likelihood of the count process
-#' @rdname dCount_conv_loglik_bi
 #' @examples
 #' ## see dCount_conv_loglik_bi()
+#' @rdname dCount_conv_loglik_bi
 #' @export
 dCount_conv_loglik_user <- function(x, distPars, extrapolPars, survR,
                                     method = c( "dePril", "direct", "naive"),
                                     nsteps = 100, time = 1.0, extrap = TRUE,
                                     na.rm = TRUE, weights = NULL) {
-     if (is.null(weights))
-         weights <- rep(1, length(x))
+    if (is.null(weights))
+        weights <- rep(1, length(x))
 
-    ## case length(x) == 1 treated separatly
-    if (length(x) == 1) {
-        ## distPars
-        if ((length(distPars) > 1) | !is.null(names(distPars))) {
-            temp <- list()
-            temp[[1]] <- distPars
-            distPars <- temp
-        }
-    }
+    method <- match.arg(method)
 
-    ## check inputs length
-    if (length(x) != length(distPars))
-        stop("length x should be the same as length distPars !")
-    if (length(x) != length(extrapolPars))
-        stop("length x should be the same as length extrapolPars !")
+    pbs <- dCount_conv_user(x, distPars, extrapolPars, survR,
+                            method = method,
+                            nsteps = nsteps, time = time,
+                            extrap = extrap, log = TRUE)
 
-    switch(method,
-           "direct" = {
-               .computeOneProb <- function(ind)
-                   dCount_allProbs_scalar_user(x[ind], distPars[[ind]],
-                                               extrapolPars[[ind]],
-                                               survR, nsteps, time,
-                                               extrap, logFlag = TRUE)
-           },
-           "naive" = {
-               .computeOneProb <- function(ind)
-                   dCount_naive_scalar_user(x[ind], distPars[[ind]],
-                                            extrapolPars[[ind]],
-                                            survR, nsteps, time,
-                                            extrap, logFlag = TRUE)
+    pbs <- pbs * weights
 
-           },
-           "dePril" = {
-               .computeOneProb <- function(ind)
-                   dCount_dePril_scalar_user(x[ind], distPars[[ind]],
-                                             extrapolPars[[ind]],
-                                             survR, nsteps, time,
-                                             extrap, logFlag = TRUE)
-           }
-           )
+    if (na.rm)
+        pbs[is.na(pbs)] <- .logNaReplace()
 
-     pbs <- sapply(seq(along = x), .computeOneProb) * weights
-     if (na.rm)
-         pbs[is.na(pbs)] <- .logNaReplace()
-
-     sum(pbs)
+    sum(pbs)
 }
+
 

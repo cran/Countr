@@ -4,7 +4,7 @@
 \alias{dWeibullCount}
 \alias{dWeibullCount_loglik}
 \alias{evWeibullCount}
-\title{wrapper to the weibull count probability}
+\title{Probability calculations for Weibull count models}
 \usage{
 dWeibullCount(x, shape, scale, method = c("series_acc", "series_mat",
   "conv_direct", "conv_naive", "conv_dePril"), time = 1, log = FALSE,
@@ -28,58 +28,62 @@ evWeibullCount(xmax, shape, scale, method = c("series_acc", "series_mat",
 
 \item{scale}{numeric (length 1), scale parameter of the Weibull count.}
 
-\item{method}{character one of the available methods. See details.}
+\item{method}{character, one of the available methods, see details.}
 
 \item{time}{double, length of the observation window (defaults to 1).}
 
 \item{log}{logical, if TRUE, the log of the probability will be returned.}
 
-\item{conv_steps}{numeric number of steps used for the extrapolation.}
+\item{conv_steps}{numeric, number of steps used for the extrapolation.}
 
-\item{conv_extrap}{logical should Richardson extrappolation be applied ?}
+\item{conv_extrap}{logical, should Richardson extrappolation be applied ?}
 
-\item{series_terms}{numeric number of terms in the series expansion.}
+\item{series_terms}{numeric, number of terms in the series expansion.}
 
-\item{series_acc_niter}{numeric number of iteration in the
+\item{series_acc_niter}{numeric, number of iterations in the
 Euler-van Wijngaarden algorithm.}
 
-\item{series_acc_eps}{numeric tolerance of convergence in the
+\item{series_acc_eps}{numeric, tolerance of convergence in the
 Euler-van Wijngaarden algorithm.}
 
-\item{na.rm}{logical if TRUE, the \code{NA} (produced by taking the log of
-very small probabilities) will be replaced by the smallest allowed probaility;
-default = \code{TRUE}}
+\item{na.rm}{logical, if TRUE \code{NA}'s (produced by taking the log of very
+small probabilities) will be replaced by the smallest allowed probaility;
+default is \code{TRUE}.}
 
-\item{weights}{numeric vector of weights to apply. If \code{NULL}, one will
-be applied.}
+\item{weights}{numeric, vector of weights to apply. If \code{NULL}, a vector
+of one's will be applied.}
 
-\item{xmax}{unsigned integer maximum count to be used.}
+\item{xmax}{unsigned integer, maximum count to be used.}
 }
 \value{
-vector of probabilities \eqn{P(x(i)), i = 1, \dots n} where
-\code{n = length(x)}.
+for \code{dWeibullCount}, a vector of probabilities
+    \eqn{P(x(i)), i = 1, \dots n}, where \eqn{n =} \code{length(x)}.
 
-double log-likelihood of the count process
+for \code{dWeibullCount_loglik},
+    a double, the log-likelihood of the count process.
 
-double log-likelihood of the count process
+for \code{evWeibullCount}, a list with components:
+    \item{ExpectedValue}{expected value,}
+    \item{Variance}{variance.}
 }
 \description{
-wrapper to the univariate weibull count probability
+Probability computations for the univariate Weibull count process. Several
+methods are provided.
+\code{dWeibullCount} computes probabilities.
 
-wrapper to the univariate weibull log-likelihood
+\code{dWeibullCount_loglik} computes the log-likelihood.
 
-Expcted value and varinace of the weibull count process
+\code{evWeibullCount} computes the expected value and variance.
 }
 \details{
-User could choose between one of the following methods:
+Argument \code{method} can be used to specify the desired method, as follows:
 \describe{
-\item{series_mat}{series expansion using matrix techniques.}
-\item{series_acc}{Euler-van Wijngaarden accelerated series expansion}
-\item{conv_direct}{direct convolution method of section 2.}
-\item{conv_naive}{naive convolurion described in section 3.1}
-\item{conv_dePril}{dePril convolution described in section 3.2}
+\item{\code{"series_mat"}}{- series expansion using matrix techniques,}
+\item{\code{"series_acc"}}{- Euler-van Wijngaarden accelerated series expansion (default),}
+\item{\code{"conv_direc"t}}{- direct convolution method of section 2,}
+\item{\code{"conv_naive"}}{- naive convolurion described in section 3.1,}
+\item{\code{"conv_dePril"}}{- dePril convolution described in section 3.2.}
 }
-The valiue of the inputs can be left to their default value if user
-is not aware of the algorithm details.
+The arguments have sensible default values.
 }
 

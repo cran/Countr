@@ -8,7 +8,6 @@
 #include "utils.h"
 #include "series_weibull.h"
 #include "dePril_conv.h"
-#include "BivWei_series.h"
 
 #endif 
 

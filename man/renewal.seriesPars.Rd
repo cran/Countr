@@ -8,11 +8,11 @@ renewal.seriesPars(seriesPars, long = FALSE)
 }
 \arguments{
 \item{seriesPars}{list series expansion input parameters with slots
-\code{terms} (number of terms in the series expansion),
-\code{iter} (number of iteration in the accelerated series expansion
-algorithm) and \code{eps} (tolerance in the accelerated series expansion
-algorithm), Only used if \code{dist = "weibull"} and
-\code{weiMethod = c("series_mat", "series_acc")}.}
+\code{terms} (number of terms in the series expansion), \code{iter}
+(number of iteration in the accelerated series expansion algorithm) and
+\code{eps} (tolerance in the accelerated series expansion algorithm),
+Only used if \code{dist = "weibull"} and \code{weiMethod =
+c("series_mat", "series_acc")}.}
 
 \item{long}{TODO}
 }
@@ -20,6 +20,7 @@ algorithm), Only used if \code{dist = "weibull"} and
 list series expansion inputs.
 }
 \description{
-Check and creates the series expansion inputs list
+Check and creates the series expansion inputs list.
 }
+\keyword{internal}
 
