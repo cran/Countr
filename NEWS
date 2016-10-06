@@ -1,3 +1,7 @@
+Version 3.2.7
+- fixed some bugs in printing methods
+- added a jss_paper vignette
+
 Version 3.2.4
 - merged changes done separately by T. and G. to Version 3.2.2
 - fixed some bugs introduced in 3.2.3

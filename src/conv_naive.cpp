@@ -117,7 +117,7 @@ void doublepdf(arma::vec& pdfn, const double& h, const unsigned& nsteps) {
 void convtwo(const arma::vec& p, arma::vec& q, const double& h,
 	     const unsigned& nsteps) {
   unsigned k, j;
-  double qtemp;
+  double qtemp, Tmp;
 
   for(k = nsteps; k >= 1; k --) {
     qtemp = 0.;
@@ -157,7 +157,7 @@ arma::vec orgconv(unsigned xnum, const arma::vec& p0, arma::vec& pdfn,
 		  const unsigned& msteps, const double& h) {
 
   // allocate memory
-  arma::uword lnt = pdfn.n_elem;
+  unsigned lnt = pdfn.n_elem;
   arma::vec q(lnt, fill::zeros);
   arma::vec probs(2, fill::zeros);
   arma::Col< unsigned > binarray =
@@ -255,6 +255,7 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
   }
 
   if (extrap) { // use Richardson extrapolation to reduce the error
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -340,6 +341,7 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
   }
 
   if (extrap) { // use Richardson extrapolation to reduce the error
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -509,7 +511,7 @@ arma::vec dCount_naive_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 			      const unsigned& nsteps = 100,
 			      double time = 1.0, bool extrap = true,
 			      bool logFlag = false) {
-  arma::uword lnt = x.n_elem;
+  unsigned lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 
@@ -553,7 +555,7 @@ arma::vec dCount_naive_vec_user(arma::Col<unsigned> x,
 				const unsigned& nsteps = 100,
 				double time = 1.0, bool extrap = true,
 				bool logFlag = false) {
-  arma::uword lnt = x.n_elem;
+  unsigned lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 

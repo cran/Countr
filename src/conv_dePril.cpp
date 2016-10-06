@@ -12,11 +12,12 @@ arma::vec dePril(unsigned xnum, const arma::vec& p0,const  arma::vec& q,
 		 const arma::vec& xj, const unsigned& nsteps) {
 
   // allocate memory
+  unsigned lnt = q.n_elem;
   arma::vec dfn(nsteps + 1, fill::zeros);
   arma::vec probs(2, fill::zeros);
   double xmp = xnum + 1.0;
   unsigned n, j, nhalf, md, endloop;
-  double s1, s2, temp, qinv, xmul, db, term;
+  double fqj, s1, s2, q0n, temp, qinv, xmul, db, term;
 
   if (xnum == 1)
     dfn = q;
@@ -128,6 +129,7 @@ arma::vec getProbs_dePril_even(unsigned xnum, const Rcpp::List distPars,
   }
 
   if (extrap) {
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -214,6 +216,7 @@ arma::vec getProbs_dePril_even(unsigned xnum, const Rcpp::List distPars,
   }
 
   if (extrap) {
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -294,6 +297,7 @@ arma::vec getProbs_dePril_odd(unsigned xnum, const Rcpp::List distPars,
   vec pdf, p0;
 
   if (extrap) {
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -371,6 +375,7 @@ arma::vec getProbs_dePril_odd(unsigned xnum, const Rcpp::List distPars,
   Rcpp::NumericVector rTemp;
 
   if (extrap) {
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -566,7 +571,7 @@ arma::vec dCount_dePril_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 			       const unsigned& nsteps = 100,
 			       double time = 1.0, bool extrap = true,
 			       bool logFlag = false) {
-  arma::uword lnt = x.n_elem;
+  unsigned lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 
@@ -607,7 +612,7 @@ arma::vec dCount_dePril_vec_user(arma::Col<unsigned> x, const Rcpp::List distPar
 				 const unsigned& nsteps = 100,
 				 double time = 1.0, bool extrap = true,
 				 bool logFlag = false) {
-  arma::uword lnt = x.n_elem;
+  unsigned lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 

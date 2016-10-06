@@ -259,7 +259,7 @@ print.summary.renewal <- function(x, digits = max(3, getOption("digits") - 3),
         ##---------------- print coefficients
         printCoefmat(x$coefficients, digits = digits, signif.legend = FALSE)
         if (getOption("show.signif.stars") &
-            any(rbind(x$coefficients)[, 4] < 0.1)
+            any(rbind(x$coefficients)[, 4] < 0.1, na.rm = TRUE)
             )
             cat("---\nSignif. codes: ", "0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1",
                 "\n")

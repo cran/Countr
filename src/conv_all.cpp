@@ -31,7 +31,7 @@ using namespace Rcpp;
 arma::vec convolve(unsigned nprobs, const arma::vec& df, arma::vec& p,
 		   const unsigned& nsteps) {
   unsigned klow = 1;
-  unsigned n, np, k;
+  unsigned n, np, k, j;
   double ptemp;
   arma::vec probs(nprobs + 1, fill::zeros);
 
@@ -103,11 +103,13 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   double stl = 1.0;
   double sth = 1.0;
   double en = (double) nsteps;
+  double h = time / en;
   double xi, th, tee;
   unsigned i;
   vec df, p;
 
   if (extrap) { // use Richardson extrapolation to reduce the error
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -171,12 +173,14 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   double stl = 1.0;
   double sth = 1.0;
   double en = (double) nsteps;
+  double h = time / en;
   double xi, th, tee;
   unsigned i;
   vec df, p;
   Rcpp::NumericVector rTemp;
 
   if (extrap) { // use Richardson extrapolation to reduce the error
+    unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -349,7 +353,7 @@ arma::vec dCount_allProbs_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPar
 				 const unsigned& nsteps = 100,
 				 double time = 1.0, bool extrap = true,
 				 bool logFlag = false) {
-  arma::uword lnt = x.n_elem;
+  unsigned lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 
@@ -392,7 +396,7 @@ arma::vec dCount_allProbs_vec_user(arma::Col<unsigned> x,
 				   const unsigned& nsteps = 100,
 				   double time = 1.0, bool extrap = true,
 				   bool logFlag = false) {
-  arma::uword lnt = x.n_elem;
+  unsigned lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 
