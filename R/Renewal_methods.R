@@ -1,3 +1,19 @@
+## 2016-11-07 (new) a helper function to print 'call' objects since the call
+##
+##      cat("\nCall:", deparse(x$call, width.cutoff = width), "", sep = "\n")
+##
+## doesn't necessarilly do the job (argument 'width.cutoff' sets a lower
+## limit and after that seems to look for the next feasible break point.
+##
+## The solution below ignores argument 'width' (since print.default() doesn't have it)
+.deparseCall <- function(call, width = getOption("width")){
+    wrk <- deparse(call, width.cutoff = floor(width * 0.85))
+    if(max(nchar(wrk)) <= width)
+        wrk
+    else # fall back on print(); it should fit in options("width") if possible.
+        capture.output(print(call))
+}
+
 ## =============================================================================
 ## ----------------------------- declare generic -------------------------------
 ## =============================================================================
@@ -11,7 +27,7 @@
 #' @param type type of standard error: asymtotic normal standard errors
 #'     (\code{"asymptotic"}) or bootsrap (\code{"boot"}).
 #' @param ... further arguments for methods.
-#' 
+#'
 #' @return a named numeric vector
 #' @export
 se.coef <- function(object, parm, type, ...) {
@@ -29,12 +45,12 @@ se.coef <- function(object, parm, type, ...) {
 #' Objects from class \code{"renewal"} represent fitted count renewal models and
 #' are created by calls to \code{"renewal()"}. There are methods for this class
 #' for many of the familiar functions for interacting with fitted models.
-#' 
+#'
 #' @param object an object from class \code{"renewal"}.
 #' @param ... further arguments for methods
 #' @param type,parm,level,bootType,x,digits see the corresponding generics and section
 #'     Details.
-#' 
+#'
 #' @examples
 #' fn <- system.file("extdata", "McShane_Wei_results_boot.RDS", package = "Countr")
 #' object <- readRDS(fn)
@@ -113,7 +129,7 @@ fitted.renewal <- function (object, ...) {
 #' % param type type of standard error. User can choose between asymtotic normal
 #' %    standard errors (\code{asymptotic}) or bootsrap (\code{boot}).
 #' @inheritParams se.coef
-#' 
+#'
 #' @examples
 #' ## see examples for renewal_methods
 #' @rdname se.coef
@@ -207,13 +223,14 @@ summary.renewal <- function(object, ...) {
 #' print(object)
 #' @rdname renewal_methods
 #' @export
-#' 
+#'
 print.renewal <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+    ## see not at .deparseCall()
+    ##    cat("\nCall:", deparse(x$call, width.cutoff = floor(getOption("width") *
+    ##                                                         0.85)), "", sep = "\n")
+    cat("\nCall:", sep = "\n")
+    cat(.deparseCall(x$call), sep = "\n")
 
-    cat("\nCall:", deparse(x$call, width.cutoff = floor(getOption("width") *
-                                                            0.85)), "", sep = "\n")
-
-    
     if (!x$converged) {
         cat("optimisation did not converge\n")
     } else {
@@ -234,15 +251,24 @@ print.renewal <- function(x, digits = max(3, getOption("digits") - 3), ...) {
 #' @param width numeric width length
 #' @export
 print.summary.renewal <- function(x, digits = max(3, getOption("digits") - 3),
-                                  width = floor(getOption("width") * 0.85),
+                                  width = getOption("width"),
                                   ...) {
-    cat("\nCall:", deparse(x$call, width.cutoff = width), "", sep = "\n")
+    ## 2016-11-07 Note by Georgi: argument 'width.cutoff' seems to be a lower
+    ##            limit, it seems to look for the next feasible break point
+    ##      cat("\nCall:", deparse(x$call, width.cutoff = width), "", sep = "\n")
+    ##
+    ## print(summary(gamModel), width = 300)
+
+    cat("\nCall:", sep = "\n")
+    cat(.deparseCall(x$call, width), sep = "\n")
+    cat("\n")
+
     if (!x$converged) {
         cat("model did not converge\n")
     } else {
         ## residuals print
         cat("Pearson residuals:\n")
-        print(structure(quantile(x$residuals), names = c("Min",
+        print(structure(quantile(x$residuals, na.rm = TRUE), names = c("Min",
             "1Q", "Median", "3Q", "Max")), digits = digits, ...)
 
         ## dist & link functions
@@ -324,7 +350,7 @@ nobs.renewal <- function (object, ...) {
 #' % param k TODO
 #' % param ... not used
 #' @param fit,scale,k same as in the generic.
-#' 
+#'
 #' @method extractAIC renewal
 #' @examples
 #' ## see renewal_methods
@@ -420,7 +446,7 @@ predict.renewal <- function(object, newdata = NULL, type = c("response", "prob")
                 se_out <- .getPredictionStd(modelMatrixList, vcov(object),
                                             object$dist, object$link, customPars)
             }
-            
+
             return(list(values = as.numeric(out), se = se_out))
         }
     } else { ## data provided

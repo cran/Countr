@@ -33,7 +33,7 @@
 \method{print}{renewal}(x, digits = max(3, getOption("digits") - 3), ...)
 
 \method{print}{summary.renewal}(x, digits = max(3, getOption("digits") - 3),
-  width = floor(getOption("width") * 0.85), ...)
+  width = getOption("width"), ...)
 
 \method{model.matrix}{renewal}(object, ...)
 

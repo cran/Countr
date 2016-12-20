@@ -5,5 +5,6 @@
 #' @importFrom stats na.pass  pnorm  poisson  printCoefmat  quantile
 #' @importFrom stats residuals  update.formula  vcov
 #' @importFrom car Boot
+#' @importFrom utils capture.output
 #' @useDynLib Countr
 NULL

@@ -67,6 +67,11 @@ evCount_conv_bi <- function(xmax, distPars,
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2
+    if (var < 0) {
+        var <- NA
+        warning("failed to compute variance! NA returned")
+    }
+    
     list(ExpectedValue = ev, Variance = var)
 }
 
@@ -100,5 +105,10 @@ evCount_conv_user <- function(xmax, distPars, extrapolPars, survR,
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2
+    if (var < 0) {
+        var <- NA
+        warning("failed to compute variance! NA returned")
+    }
+    
     list(ExpectedValue = ev, Variance = var)
 }

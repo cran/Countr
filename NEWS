@@ -1,3 +1,12 @@
+Version 3.2.8
+
+- the call in the printout of renewal objects (and summary()) could be very wide
+  (annoying in Sweave output), now print.renewal() and print.summary.renewal()
+  obey 'width' when possible (see helper function .deparseCall()).
+
+- bugs corrected in print.summary.renewal() when failure to compute
+  variance or residuals
+
 Version 3.2.7
 - fixed some bugs in printing methods
 - added a jss_paper vignette

@@ -192,8 +192,14 @@ evWeibullCount <- function(xmax, shape, scale,
                         conv_steps, conv_extrap, series_terms,
                         series_acc_niter, series_acc_eps)
 
+    px[px < 0] <- 0
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2
+    if (var < 0) {
+        var <- NA
+        warning("failed to compute variance! NA returned")
+    }
+    
     list(ExpectedValue = ev, Variance = var)
 }

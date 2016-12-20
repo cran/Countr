@@ -285,8 +285,9 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
         }
     
         varCovarcount <- try(-solve(hess))
-        if(inherits(varCovarcount, "try-error")) {
-            varCovarcount <- Matrix::nearPD(-ginv(hess))
+        if ((inherits(varCovarcount, "try-error")) |
+            (any(diag(varCovarcount) < 0)) ) {
+            varCovarcount <- Matrix::nearPD(-ginv(hess))$mat
             warning(paste("variance-covariance matrix was computed",
                           "by smoothing the genralized inverse hessian !"))
         }
@@ -299,9 +300,9 @@ renewal <- function(formula, data, subset, na.action, weights, offset,
     resTemp <-  .objectiveFunction(coefs, dist, modelMatrixList,
                                    linkList, time, convPars, Y, weights,
                                    TRUE, FALSE, seriesPars, weiMethod,
-                                   customPars) 
+                                   customPars)
+
     vecDistParsList <- attr(resTemp, "distPars")
-    
     Yhat <- sapply(resTemp, .extractElem, ind = "ExpectedValue")
     wi <- sapply(resTemp, .extractElem, ind = "Variance")
     res <- sqrt(weights) * (Y - Yhat)
