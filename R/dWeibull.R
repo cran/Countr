@@ -192,7 +192,11 @@ evWeibullCount <- function(xmax, shape, scale,
                         conv_steps, conv_extrap, series_terms,
                         series_acc_niter, series_acc_eps)
 
+    ## adjust probability 
     px[px < 0] <- 0
+    px <- zapsmall(px)
+    px <- px / sum(px)
+    
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2

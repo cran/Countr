@@ -62,4 +62,3 @@ flexsurv::pgengamma(q = tt, mu = distP[["mu"]],
 surv(tt, distP, "gengamma")  ## (almost) same
 
 }
-

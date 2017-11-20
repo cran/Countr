@@ -1,3 +1,5 @@
+## VALIDATED by Tarak 2017-10-13
+
 ## user pwei
 pwei_user <- function(tt, distP) {
     alpha <- exp(-log(distP[["scale"]]) / distP[["shape"]])
@@ -22,8 +24,8 @@ test_that("test all-probs convolution weibull count", {
                               nsteps = 200)
     pmat_user <- dCount_conv_user(x, distPars, c(1, 2), pwei_user, "direct",
                                   nsteps = 200)
-    expect_less_than(max((pmat_bi- p0)^2 / p0), err)
-    expect_less_than(max((pmat_user- p0)^2 / p0), err)
+    expect_lt(max((pmat_bi- p0)^2 / p0), err)
+    expect_lt(max((pmat_user- p0)^2 / p0), err)
 
     ## ============================== naive =================================
     print("***** naive conv approach ...")
@@ -32,8 +34,8 @@ test_that("test all-probs convolution weibull count", {
     pmat_user <- dCount_conv_user(x, distPars, c(1, 2), pwei_user, "naive",
                                   nsteps = 200)
 
-    expect_less_than(max((pmat_bi- p0)^2 / p0), err)
-    expect_less_than(max((pmat_user- p0)^2 / p0), err)
+    expect_lt(max((pmat_bi- p0)^2 / p0), err)
+    expect_lt(max((pmat_user- p0)^2 / p0), err)
 
     ## ============================== dePril =================================
     print("***** dePril conv approach ...")
@@ -42,8 +44,8 @@ test_that("test all-probs convolution weibull count", {
     pmat_user <- dCount_conv_user(x, distPars, c(1, 2), pwei_user, "dePril",
                                   nsteps = 200)
 
-    expect_less_than(max((pmat_bi- p0)^2 / p0), err)
-    expect_less_than(max((pmat_user- p0)^2 / p0), err)
+    expect_lt(max((pmat_bi- p0)^2 / p0), err)
+    expect_lt(max((pmat_user- p0)^2 / p0), err)
 
     ## ~~~~~~~~~~~~~~~~~~~ log-likelihood ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     distParsList <- lapply(seq(along = x), function(ind) distPars)
@@ -77,7 +79,6 @@ test_that("test all-probs convolution weibull count", {
 
 test_that("test all-probs convolution weibull count -- McShane results", {
     print("~~~~~~ Testing all-probs convolution weibull count ---McShane results ~~~~~~~~")
-                # res <- readRDS("McShane_paperResults.RDS")
     fn <- system.file("extdata", "McShane_paperResults.RDS", package = "Countr")
     res <- readRDS(fn)
 
@@ -93,8 +94,8 @@ test_that("test all-probs convolution weibull count -- McShane results", {
     ll_user <- dCount_conv_loglik_user(y, distParsList, extrapolParsList,
                                            pwei_user, "direct", nsteps = 200)
 
-    expect_less_than(abs(ll_bi - reswei$loglik), 0.4)
-    expect_less_than(abs(ll_user - reswei$loglik), 0.4)
+    expect_lt(abs(ll_bi - reswei$loglik), 0.4)
+    expect_lt(abs(ll_user - reswei$loglik), 0.4)
 
     ## =========================== naive =====================================
     print("***** naive approach ...")
@@ -107,8 +108,8 @@ test_that("test all-probs convolution weibull count -- McShane results", {
     ll_user <- dCount_conv_loglik_user(y, distParsList, extrapolParsList,
                                            pwei_user, "naive", nsteps = 200)
 
-    expect_less_than(abs(ll_bi - reswei$loglik), 0.4)
-    expect_less_than(abs(ll_user - reswei$loglik), 0.4)
+    expect_lt(abs(ll_bi - reswei$loglik), 0.4)
+    expect_lt(abs(ll_user - reswei$loglik), 0.4)
 
     ## =========================== dePril =====================================
     print("***** dePril approach ...")
@@ -121,6 +122,6 @@ test_that("test all-probs convolution weibull count -- McShane results", {
     ll_user <- dCount_conv_loglik_user(y, distParsList, extrapolParsList,
                                        pwei_user, "dePril", nsteps = 200)
 
-    expect_less_than(abs(ll_bi - reswei$loglik), 0.4)
-    expect_less_than(abs(ll_user - reswei$loglik), 0.4)
+    expect_lt(abs(ll_bi - reswei$loglik), 0.4)
+    expect_lt(abs(ll_user - reswei$loglik), 0.4)
 })

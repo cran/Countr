@@ -1,3 +1,32 @@
+Version 3.4.1
+
+- bugs fixed in convolution methods
+
+- option added to rescale covariates (standardise, standardise_scale).
+
+- new vignettes added + many examples with different datasets fitted.
+
+- Bibtex entries for citation of the vignettes added to REFERENCES.bib.
+
+- numerous small improvements throughout the package.
+
+
+Version 3.3.1
+
+- new type = "prob" for residuals - changes in residuals.renewal,
+     .objectiveFunction and renewal(). Comments and asome examples are
+     temporarily put in the documentation of renewal().
+
+- new argument 'log' for .objectiveFunction(). It is now passed on to probability
+  computing functions to specify whether logged values are required when 'summa =
+  FALSE'.
+
+
+
+Version 3.3.0
+
+- first changes on bitbucket
+
 Version 3.2.8
 
 - the call in the printout of renewal objects (and summary()) could be very wide

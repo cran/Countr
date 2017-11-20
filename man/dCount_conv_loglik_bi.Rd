@@ -94,4 +94,3 @@ dCount_conv_loglik_user(x, distParsList, extrapolParsList,
                         pwei_user, "dePril", nsteps = 400)
 ## see dCount_conv_loglik_bi()
 }
-

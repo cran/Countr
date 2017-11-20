@@ -64,12 +64,19 @@ evCount_conv_bi <- function(xmax, distPars,
     x <- 1:xmax
     px <- dCount_conv_bi(x, distPars, dist, method, nsteps, time,
                          extrap, log = FALSE)
+
+    ## adjust probability 
+    px[px < 0] <- 0
+        
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2
     if (var < 0) {
-        var <- NA
-        warning("failed to compute variance! NA returned")
+        px <- zapsmall(px)
+        px <- px / sum(px)
+        ev <- sum(x * px)
+        ev2 <- sum(x^2 * px)
+        var <- ev2 - ev^2
     }
     
     list(ExpectedValue = ev, Variance = var)
@@ -102,12 +109,19 @@ evCount_conv_user <- function(xmax, distPars, extrapolPars, survR,
     px <- dCount_conv_user(x, distPars, extrapolPars, survR,
                            method, nsteps, time,
                            extrap, log = FALSE)
+
+    ## adjust probability 
+    px[px < 0] <- 0
+    
     ev <- sum(x * px)
     ev2 <- sum(x^2 * px)
     var <- ev2 - ev^2
     if (var < 0) {
-        var <- NA
-        warning("failed to compute variance! NA returned")
+        px <- zapsmall(px)
+        px <- px / sum(px)
+        ev <- sum(x * px)
+        ev2 <- sum(x^2 * px)
+        var <- ev2 - ev^2
     }
     
     list(ExpectedValue = ev, Variance = var)

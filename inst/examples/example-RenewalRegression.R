@@ -1,3 +1,5 @@
+## VALIDATED by Tarak 2017-10-13
+
 test_that("test renewal -- McShane results", {
     print("~~~~~~ renewal regression-- McShane results ~~~~~~~~")
     fn <- system.file("extdata", "McShane_paperResults.RDS", package = "Countr")
@@ -9,12 +11,12 @@ test_that("test renewal -- McShane results", {
         Y ~ GERMAN + EDU + VOC + UNI + CATH + PROT + MUSL + RURAL + YEAR_OF_B + AGEMARR
     ## =========================== gamma =====================================
     print("............ gamma ............")
-    res <- renewal(formula = form, data = data, dist = "gamma",
-                   computeHessian = FALSE,
-                   control = renewal.control(trace = 0)
-                   )
+    res <- renewalCount(formula = form, data = data, dist = "gamma",
+                        computeHessian = FALSE,
+                        control = renewal.control(trace = 0)
+                        )
     ll <-  as.numeric(logLik(res))
-    expect_less_than(abs(ll - (-2078)), 0.5)
+    expect_lt(abs(ll - (-2078)), 0.5)
 })
 
 test_that("test renewal -- McShane data --- prediction", {
@@ -27,10 +29,10 @@ test_that("test renewal -- McShane data --- prediction", {
     form <-
         Y ~ GERMAN + EDU + VOC + UNI + CATH + PROT + MUSL + RURAL + YEAR_OF_B + AGEMARR
     ## =========================== weibull =====================================
-    object <- renewal(formula = form, data = data, dist = "weibull",
-                      computeHessian = TRUE, weiMethod = "series_acc",
-                      control = renewal.control(trace = 0)
-                      )
+    object <- renewalCount(formula = form, data = data, dist = "weibull",
+                           computeHessian = TRUE, weiMethod = "series_acc",
+                           control = renewal.control(trace = 0)
+                           )
 
     predOld.response <- predict(object, type = "response", se.fit = TRUE)
     predOld.prob <- predict(object, type = "prob", se.fit = TRUE)
@@ -105,5 +107,5 @@ test_that("test renewal -- McShane data --- prediction", {
 ##                    computeHessian = FALSE)
 
 ##     ll <-  as.numeric(logLik(res))
-##     expect_less_than(abs(ll - (-2077)), 0.1)
+##     expect_lt(abs(ll - (-2077)), 0.1)
 ## })

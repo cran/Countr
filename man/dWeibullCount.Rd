@@ -86,4 +86,3 @@ Argument \code{method} can be used to specify the desired method, as follows:
 }
 The arguments have sensible default values.
 }
-

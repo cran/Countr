@@ -40,4 +40,3 @@ Richardson extrapolation if \code{extrap} is \code{TRUE} using the
 algorithm of section 3.1.
 }
 \keyword{internal}
-

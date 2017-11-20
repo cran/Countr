@@ -24,4 +24,3 @@ keywords internal}
 Univariate Weibull Count Probability with gamma and
 covariate heterogeneity
 }
-

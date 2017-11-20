@@ -130,8 +130,15 @@ arma::vec getProbs_dePril_even(unsigned xnum, const Rcpp::List distPars,
 
   if (extrap) {
     unsigned i8, i4, i2;
+     unsigned adjust_steps = 0;
+    // check if nsteps is enough
+    if (nsteps < 2 * xnum) {
+      unsigned di = 2 * xnum - nsteps;
+      adjust_steps = di + 20;
+    }
+    
     // define the steps needed
-    unsigned nsteps1 = nsteps / 4;
+    unsigned nsteps1 = (nsteps + adjust_steps) / 4;
     unsigned nsteps2 = 2 * nsteps1;
     unsigned nsteps3 = 2 * nsteps2;
     unsigned needed = 2 * nsteps3;
@@ -217,8 +224,15 @@ arma::vec getProbs_dePril_even(unsigned xnum, const Rcpp::List distPars,
 
   if (extrap) {
     unsigned i8, i4, i2;
+     unsigned adjust_steps = 0;
+    // check if nsteps is enough
+    if (nsteps < 2 * xnum) {
+      unsigned di = 2 * xnum - nsteps;
+      adjust_steps = di + 20;
+    }
+    
     // define the steps needed
-    unsigned nsteps1 = nsteps / 4;
+    unsigned nsteps1 = (nsteps + adjust_steps) / 4;
     unsigned nsteps2 = 2 * nsteps1;
     unsigned nsteps3 = 2 * nsteps2;
     unsigned needed = 2 * nsteps3;
@@ -298,8 +312,15 @@ arma::vec getProbs_dePril_odd(unsigned xnum, const Rcpp::List distPars,
 
   if (extrap) {
     unsigned i8, i4, i2;
+     unsigned adjust_steps = 0;
+    // check if nsteps is enough
+    if (nsteps < 2 * xnum) {
+      unsigned di = 2 * xnum - nsteps;
+      adjust_steps = di + 20;
+    }
+    
     // define the steps needed
-    unsigned nsteps1 = nsteps / 4;
+    unsigned nsteps1 = (nsteps + adjust_steps) / 4;
     unsigned nsteps2 = 2 * nsteps1;
     unsigned nsteps3 = 2 * nsteps2;
     unsigned needed = 2 * nsteps3;
@@ -376,8 +397,15 @@ arma::vec getProbs_dePril_odd(unsigned xnum, const Rcpp::List distPars,
 
   if (extrap) {
     unsigned i8, i4, i2;
+     unsigned adjust_steps = 0;
+    // check if nsteps is enough
+    if (nsteps < 2 * xnum) {
+      unsigned di = 2 * xnum - nsteps;
+      adjust_steps = di + 20;
+    }
+    
     // define the steps needed
-    unsigned nsteps1 = nsteps / 4;
+    unsigned nsteps1 = (nsteps + adjust_steps) / 4;
     unsigned nsteps2 = 2 * nsteps1;
     unsigned nsteps3 = 2 * nsteps2;
     unsigned needed = 2 * nsteps3;

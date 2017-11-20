@@ -61,4 +61,3 @@ For the modified renewal process the first arrival is allowed to have
 a different distribution from the  time between subsequent arrivals.
 The renewal assumption is kept.
 }
-

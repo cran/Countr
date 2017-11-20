@@ -92,4 +92,3 @@ c(evu[["ExpectedValue"]], ev )
 c(evbi[["Variance"]], var    )
 c(evu[["Variance"]], var     )
 }
-

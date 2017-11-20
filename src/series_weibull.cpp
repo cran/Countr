@@ -135,7 +135,7 @@ arma::vec dWeibullCount_mat(arma::Col<unsigned> x,
 
     tmp.col(i) = minus1 % Term2i % TermF ;
   }
-
+  
   if (logFlag)
     prob = log(sum(tmp, 1));
   else

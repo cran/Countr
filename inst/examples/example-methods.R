@@ -1,4 +1,5 @@
-library("Countr")
+## VALIDATED by Tarak 2017-10-13
+
 fn <- system.file("extdata", "McShane_Wei_results_boot.RDS", package = "Countr")
 object <- readRDS(fn)
 data <- object$data

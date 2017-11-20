@@ -106,4 +106,3 @@ max((pmat_bi- p0)^2 / p0)
 max((pmat_user- p0)^2 / p0)
 
 }
-
