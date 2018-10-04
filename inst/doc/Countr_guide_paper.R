@@ -1,46 +1,45 @@
-### R code from vignette source 'c:/Az/Rdevel/bitbucket/countr_project/jss_paper/Rnw/Countr_guide_paper.Rnw'
+## This script was produced using Sweave and then manually commented.
+##
+## R code to reproduce the results from JSS paper
+##   Flexible Regression Models for Count Data Based on Renewal Processes:
+##   The \pkg{Countr} Package
+## by Tarak Kharrat, Georgi N. Boshnakov, Ian McHale and Rose Baker
+##
+## Tested with Countr 3.5.1, Microsoft R Open 3.4.3 on ubuntu 16.06
+##                           and R 3.5-0 on Windows
+##
+## This R-script is standalone and can be source()'ed in R.
+##
+## A conda environment 'r_countr_env' (see file 'countr.yml') is also provided:
+## after installing anaconda (https://conda.io/docs/user-guide/install/index.html),
+## you can run the following commands in your terminal:
+##    conda env create -f environment.yml
+##    source activate r_countr_env
+## Then start R and source() this file.
 
 ###################################################
-### code chunk number 1: Countr_guide_paper.Rnw:37-49
+### code chunk number 1: load options
 ###################################################
 ## this chunk is always evaluated
 op <- options()
-## this is from the FAQ for JSS:
-##    options(prompt = "R> ", continue = "+  ", width = 70, useFancyQuotes = FALSE)
-## below we use width = 77, since I don't want to make last minute change.
 options(prompt = "R> ", continue = "+  ", width = 77, useFancyQuotes = FALSE)
-
 options(digits = 3)  # number of digits after decimal point
 options(show.signif.stars=FALSE)
-## if "result.RData" is loaded, do not resave it.
-resultsFile <- "result.RData"
-resaveResults <- FALSE
+
+###################################################
+### code chunk number 3: load libraries
+###################################################
+library("Countr")
+library("lmtest")
+library("dplyr")
+library("xtable")
 
 
 ###################################################
-### code chunk number 2: Countr_guide_paper.Rnw:52-55 (eval = FALSE)
-###################################################
-## ## if this chunk is executed, save the results when finished.
-## ## (see the end of this file)
-## resaveResults <- TRUE
-
-
-###################################################
-### code chunk number 3: Countr_guide_paper.Rnw:58-64
-###################################################
-if(!resaveResults){
-    library("Countr")
-    library(lmtest)
-    load(resultsFile)
-    resaveResults <- FALSE # in case 'resultsFile' contains variable 'resaveResults'
-}
-
-
-###################################################
-### code chunk number 4: Countr_guide_paper.Rnw:704-710 (eval = FALSE)
+### code chunk number 4: main function interface
 ###################################################
 ## renewalCount(formula, data, subset, na.action, weights, offset,
-##   dist = c("custom", "weibull", "weibullgam", "gamma", "gengamma", "burr"),
+##   dist = c("weibull", "weibullgam", "custom", "gamma", "gengamma", "burr"),
 ##   anc = NULL, convPars = NULL, link = NULL, time = 1.0,
 ##   control = renewal.control(...), customPars = NULL,
 ##   seriesPars = NULL, weiMethod = NULL,
@@ -48,61 +47,50 @@ if(!resaveResults){
 
 
 ###################################################
-### code chunk number 5: Countr_guide_paper.Rnw:742-743
+### code chunk number 7: football data
 ###################################################
-library("Countr")
-
-
-###################################################
-### code chunk number 6: load-aux-pkg
-###################################################
-library(dplyr)
-library(xtable)
-
-
-###################################################
-### code chunk number 7: Countr_guide_paper.Rnw:779-781
-###################################################
-data(football)
+data("football")
 table(football$awayTeamGoals)
 
 
 ###################################################
-### code chunk number 8: Countr_guide_paper.Rnw:791-796 (eval = FALSE)
+### code chunk number 8: models for away goals
 ###################################################
-## away_poiss <- glm(formula = awayTeamGoals ~ 1, family = poisson,
-##   data = football)
-## away_wei <- renewalCount(formula = awayTeamGoals ~ 1, data = football,
-##   dist = "weibull", computeHessian = FALSE,
-##   control = renewal.control(trace = 0))
-
+away_poiss <- glm(formula = awayTeamGoals ~ 1,
+                  family = poisson,
+                  data = football)
+away_wei <- renewalCount(formula = awayTeamGoals ~ 1,
+                         data = football,
+                         dist = "weibull", computeHessian = FALSE,
+                         control = renewal.control(trace = 0)
+                         )
 
 ###################################################
-### code chunk number 9: Countr_guide_paper.Rnw:802-805
+### code chunk number 9:
 ###################################################
 breaks_ <- 0:5
 pears <- compareToGLM(poisson_model = away_poiss, breaks = breaks_,
-  weibull = away_wei)
+                      weibull = away_wei)
 
 
 ###################################################
-### code chunk number 10: Countr_guide_paper.Rnw:811-815
+### code chunk number 10: frequency plot
 ###################################################
-library(dplyr)
+library("dplyr")
 frequency_plot(pears$Counts, pears$Actual,
-  dplyr::select(pears, contains("_predicted")),
-  colours = c("grey", "blue", "green", "black"))
+               dplyr::select(pears, contains("_predicted")),
+               colours = c("grey", "blue", "green", recursive="black")
+               )
 
 
 ###################################################
-### code chunk number 11: Countr_guide_paper.Rnw:844-846
+### code chunk number 11: LR test
 ###################################################
 lr <- lmtest::lrtest(away_poiss, away_wei)
-lr
 
 
 ###################################################
-### code chunk number 12: Countr_guide_paper.Rnw:855-858
+### code chunk number 12: X2 test
 ###################################################
 gof_wei <- chiSq_gof(away_wei, breaks = breaks_)
 gof_pois <- chiSq_gof(away_poiss, breaks = breaks_)
@@ -110,7 +98,7 @@ rbind(Poisson = gof_pois, "Weibull-count" = gof_wei)
 
 
 ###################################################
-### code chunk number 13: Countr_guide_paper.Rnw:933-934
+### code chunk number 13: fertility data
 ###################################################
 data("fertility", package = "Countr")
 
@@ -133,7 +121,7 @@ print(xtable(freqtable, caption = "Fertility data: Frequency distribution of col
 
 
 ###################################################
-### code chunk number 16: Countr_guide_paper.Rnw:973-976
+### code chunk number 16: fertility data processing
 ###################################################
 nam_fac <- sapply(fertility, function(x) !is.numeric(x))
 fert_factor <- summary(fertility[ , nam_fac])
@@ -143,110 +131,127 @@ fert_num <- t(sapply(fertility[ , !nam_fac], summary)) # summary(fertility[ , !n
 ###################################################
 ### code chunk number 17: covariates-table
 ###################################################
-print(xtable(fert_factor, caption = "Summary of the factor variables", label = "tbl:frecfac"))
+print(xtable(fert_factor,
+             caption = "Summary of the factor variables",
+             label = "tbl:frecfac")
+      )
 
 
 ###################################################
 ### code chunk number 18: covariates-table-num
 ###################################################
-print(xtable(fert_num, caption = "Summary of the numeric explanatory variables",
-                       label = "tbl:frecnum"))
+print(xtable(fert_num,
+             caption = "Summary of the numeric explanatory variables",
+             label = "tbl:frecnum"))
 
 
 ###################################################
-### code chunk number 19: Countr_guide_paper.Rnw:1019-1021
+### code chunk number 19: main model
 ###################################################
 regModel <- children ~ german + years_school + voc_train + university +
-  Religion + rural + year_birth + age_marriage
+  religion + rural + year_birth + age_marriage
 
 
 ###################################################
-### code chunk number 20: Countr_guide_paper.Rnw:1036-1037
+### code chunk number 20: link functions
 ###################################################
 link_weibull <- list(scale = "log", shape = "log")
 
 
 ###################################################
-### code chunk number 21: Countr_guide_paper.Rnw:1053-1055 (eval = FALSE)
+### code chunk number 21: gamma model--fertility data
 ###################################################
-## gamModel <- renewalCount(formula = regModel, data = fertility,
-##   dist = "gamma", control = renewal.control(trace = 0) )
+gamModel <- renewalCount(formula = regModel, data = fertility,
+                         dist = "gamma",
+                         control = renewal.control(trace = 0)
+                         )
 
 
 ###################################################
-### code chunk number 22: Countr_guide_paper.Rnw:1107-1108
+### code chunk number 22: visualise parameters name: weibull
 ###################################################
 getParNames("weibull")
 
 
 ###################################################
-### code chunk number 23: Countr_guide_paper.Rnw:1126-1127
+### code chunk number 23: visualise parameters name: gamma
 ###################################################
 renewalNames(regModel, data = fertility, dist = "gamma")
 
 
 ###################################################
-### code chunk number 24: Countr_guide_paper.Rnw:1137-1138 (eval = FALSE)
+### code chunk number 24: Poisson initial values
 ###################################################
-## IV <- glm(regModel, family = poisson(), data = fertility)
+IV <- glm(regModel, family = poisson(), data = fertility)
 
 
 ###################################################
-### code chunk number 25: Countr_guide_paper.Rnw:1140-1141
+### code chunk number 25: print initial values
 ###################################################
 coef(IV)
 
 
 ###################################################
-### code chunk number 26: Countr_guide_paper.Rnw:1157-1158
+### code chunk number 26: prepare initial values
 ###################################################
 startW <- renewalCoef(IV, target = "scale")
 
 
 ###################################################
-### code chunk number 27: <
+### code chunk number 27:
 ###################################################
 startW <- c(startW, "shape_" = log(1))
 startW
 
 
 ###################################################
-### code chunk number 28: Countr_guide_paper.Rnw:1173-1175 (eval = FALSE)
+### code chunk number 28: weibull model with initial values
 ###################################################
-## weiModel <- renewalCount(formula = regModel, data = fertility,
-##   dist = "weibull", control = renewal.control(trace = 0, start = startW))
+weiModel <- renewalCount(formula = regModel, data = fertility,
+                         dist = "weibull",
+                         control = renewal.control(trace = 0, start = startW))
 
 
 ###################################################
-### code chunk number 29: Countr_guide_paper.Rnw:1189-1192 (eval = FALSE)
+### code chunk number 29: change the optim algo to L-BFGS-B
 ###################################################
-## weiModelA <- renewalCount(formula = regModel, data = fertility,
-##   dist = "weibull",
-##   control = renewal.control(trace = 0, method = "L-BFGS-B"))
+weiModelA <- renewalCount(formula = regModel, data = fertility,
+  dist = "weibull",
+  control = renewal.control(trace = 0, method = "L-BFGS-B"))
 
 
 ###################################################
-### code chunk number 30: Countr_guide_paper.Rnw:1199-1202 (eval = FALSE)
+### code chunk number 30: try few optim algo
 ###################################################
-## weiModel_many <- renewalCount(formula = regModel, data = fertility,
-##   dist = "weibull", control = renewal.control(trace = 0,
-##   method = c("nlminb", "Nelder-Mead", "BFGS")))
-
+weiModel_many <-
+    renewalCount(formula = regModel, data = fertility,
+                 dist = "weibull",
+                 control = renewal.control(trace = 0,
+                                           method = c("nlminb", "Nelder-Mead",
+                                                      "BFGS")
+                                           )
+                 )
 
 ###################################################
-### code chunk number 31: Countr_guide_paper.Rnw:1209-1210
+### code chunk number 31: compare their performance
 ###################################################
 t(weiModel_many$optim)
 
 
 ###################################################
-### code chunk number 32: Countr_guide_paper.Rnw:1246-1247
+### code chunk number 32: prepare a formula with CountrFormula
+###################################################
+CountrFormula(y ~ x1 + x2 + x3, shape = ~x1)
+
+
+###################################################
+### code chunk number 33: anc formula
 ###################################################
 anc <- list(sigma = regModel, Q = regModel)
 
 
 ###################################################
-### code chunk number 33: Countr_guide_paper.Rnw:1254-1257
+### code chunk number 34: starting values with anc
 ###################################################
 startA <- renewalCoef(IV, target = "gengamma")
 startA[c("Q_", "sigma_")] <- c(1, log(1))
@@ -254,32 +259,98 @@ startA
 
 
 ###################################################
-### code chunk number 34: Countr_guide_paper.Rnw:1285-1289 (eval = FALSE)
+### code chunk number 35: fit the gen gamma model with anc
 ###################################################
-## gengamModel_ext0 <- renewalCount(formula = regModel, data = fertility,
-##   dist = "gengamma", anc = anc,
-##   control = renewal.control(start = startA, trace = 0),
-##   computeHessian = FALSE)
+gengamModel_ext0 <- renewalCount(formula = regModel, data = fertility,
+                                 dist = "gengamma", anc = anc,
+                                 control = renewal.control(start = startA,
+                                                           trace = 0),
+                                 computeHessian = FALSE)
 
 
 ###################################################
-### code chunk number 35: Countr_guide_paper.Rnw:1297-1302 (eval = FALSE)
+### code chunk number 36: alternative models for anc parameters
 ###################################################
-## startB <- coef(gengamModel_ext0)
-## gengamModel_ext <- renewalCount(formula = regModel, data = fertility,
-##   dist = "gengamma", anc = anc,
-##   control = renewal.control(method = "spg", start = startB, trace = 0),
-##   computeHessian = FALSE )
+sigmaModel <- ~ german + university + religion + age_marriage
+QModel     <- ~ german + religion + age_marriage
 
 
 ###################################################
-### code chunk number 36: Countr_guide_paper.Rnw:1308-1309
+### code chunk number 37:
 ###################################################
-gengamModel_ext$converged
+anc <- list(sigma = sigmaModel, Q = QModel)
 
 
 ###################################################
-### code chunk number 37: Countr_guide_paper.Rnw:1340-1343
+### code chunk number 38:
+###################################################
+regModelSQ <- Formula::as.Formula(regModel, sigmaModel, QModel)
+
+
+###################################################
+### code chunk number 39:
+###################################################
+CountrFormula(regModel, sigma = sigmaModel, Q = QModel)
+
+
+###################################################
+### code chunk number 40: initial values for new anc models
+###################################################
+IV2 <- glm(update(sigmaModel, children ~ .),
+           family = poisson(), data = fertility)
+IV3 <- glm(update(QModel, children ~ .),
+           family = poisson(), data = fertility)
+
+
+###################################################
+### code chunk number 41:
+###################################################
+startGG <- c(renewalCoef(IV, target = "mu"),
+             renewalCoef(IV2, target = "sigma"),
+             renewalCoef(IV3, target = "Q"))
+startGG
+
+
+###################################################
+### code chunk number 42: fit the new models
+###################################################
+fm_gengamAnc <- renewalCount(formula = regModel, data = fertility,
+                             dist = "gengamma", anc = anc,
+                             control = renewal.control(start = startGG,
+                                                       trace = 0),
+                             computeHessian = FALSE)
+
+
+###################################################
+### code chunk number 43:
+###################################################
+fm_gengam <- renewalCount(formula = regModelSQ, data = fertility,
+                          dist = "gengamma",
+                          control = renewal.control(start = startGG,
+                                                    trace = 0),
+                          computeHessian = FALSE)
+
+
+###################################################
+### code chunk number 44: refit model with previously obtained IV
+###################################################
+startBB <- coef(fm_gengam)
+fm_gengam_ext <- renewalCount(formula = regModelSQ, data = fertility,
+                              dist = "gengamma",
+                              control = renewal.control(method = "spg",
+                                                        start = startBB,
+                                                        trace = 0),
+                              computeHessian = FALSE )
+
+
+###################################################
+### code chunk number 45: check convergence status
+###################################################
+fm_gengam_ext$converged
+
+
+###################################################
+### code chunk number 46: link functions
 ###################################################
 parNames <- c("scale", "shape")
 sWei <- function(tt, distP) exp( -distP[["scale"]] * tt ^ distP[["shape"]])
@@ -287,13 +358,13 @@ link <- list(scale = "log", shape = "log")
 
 
 ###################################################
-### code chunk number 38: Countr_guide_paper.Rnw:1360-1361
+### code chunk number 47:
 ###################################################
 control_custom <- renewal.control(start = startW, trace = 0)
 
 
 ###################################################
-### code chunk number 39: Countr_guide_paper.Rnw:1372-1375
+### code chunk number 48:
 ###################################################
 .getExtrapol <- function(distP) {
     c(2, distP[["shape"]])
@@ -301,102 +372,99 @@ control_custom <- renewal.control(start = startW, trace = 0)
 
 
 ###################################################
-### code chunk number 40: Countr_guide_paper.Rnw:1385-1387
+### code chunk number 49:
 ###################################################
 customPars <- list(parNames = parNames, survivalFct = sWei,
-  extrapolFct = .getExtrapol)
+                   extrapolFct = .getExtrapol)
 
 
 ###################################################
-### code chunk number 41: Countr_guide_paper.Rnw:1392-1395 (eval = FALSE)
+### code chunk number 50: user passed inter-arrival time model
 ###################################################
-## weiModelCust <- renewalCount(formula = regModel, data = fertility,
-##   dist = "custom", link = link, control = control_custom,
-##   customPars = customPars, computeHessian = FALSE)
+weiModelCust <- renewalCount(formula = regModel, data = fertility,
+                             dist = "custom", link = link,
+                             control = control_custom,
+                             customPars = customPars,
+                             computeHessian = FALSE)
 
 
 ###################################################
-### code chunk number 42: Countr_guide_paper.Rnw:1448-1449
+### code chunk number 51:
 ###################################################
 summary(gamModel)
 
-
 ###################################################
-### code chunk number 43: Countr_guide_paper.Rnw:1462-1463
+### code chunk number 52:
 ###################################################
 summary(weiModel)
 
 
 ###################################################
-### code chunk number 44: Countr_guide_paper.Rnw:1489-1491 (eval = FALSE)
+### code chunk number 53: bootsrap
 ###################################################
-## se_boot <- se.coef(object = weiModel, type =  "boot", R = 5)
-## confint_boot <- confint(object = weiModel, type = "boot", R = 5)
+se_boot <- se.coef(object = weiModel, type =  "boot", R = 5)
+confint_boot <- confint(object = weiModel, type = "boot", R = 5)
 
 
 ###################################################
-### code chunk number 45: Countr_guide_paper.Rnw:1589-1590
+### code chunk number 54: prepare data for prediction
 ###################################################
 newData <- head(fertility)
 
 
 ###################################################
-### code chunk number 46: Countr_guide_paper.Rnw:1592-1596 (eval = FALSE)
+### code chunk number 55: perform predictions
 ###################################################
-## predNew.response <- predict(weiModel, newdata = newData, type = "response",
-##   se.fit = TRUE)
-## predNew.prob <- predict(weiModel, newdata = newData, type = "prob",
-##   se.fit = TRUE)
-
+predNew.response <- predict(weiModel, newdata = newData,
+                            type = "response",
+                            se.fit = TRUE)
+predNew.prob <- predict(weiModel, newdata = newData, type = "prob",
+                        se.fit = TRUE)
 
 ###################################################
-### code chunk number 47: Countr_guide_paper.Rnw:1599-1600
+### code chunk number 56:
 ###################################################
 options(digits = 5)
 
 
 ###################################################
-### code chunk number 48: Countr_guide_paper.Rnw:1603-1607
+### code chunk number 57
 ###################################################
 predtable <- data.frame(newData$children, predNew.prob$values,
-  predNew.response$values)
+                        predNew.response$values)
 names(predtable) <- c("Y", "P(Y=y|x)", "E(Y|x)")
 predtable
 
 
 ###################################################
-### code chunk number 49: Countr_guide_paper.Rnw:1612-1613
+### code chunk number 58
 ###################################################
 options(digits = 3)
 
 
 ###################################################
-### code chunk number 50: Countr_guide_paper.Rnw:1620-1621
+### code chunk number 59
 ###################################################
 cbind(builtIn = coef(weiModel), user = coef(weiModelCust))
 
 
 ###################################################
-### code chunk number 51: load-data
+### code chunk number 60: load-data
 ###################################################
-data(quine, package = "MASS")
+data("quine", package = "MASS")
 
 
 ###################################################
-### code chunk number 52: children-table
+### code chunk number 61: children-table
 ###################################################
 breaks_ <- c(0, 1, 3, 5:7, 9, 12, 15, 17, 23, 27, 32)
 freqtable <-
-  count_table(count = quine$Days, breaks = breaks_, formatChar = TRUE)
+    count_table(count = quine$Days, breaks = breaks_, formatChar = TRUE)
 
 
 ###################################################
-### code chunk number 53: Countr_guide_paper.Rnw:1658-1666
+### code chunk number 62
 ###################################################
-##   print(xtable(freqtable,
-##   caption = "quine data: Frequency distribution of column \\texttt{Days}.",
-##   tabular.environment = "longtable", label = "tbl:freq"))
-
  print(xtable(freqtable[ , 1:7]), floating = FALSE, only.contents = TRUE)
  cat("\n\\\\[5pt]\n")
  print(xtable(freqtable[ , -(1:7)]), floating = FALSE, only.contents = TRUE)
@@ -404,50 +472,54 @@ freqtable <-
 
 
 ###################################################
-### code chunk number 54: models (eval = FALSE)
+### code chunk number 63: quine data models
 ###################################################
-## quine_form <- as.formula(Days ~ Eth + Sex + Age + Lrn)
-## pois <- glm(quine_form, family = poisson(), data = quine)
-## nb <- MASS::glm.nb(quine_form, data = quine)
-## 
-## ## various renewal models
-## wei <- renewalCount(formula = quine_form, data = quine, dist = "weibull",
-##   computeHessian = FALSE, weiMethod = "conv_dePril",
-##   control = renewal.control(trace = 0))
-## 
-## gam <- renewalCount(formula = quine_form, data = quine, dist = "gamma",
-##   computeHessian = FALSE, control = renewal.control(trace = 0))
-## 
-## gengam <- renewalCount(formula = quine_form, data = quine, dist = "gengamma",
-##   computeHessian = FALSE, control = renewal.control(trace = 0))
+quine_form <- as.formula(Days ~ Eth + Sex + Age + Lrn)
+pois <- glm(quine_form, family = poisson(), data = quine)
+nb <- MASS::glm.nb(quine_form, data = quine)
+
+## various renewal models
+wei <- renewalCount(formula = quine_form, data = quine, dist = "weibull",
+                    computeHessian = FALSE, weiMethod = "conv_dePril",
+                    control = renewal.control(trace = 0))
+
+gam <- renewalCount(formula = quine_form, data = quine, dist = "gamma",
+                    computeHessian = FALSE,
+                    control = renewal.control(trace = 0))
+
+gengam <- renewalCount(formula = quine_form, data = quine, dist = "gengamma",
+                       computeHessian = FALSE,
+                       control = renewal.control(trace = 0))
 
 
 ###################################################
-### code chunk number 55: lr-test-poisson
+### code chunk number 64: lr-test-poisson
 ###################################################
-library(lmtest)
+library("lmtest")
 pois_nb <- lrtest(pois, nb)
 pois_wei <- suppressWarnings(lrtest(pois, wei))
 pois_gam <- suppressWarnings(lrtest(pois, gam))
 pois_gengam <- suppressWarnings(lrtest(pois, gengam))
 pois_res <- data.frame("Alternative model" =
-  c("negative-binomial", "weibull", "gamma", "generalised-gamma"),
-  Chisq = c(pois_nb$Chisq[2], pois_wei$Chisq[2],
-            pois_gam$Chisq[2], pois_gengam$Chisq[2]),
-  Df = c(1, 1, 1, 2),
-  Critical_value = c(rep(qchisq(0.95, 1), 3), qchisq(0.95, 2)),
-  stringsAsFactors = FALSE)
+                           c("negative-binomial", "weibull", "gamma",
+                             "generalised-gamma"),
+                       Chisq = c(pois_nb$Chisq[2], pois_wei$Chisq[2],
+                                 pois_gam$Chisq[2], pois_gengam$Chisq[2]),
+                       Df = c(1, 1, 1, 2),
+                       Critical_value = c(rep(qchisq(0.95, 1), 3), qchisq(0.95, 2)),
+                       stringsAsFactors = FALSE)
 
 
 ###################################################
-### code chunk number 56: Countr_guide_paper.Rnw:1743-1745
+### code chunk number 65:
 ###################################################
-print(xtable(pois_res, caption = "LR results against Poisson model. Each row compares an alternative model vs the Poisson model. All alternatives are preferable to Poisson.",
+print(xtable(pois_res, caption = "LR results against Poisson model. Each row compares an alternative model vs the Poisson model. All alternatives are preferable to Poisson.
+The critical value corresponds to a significance level of 5\\%",
              label = "tab:lr_pois"))
 
 
 ###################################################
-### code chunk number 57: lr-test-renewal
+### code chunk number 66: lr-test-renewal
 ###################################################
 gengam_wei <- lrtest(wei, gengam)
 gengam_gam <- lrtest(gam, gengam)
@@ -457,39 +529,41 @@ gengam_res <- data.frame(Model = c("weibull", "gamma"),
 
 
 ###################################################
-### code chunk number 58: Countr_guide_paper.Rnw:1759-1761
+### code chunk number 67:
 ###################################################
 print(xtable(gengam_res, caption = "LR results against generalised-gamma model",
              label = "tab:lr_gengam"))
 
 
 ###################################################
-### code chunk number 59: IC-models
+### code chunk number 68: AIC-models
 ###################################################
-ic <- data.frame(Model = c("weibull", "gamma", "negative-binomial"),
-  AIC = c(AIC(wei), AIC(gam), AIC(nb)),
-  BIC = c(BIC(wei), BIC(gam), BIC(nb)), stringsAsFactors = FALSE)
+ic <- data.frame(Model = c("gamma", "weibull", "negative-binomial",
+                           "generalised-gamma", "Poisson"),
+                 AIC = c(AIC(gam), AIC(wei), AIC(nb), AIC(gengam), AIC(pois)),
+                 BIC = c(BIC(gam), BIC(wei), BIC(nb), BIC(gengam), BIC(pois)),
+		 stringsAsFactors = FALSE)
 
 
 ###################################################
-### code chunk number 60: Countr_guide_paper.Rnw:1773-1775
+### code chunk number 69: table of AIC results
 ###################################################
-print(xtable(ic, caption = "Information criteria results",
-             label = "tab:ic_models"))
+print(xtable(ic,
+             caption = "Information criteria results",
+             label = "tab:ic_models"),
+      hline.after = c(0, 3), type = "latex"
+	     )
 
 
 ###################################################
-### code chunk number 61: go-f
+### code chunk number 70: goodness of fit
 ###################################################
 gof <- chiSq_gof(gam, breaks = breaks_)
 gof
 
 
 ###################################################
-### code chunk number 62: Countr_guide_paper.Rnw:1885-1888
+### code chunk number 71: restore options
 ###################################################
 options(op) # restore options
-if(resaveResults)
-    save.image(file = resultsFile)
-
 

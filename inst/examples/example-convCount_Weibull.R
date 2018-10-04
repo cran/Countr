@@ -1,4 +1,5 @@
-## VALIDATED by Tarak 2017-10-13
+library(testhat)
+## VALIDATED by Tarak 2018-04-18
 
 ## user pwei
 pwei_user <- function(tt, distP) {
@@ -6,7 +7,6 @@ pwei_user <- function(tt, distP) {
     pweibull(q = tt, scale = alpha, shape = distP[["shape"]],
              lower.tail = FALSE)
 }
-
 
 test_that("test all-probs convolution weibull count", {
     print("~~~~~~ Testing all-probs convolution weibull count ~~~~~~~~")

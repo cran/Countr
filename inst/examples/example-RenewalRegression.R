@@ -1,4 +1,4 @@
-## VALIDATED by Tarak 2017-10-13
+## VALIDATED by Tarak 2018-04-18
 
 test_that("test renewal -- McShane results", {
     print("~~~~~~ renewal regression-- McShane results ~~~~~~~~")

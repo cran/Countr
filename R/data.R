@@ -13,7 +13,7 @@
 #' \item{\code{years_school}}{integer; education measured as years of schooling.}
 #' \item{\code{voc_train}}{factor; vocational training ? (yes or no)}
 #' \item{\code{university}}{factor; university education ? (yes or no)}
-#' \item{\code{Religion}}{factor; mother's religion: Catholic, Protestant, Muslim
+#' \item{\code{religion}}{factor; mother's religion: Catholic, Protestant, Muslim
 #' or Others (reference).}
 #' \item{\code{rural}}{factor; rural (yes or no ?)}
 #' \item{\code{year_birth}}{integer; year of birth (last 2 digits)}

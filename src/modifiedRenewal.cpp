@@ -149,7 +149,7 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   
@@ -160,7 +160,7 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   }
 
   if (extrap) {
-    unsigned i8, i4, i2;
+    // unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -239,7 +239,7 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   Rcpp::NumericVector rTemp;
@@ -252,7 +252,7 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
   }
 
   if (extrap) {
-    unsigned i8, i4, i2;
+    // unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -335,12 +335,12 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   
   if (extrap) {
-    unsigned i8, i4, i2;
+    // unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -419,13 +419,13 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
-  double xi, th, th0, sth, sth0, tee, tee0;
+  double xi, th, sth, sth0, tee;
   unsigned i; 
   vec pdf, p0, pdf0;
   Rcpp::NumericVector rTemp;
   
   if (extrap) {
-    unsigned i8, i4, i2;
+    // unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;

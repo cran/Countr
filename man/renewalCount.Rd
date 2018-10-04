@@ -12,7 +12,11 @@ renewalCount(formula, data, subset, na.action, weights, offset,
   standardise_scale = 1, model = TRUE, y = TRUE, x = FALSE, ...)
 }
 \arguments{
-\item{formula}{single response formula object.}
+\item{formula}{a formula object. If it is a standard formula object, the left
+hand side specifies the response variable and the right hand sides
+specifies the regression equation for the first parameter of the
+conditional distribution. \code{formula} can also be used to specify the
+ancilliary regressions, using the operator `|`, see Details.}
 
 \item{data, subset, na.action, }{arguments controlling formula processing via
 \code{model.frame}.}
@@ -28,9 +32,10 @@ Details. Currently the built-in distributions are \code{"weibull"},
 \code{"weibullgam"}, \code{"gamma"}, \code{"gengamma"}
 (generalized-gamma) and \code{"burr"}.}
 
-\item{anc}{named list of formulas for ancillary regressions, if any,
+\item{anc}{a named list of formulas for ancillary regressions, if any,
 otherwise \code{NULL}. The formulas associated with the (exact) parameter
-names are used.}
+names are used. The left-hand sides of the formulas in \code{anc} are
+ignored.}
 
 \item{convPars}{a list of convolution parameters arguments with slots
 \code{nsteps}, \code{extrap} and \code{convMethod}, see
@@ -152,9 +157,30 @@ fitting regression model (\code{lm}, \code{glm}) and is highly inspired by
 \code{hurdle()} and \code{zeroinfl()} from package \code{pscl}. Package
 \code{Formula} is used to handle formulas.
 
-Distributions for inter-arrival times supported internally by this package can
-be chosen by setting argument \code{"dist"} to a suitable character string.
-Currently the built-in distributions are \code{"weibull"},
+Argument \code{formula} is a \code{formula} object. In the simplest case its
+left-hand side (lhs) designates the response variable and the right-hand side
+the covariates for the first parameter of the distribution (as reported by
+\code{\link{getParNames}}. In this case, covariates for the ancilliary
+parameters are specified using argument \code{anc}.
+
+The ancilliary regressions, can also be specified in argument \code{formula}
+by adding them to the righ-hand side, separated by the operator \sQuote{|}.
+For example \code{Y | shape ~ x + y | z} can be used in place of the pair
+\code{Y ~ x + y} and \code{anc = list(shape = ~z)}. In most cases, the name
+of the second parameter can be omitted, which for this example gives the
+equivalent \code{Y ~ x + y | z}. The actual rule is that if the parameter is
+missing from the left-hand side, it is inferred from the default parameter
+list of the distribution.
+
+As another convenience, if the parameters are to to have the same covariates,
+it is not necessary to repeat the rhs. For example, \code{Y | shape ~ x + y}
+is equivalent to \code{Y | shape ~ x + y | x + y}. Note that this is applied
+only to parameters listed on the lhs, so \code{Y ~ x + y} specifies
+covariates only for the response variable and not any other parameters.
+
+Distributions for inter-arrival times supported internally by this package
+can be chosen by setting argument \code{"dist"} to a suitable character
+string.  Currently the built-in distributions are \code{"weibull"},
 \code{"weibullgam"}, \code{"gamma"}, \code{"gengamma"} (generalized-gamma)
 and \code{"burr"}.
 

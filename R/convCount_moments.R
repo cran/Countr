@@ -73,7 +73,7 @@ evCount_conv_bi <- function(xmax, distPars,
     var <- ev2 - ev^2
     if (var < 0) {
         px <- zapsmall(px)
-        px <- px / sum(px)
+        ##px <- px / sum(px)
         ev <- sum(x * px)
         ev2 <- sum(x^2 * px)
         var <- ev2 - ev^2
@@ -118,7 +118,7 @@ evCount_conv_user <- function(xmax, distPars, extrapolPars, survR,
     var <- ev2 - ev^2
     if (var < 0) {
         px <- zapsmall(px)
-        px <- px / sum(px)
+        ##px <- px / sum(px)
         ev <- sum(x * px)
         ev2 <- sum(x^2 * px)
         var <- ev2 - ev^2

@@ -4,6 +4,7 @@
 \usepackage{amsmath, amsfonts, xspace}
 \usepackage{longtable}
 \usepackage{rotating} % for sideways
+\usepackage{multirow}
 \setcounter{secnumdepth}{3}
 
 % @tarak: I am formatting continuation lines to start from column 3, since a referee
@@ -56,9 +57,9 @@ resaveResults <- TRUE
 @
 
 <<echo=FALSE,print=FALSE>>=
+library("Countr")
+library("lmtest")
 if(!resaveResults){
-    library("Countr")
-    library(lmtest)
     load(resultsFile)
     resaveResults <- FALSE # in case 'resultsFile' contains variable 'resaveResults'
 }
@@ -71,9 +72,9 @@ if(!resaveResults){
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% almost as usual
-\author{Tarak Kharrat\\Salford Business School
-        \And Georgi N. Boshnakov \\ University of Manchester
-        \And Ian McHale\\Salford Business School
+\author{Tarak Kharrat\\University of Liverpool
+        \And Georgi N. Boshnakov \\University of Manchester
+        \And Ian McHale\\ University of Liverpool
         \AND Rose Baker\\Salford Business School
 }
 \title{Flexible Regression Models for Count Data Based on Renewal Processes: The \pkg{Countr} Package}
@@ -84,6 +85,10 @@ if(!resaveResults){
 \Shorttitle{\pkg{Countr}: Flexible Regression Models for Count Data} %% a short title (if necessary)
 
 %% an abstract and keywords
+<<echo=FALSE>>=
+library("Countr")
+pd <- packageDescription("Countr")
+@ 
 \Abstract{
   %% A new alternative to the standard Poisson regression model for count data is suggested.
   %% This new family of models is based on discrete distributions derived from renewal
@@ -118,6 +123,10 @@ if(!resaveResults){
   implemented. Package \pkg{Countr} implements state-of-the-art recently
   developed methods for fast computation of the count probabilities.
   The package functionalities are illustrated using several datasets.
+  \par
+  This vignette is part of package \pkg{Countr},
+  version~\Sexpr{pd$Version}. It will appear in the Journal of Statistical
+  Software.
 }
 \Keywords{renewal process, duration dependence, count data, Weibull distribution, convolution,
 Richardson extrapolation}
@@ -138,10 +147,10 @@ Richardson extrapolation} %% without formatting
 %% in the following format:
 \Address{
   Tarak Kharrat\\
-  Salford Business School\\
-  Maxwell Building, Salford \\
-  M5 4WT Greater Manchester, United Kingdom
-  E-mail: \email{T.Kharrat@salford.ac.uk}\\
+  School of Marketing and Operations\\
+  University of Liverpool \\
+  33 Finsbury Square, London EC2A 1AG, United Kingdom \\
+  E-mail: \email{Tarak.Kharrat@liverpool.ac.uk}\\
 
   Georgi N. Boshnakov\\
   School of Mathematics\\
@@ -169,6 +178,7 @@ Richardson extrapolation} %% without formatting
 \newcommand{\countdist}{{\cal D}}
 
 \begin{document}
+\SweaveOpts{concordance=FALSE}
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
@@ -179,7 +189,8 @@ Modelling a count variable (the number of events occurring in a given time
 interval) is a common task in many fields such as econometrics, social sciences,
 sports modelling, marketing, physics or actuarial science just to name a few.
 The standard approach is to use the Poisson model,
-where $Y |x \sim Poisson (\E(Y|x) = \exp(x^\top \beta))$. Here
+where $Y|x \sim \text{Poisson}(\lambda(x))$, where $\lambda(x) = \exp(x^\top \beta))$.
+Here
 $Y$ is predicted given covariates with values $x$, using regression coefficients
 $\beta$.  This model was built around a one-to-one correspondence between the
 count model (Poisson) and the distribution of the inter-arrival times
@@ -218,7 +229,7 @@ Another way to take advantage of the process history is to assume that the time
 since the last observed event is informative about the probability of a future
 occurence.  Inter-arrival times between events are still assumed to be
 independent and identically distributed but the hazard function, defined by
-$h(t) = \frac{f(t)}{1 - F(t)}$, where $f(t)$ and $F(t)$ are the density and the
+$h(t) = f(t)/(1 - F(t))$, where $f(t)$ and $F(t)$ are the density and the
 cumulative probability function, is no longer a constant function of time (as
 in the exponential case) but is replaced by a time-varying function.
 These type of models display \textit{duration dependence} where
@@ -354,7 +365,7 @@ evaluating this integral.
 \label{ssec:ProbabilityComp}
 \subsubsection{Convolution methods}
 To compute the integral defined in Equation~(\ref{eq:conv}), one can adapt
-composite midpoint rule (\eg \citet[section 4.1.4]{press}):
+composite midpoint rule (\eg \citet[section 4.1.4]{press2007numerical}):
 \begin{equation}
 \int_0^{Nh} f(x)\dee x = h\sum_{j=1}^N f\{(j-1/2)h\} + O(h^2),
 \label{eq:int_romberg}
@@ -420,7 +431,7 @@ S_3=(2^\delta S_2-S_1)/(2^\delta-1)
 \end{equation}
 Subsequently, higher-order errors can be removed in the same way until the
 required accuracy is attained. Romberg integration can also be done with the
-extended-midpoint rule (\eg \citet{press}). The situation for convolutions is
+extended-midpoint rule (\eg \citet{press2007numerical}). The situation for convolutions is
 less straightforward, but a satisfactory solution was derived in \citet[Appendix
 B]{baker2016Renewal}. Clearly, the Richardson extrapolation has the appealing
 property of improving the accuracy, without necessitating a large value of $N$
@@ -455,12 +466,10 @@ covariates, possibly via link functions.
 
 More formally, let $\boldsymbol{Y}$ be the response variable of interest,
 $\boldsymbol{x}$ a vector of covariates and $\countdist$ a renewal count
-distribution. We assume that
-\begin{equation}
-  \label{eq:generalSpec}
-  \boldsymbol{Y}|\boldsymbol{x} \sim \countdist(\boldsymbol{\theta}),
-\end{equation}
-where $\boldsymbol{\theta}$ is the vector of the parameters of $\countdist$.
+distribution. We assume that \begin{equation} \label{eq:generalSpec}
+\boldsymbol{Y}|\boldsymbol{x} \sim \countdist(\boldsymbol{\theta}),
+\end{equation} where $\boldsymbol{\theta} = (\theta_1, \ldots, \theta_p)^\top$
+is the vector of the parameters of $\countdist$.
 
 One or more parameters of the distribution may depend linearly
 on covariates via link functions. The equation for the $k$th parameter then is:
@@ -477,7 +486,7 @@ covariates.
 
 We call these models \emph{renewal regression models}.  Note that, in general,
 the renewal distributions are not from the exponential family. For comparison,
-in standard generalised linear models (glm) the distribution is
+in standard generalised linear models (GLM) the distribution is
 taken from the exponential family of distributions and the mean, transformed by
 a link function, is a linear combination of the covariates.
 
@@ -489,25 +498,48 @@ and the corresponding inter-arrival time distributions from which they are
 obtained.
 \begin{table}[!htbp]
   \centering
-  \begin{tabular}{ll||llllll}
-    Count          & $P(Y=k)$ & Inter-arrival  & pdf $f(t)$& Parameters & & \\
-    distribution   &          & distribution   &     &            & & \\ \hline
-
-    Poisson        & $\frac{\lambda^{k}}{k!}\exp^{-\lambda} $ & Exponential   & $ \lambda \exp^{-\lambda t}$ & $\lambda$    & \\[2pt] \hline
-
-    Weibull-count  & NSCF & Weibull       & $ \lambda \beta t ^{\beta -1} \exp^{-\lambda t^\beta}$ & $ \lambda, \beta $   \\
-    Gamma-count    & NSCF & Gamma         & $\lambda^k t^{k-1} \exp^{-\lambda t}/\Gamma(k)$  & $ \lambda, k $ \\
-    Gengamma-count & NSCF & Gen. gamma    &  see Equation~(\ref{eq:genGamPre}) &
-    $\mu, \sigma, q$\\
-    burr-count & NSCF & burr    &   $\frac{\frac{kc}{\alpha} (\frac{t}{\alpha})^{c-1}}{\Big(1 + (\frac{t}{\alpha})^c     \Big)^{k+1}} $&
-    $\alpha, c, k$\\
-
+      %% Changing some \frac{}{} fractions to /
+      %%    keeping the variant from Revision 1, in case we don't agree on this.
+      %%
+      %%\begin{tabular}{ll||llllll}
+      %%  Count          & $P(Y=k)$ & Inter-arrival  & pdf $f(t)$& Parameters & & \\
+      %%  distribution   &          & distribution   &     &            & & \\ \hline
+      %%
+      %%  Poisson        & $\frac{\lambda^{k}}{k!}\exp^{-\lambda} $ & Exponential   & $ \lambda \exp^{-\lambda t}$ & $\lambda$    & \\[2pt] \hline
+      %%
+      %%  Weibull-count  & NSCF & Weibull       & $ \lambda \beta t ^{\beta -1} \exp^{-\lambda t^\beta}$ & $ \lambda, \beta $   \\
+      %%  Gamma-count    & NSCF & Gamma         & $\lambda^k t^{k-1} \exp^{-\lambda t}/\Gamma(k)$  & $ \lambda, k $ \\
+      %%  Gengamma-count & NSCF & Gen. gamma    &  see Equation~(\ref{eq:genGamPre}) &
+      %%  $\mu, \sigma, q$\\
+      %%  Burr-count & NSCF & Burr    &   $\frac{\frac{kc}{\alpha} (\frac{t}{\alpha})^{c-1}}{\left(1 + (\frac{t}{\alpha})^c     \right)^{k+1}} $&
+      %%  $\alpha, c, k$\\
+      %%
+      %%\end{tabular}
+  \begin{tabular}{ll||lll}
+    Count          & $P(Y=k)$ & Inter-arrival  & pdf $f(t)$& Parameters \\
+    distribution   &          & distribution   &           &            \\ \hline
+    Poisson        & $\frac{\lambda^{k}}{k!}\exp^{-\lambda} $ & Exponential   & $ \lambda e^{-\lambda t}$ & $\lambda$     \\[2pt] \hline
+    Weibull-count  & NSCF & Weibull       & $ \lambda \beta t ^{\beta -1} e^{-\lambda t^\beta}$
+          & $\lambda$ (scale), $\beta$ ($e^{\text{shape}}$)   \\
+    Gamma-count    & NSCF & Gamma         & $\lambda^k t^{k-1} e^{-\lambda t} \! /\Gamma(k)$
+                                                           & $\lambda$ (rate), $k$ (shape)\\
+    Gengamma-count & NSCF & Gen.{} gamma    &  see Equation~(\ref{eq:genGamPre}) &
+    $\mu, \sigma, q$ \\[5pt]
+    Burr-count & NSCF & Burr    &
+                                  $\dfrac{kc (t/\alpha)^{c-1}}{
+                                  \alpha \left( 1 + (t/\alpha)^{c} \right)^{k+1}} $&
+    % the negative spacing below is to avoid mis-alignment of with the rows above
+    \multirow[t]{2}{*}{\begin{tabular}{l}
+                         \hspace{-0.6em}$\alpha$ (scale),
+                         $c$ (shape1), \\
+                         \hspace{-0.6em}$k$ (shape2)
+                       \end{tabular}%
+                        }%
   \end{tabular}
   \caption{Built-in count distributions in package \pkg{Countr} and the interarrival time
-    distributions generating them. The Poisson distribution is given for reference (it can be
-    fitted using base \proglang{R}'s \code{glm()}). NSCF stands for \emph{no
-      simple closed form}. $\Gamma(k)$ is the gamma function and the burr-count uses
-    the Burr type \RNum{12} parameterization \citep{tadikamalla1980look}.}
+    distributions generating them. NSCF stands for \emph{no
+      simple closed form}. $\Gamma(k)$ is the gamma function and the Burr-count uses
+    the Burr type \RNum{12} parameterization \citep{tadikamalla1980look}. }
   \label{tab:countdist}
 \end{table}
 
@@ -552,15 +584,15 @@ Table~\ref{tab:distparam}.
     Count          & dist & Par.~1  & Link & Par.~2 & Link & Par.~3 & Link    \\
     distribution   &    &     &      &        &      &        &        \\ \hline
 
-    Weibull-count  & \code{weibull} & \code{scale}  & log  & \code{shape} & log
+    Weibull-count  & \code{Weibull} & \code{scale}  & log  & \code{shape} & log
                                                            & &
                                                               \\
     Gamma-count    & \code{gamma} & \code{rate}   & log  & \code{shape} & log  & &        \\
     Gengamma-count & \code{gengamma} & \code{mu}    & log  & \code{sigma} & log  & \code{Q}        & I()    \\
-    Burr-count     & \code{burr} & \code{scale} & log  & \code{shape1}& log  & \code{shape2}  & log  &
+    Burr-count     & \code{Burr} & \code{scale} & log  & \code{shape1}& log  & \code{shape2}  & log  &
   \end{tabular}
   \caption{Parameters and default link functions for the built-in count
-    distributions in package \pkg{Countr}.I() stands for the identity function.}
+    distributions in package \pkg{Countr}. I() stands for the identity function.}
   \label{tab:distparam}
 \end{table}
 
@@ -602,8 +634,8 @@ conditions,
      \frac{\partial \mathcal{L}}{\partial \boldsymbol{\beta}} = \sum_{i=1}^{n} \frac{\partial ln P_i}{\partial \boldsymbol{\beta}} = 0
      ,
 \end{equation}
-where $P_i = P_{y_i}(t|\mathbf{x}_i, \boldsymbol{\beta}_i)$ and $\frac{\partial
-\mathcal{L}}{\partial \boldsymbol{\beta}}$ is a $q \times 1$ vector.
+where $P_i = P_{y_i}(t|\mathbf{x}_i, \boldsymbol{\beta}_i)$ and
+$\partial \mathcal{L} / \partial \boldsymbol{\beta}$ is a $q \times 1$ vector.
 
 Let $\boldsymbol{\beta}_0$ be the \textit{true} value of $\boldsymbol{\beta}$.
 Using ML theory, we obtain
@@ -632,12 +664,13 @@ expectation and limit.
 
 For fully parametric models such as Poisson or renewal-count, a crude diagnosis
 is to compare the fitted probabilities with observed frequencies. Things are
-better understood with a formula. Define the count variable $y_i, i=1, \dots, n$,
-where $n$ is the total number of individuals and let $m = max(y_i)$. We denote
-by $\bar{p}_j$ the observed frequencies (the fraction of the sample where $y =
-j$) and let $\hat{p}_j, j = 1, \dots, m$, be the fitted frequencies. For example, in
-the Poisson model, $\hat{p}_j = \frac{1}{n} \sum_{i=1}^{n} \exp{(-\hat{\mu}_i^j) /
-j!}$.
+better understood with a formula. Define the count variable $y_i, i=1, \dots,
+n$, where $n$ is the total number of individuals and let $m = max(y_i)$. We
+denote by $\bar{p}_j$ the observed frequencies (the fraction of the sample where
+$y = j$) and let $\hat{p}_j, j = 1, \dots, m$, be the fitted frequencies. For
+example, in the Poisson model,
+$ \hat{p}_j = \frac{1}{n} \sum_{i=1}^{n} \hat{\lambda}_i^j \exp{(-\hat{\lambda}_i) / j!}$, where $\hat{\lambda}_i = \sum_{k=1}^p \exp{(x_i^k \hat{\beta}_k)} $ is the expected count
+value for individual $i$.
 
 To start with, one can compare $\bar{p}_j$ to $\hat{p}_j$ for specific values of
 the count variable $j$ to gain some insight about the range of counts where the
@@ -652,16 +685,23 @@ statistic of each cell, defined as
 $\sum_{j=1}^J n\frac{(\bar{p}_j - \hat{p}_j)^2}{\bar{p}_j}$, is computed, as
 well. The result can be visualised by a call to \code{frequency_plot()}, see Section~\ref{sec:quickStart}.
 
-Visualising the result can be a good starting point but without a formal test,
-it is hard to conclude if $\hat{p}_j$ is a \textit{good approximation} to $\bar{p}_j$
-and hence if the model fits the data well. \citet[Section 5.3.4]{cameron2013regression})
-suggest a formal \textit{chi-square goodness-of-fit test} which is a generalisation of the Pearson's \textit{chi-square test} and controls
-for estimation error in $\hat{p}_j$. The test is a conditional moment test. It
-has been implemented in \pkg{Countr} in the \code{chiSq_gof()} method using the gradient
-version which is justified for renewal models as they are fully parametric and
-parameters estimation is based on maximum-likelihood.
+% After visualising the result, the next step is to base model validation on formal tests.
+% \citet[Section 5.3.4]{cameron2013regression}
+% suggest a formal \textit{chi-square goodness-of-fit test} which is a generalisation of the Pearson's \textit{chi-square test} and controls
+% for estimation error in $\hat{p}_j$. The test is a conditional moment test. It
+% has been implemented in \pkg{Countr} in the \code{chiSq_gof()} method using the gradient
+% version which is justified for renewal models as they are fully parametric and
+% parameters estimation is based on maximum-likelihood.
+Formal tests are often used for model validation.
+\citet[Section~5.3.4]{cameron2013regression} suggest a formal \textit{chi-square
+  goodness-of-fit test} which is a generalisation of the Pearson's
+\textit{chi-square test} and controls for estimation error in $\hat{p}_j$. The
+test is a conditional moment test.  Its gradient version, implemented in
+\pkg{Countr}, is justified for renewal models as they are fully parametric and
+parameter estimation is based on maximum-likelihood.
+The test is carried out by function \code{chiSq_gof()}.
 
-Applications of the above  tests are given in the following sections.
+Applications of the above tests are given in the following sections.
 
 
 
@@ -701,9 +741,9 @@ has been designed to mimic the GLM functionality in \proglang{R}. In fact, users
 familiar with \code{glm()} should recognize several common arguments in
 \code{renewalCount()}'s interface:
 % Note: this should never be run!
-<<eval=FALSE>>=
+<<eval = FALSE>>=
 renewalCount(formula, data, subset, na.action, weights, offset,
-  dist = c("custom", "weibull", "weibullgam", "gamma", "gengamma", "burr"),
+  dist = c("weibull", "weibullgam", "custom", "gamma", "gengamma", "burr"),
   anc = NULL, convPars = NULL, link = NULL, time = 1.0,
   control = renewal.control(...), customPars = NULL,
   seriesPars = NULL, weiMethod = NULL,
@@ -713,8 +753,7 @@ The first line contains the standard model-frame specifications, while
 arguments \code{computeHessian}, \code{model}, \code{x} and \code{y} are boolean
 flags indicating whether the returned object should contain the
 variance-covariance matrix, the model frame, the model matrix and the response,
-respectively. All default to \code{TRUE}. If the variance-covariance matrix is
-suppressed it is not computed at all.  The remaining arguments are specific to
+respectively. All default to \code{TRUE}. If \code{computeHessian} is \code{FALSE}, the variance-covariance matrix is not computed. The remaining arguments are specific to
 the renewal regression model.
 
 The minimum required inputs are \code{formula} (an \proglang{R} formula),
@@ -733,7 +772,7 @@ Additional guidance can be found in the package documentation and the vignettes.
 
 
 % \subsection{}
-% \section{Comparing the Poisson and weibull models}
+% \section{Comparing the Poisson and Weibull models}
 \section{Quick start - an example without covariates}
 \label{sec:quickStart}
 
@@ -746,8 +785,8 @@ We also need \code{dplyr} \citep{dplyr2016} and
 \code{xtable} \citep{xtable2016}, which
 provide usefull facilities for data manipulation and presentation:
 <<load-aux-pkg>>=
-library(dplyr)
-library(xtable)
+library("dplyr")
+library("xtable")
 @
 
 The purpose of this section is to give users a general sense of the package,
@@ -772,20 +811,20 @@ Renewal-count distributions give the flexibility to drop the constant intensity
 assumption by selecting non-exponential interval-arrival distributions.
 %How to use this flexibility is beyond the scope of this paper.
 One strategy to select this distribution is discussed in \citet[Chapter
-4]{TarakPhd}.  Here we simply say that the weibull density seemed to provide the
+4]{TarakPhd}.  Here we simply say that the Weibull density seemed to provide the
 best fit and will be used in this example.
 
 We focus on the goals scored by the away team:
 <<>>=
-data(football)
+data("football")
 table(football$awayTeamGoals)
 @
 Our aim here is not to conduct an extensive analysis of the data but to
-highlight the improvement introduced by the weibull-count model compared to
+highlight the improvement introduced by the Weibull-count model compared to
 Poisson.
 
 We fit the Poisson model using \texttt{glm()} with the family
-argument set to \texttt{poisson}. For the weibull-count model we use
+argument set to \texttt{poisson}. For the Weibull-count model we use
 \texttt{renewalCount()} with \texttt{dist = "weibull"}. Both models are
 intercept only (no covariates specified).
 <<eval=FALSE>>=
@@ -809,7 +848,7 @@ predictions from the two models.
 \begin{figure}[!htbp]
   \centering
 <<fig=TRUE>>=
-library(dplyr)
+library("dplyr")
 frequency_plot(pears$Counts, pears$Actual,
   dplyr::select(pears, contains("_predicted")),
   colours = c("grey", "blue", "green", "black"))
@@ -824,9 +863,9 @@ frequency_plot(pears$Counts, pears$Actual,
 
 
 As expected, the most likely outcome for away goals is 0, 1 and to some
-extent~2. Eyeballing Figure~\ref{fig:football:freq}, the weibull-count model is
+extent~2. Eyeballing Figure~\ref{fig:football:freq}, the Weibull-count model is
 a clear improvement over the Poisson model.
-%% Even of the other count values, it seems that the weibull-count
+%% Even of the other count values, it seems that the Weibull-count
 %% model still slightly outperforms the Poisson alternative.
 
 %% @Georgi: We have an issue with the placement of the lr code block. I am sure
@@ -881,7 +920,7 @@ for each mother and \Sexpr{dim(fertility)[2]} columns\footnote{%
   factors.
 }, coded as follows:
 
-% ferNames <- c( "children", "german", "years_school", "voc_train", "university", "Religion",
+% ferNames <- c( "children", "german", "years_school", "voc_train", "university", "religion",
 %                "year_birth", "rural", "age_marriage" )
 % origFerNames <- c( "GERMAN", "EDU", "VOC", "UNI", "CATH", "PROT", "MUSL", "RURAL",
 %                "YEAR_OF_B", "AGEMARR", "Y" )
@@ -891,7 +930,7 @@ for each mother and \Sexpr{dim(fertility)[2]} columns\footnote{%
 %  [3,] "EDU"       "years_school"
 %  [4,] "VOC"       "voc_train"
 %  [5,] "UNI"       "university"
-%  [6,] "Religion"  "Religion"  ("CATH", "PROT", "MUSL" and other)
+%  [6,] "religion"  "religion"  ("CATH", "PROT", "MUSL" and other)
 %  [7,] "YEAR_OF_B" "year_birth"
 %  [8,] "RURAL"     "rural"
 %  [9,] "AGEMARR"   "age_marriage"
@@ -914,7 +953,7 @@ for each mother and \Sexpr{dim(fertility)[2]} columns\footnote{%
           university (\code{university}), factor variables with levels
           \code{yes} and \code{no}.
 
-\item \code{Religion}
+\item \code{religion}
   --- factor variable with levels \code{Catholic}, \code{Muslim},
                                   \code{Protestant}, and \code{Other}.
 
@@ -929,7 +968,7 @@ for each mother and \Sexpr{dim(fertility)[2]} columns\footnote{%
 
 
 The dataset is available when \pkg{Countr} is attached. It can also be loaded
-independently using \code{data()}, e.g.
+independently using \code{data()}, e.g.,
 <<>>=
 data("fertility", package = "Countr")
 @
@@ -950,9 +989,12 @@ print(xtable(head(fertility), caption = dataCaption, label = "tbl:data"),
 The response variable considered here is the number of children per woman
 (\code{children}).  The average number of children observed in this sample is
 \Sexpr{format(mean(fertility$children), digits=4)} %$
-and variance of \Sexpr{format(var(fertility$children), digits=4)}, %$
-so there is a hint for under-dispersion in the response variable's marginal
-distribution. A frequency table of this variable is shown in Table~\ref{tbl:freq}.
+and variance is \Sexpr{format(var(fertility$children), digits=4)}, %$
+so there is no apparent under- or over-dispersion. However,
+when the additional variables are
+taken into account under-dispersion becomes evident as discussed by \citet{McShane2008Count}
+and confirmed by our analysis below.
+A frequency table of this variable is shown in Table~\ref{tbl:freq}.
 <<children-table,echo=FALSE,results=tex>>=
 freqtable <-
     count_table(count = fertility$children, breaks = 0:9, formatChar = TRUE)
@@ -987,6 +1029,9 @@ print(xtable(fert_num, caption = "Summary of the numeric explanatory variables",
                        label = "tbl:frecnum"))
 @ %def
 
+\subsection{Model specification}
+\label{sec:setting-up-model}
+
 
 \subsubsection{Specifying the count distribution}
 \label{sec:spec-distr}
@@ -995,7 +1040,7 @@ The count distribution is selected by specifying the distribution of the
 inter-arrival times. \pkg{Countr} currently provides the four built-in
 distributions discussed in Table~\ref{tab:countdist}. Besides, another
 distribution (\code{dist = "weibullgam"}) has been implemented. It is known as
-the weibull-gamma (or compound weibull) and is obtained from weibull by letting
+the Weibull-gamma (or compound Weibull) and is obtained from Weibull by letting
 the parameter $\lambda$ have a gamma distribution. The Weibull-gamma count
 distribution has Weibull-gamma for its interarrival times. This model has been
 derived in details in \citet{McShane2008Count}. This model can be seen as a
@@ -1018,7 +1063,7 @@ Covariates can be introduced using familiar \proglang{R} formula syntax.  In the
 examples with the \code{fertility} dataset we will use the following formula:
 <<>>=
 regModel <- children ~ german + years_school + voc_train + university +
-  Religion + rural + year_birth + age_marriage
+  religion + rural + year_birth + age_marriage
 @
 
 When supplied as argument \code{formula} in a call to \code{renewalCount()}
@@ -1041,7 +1086,7 @@ Possible options for the link function are \code{"log"}, \code{"cauchit"},
 for user defined distributions).
 
 
-\subsubsection{Fitting built-in models}
+\subsection{Fitting built-in models}
 \label{sec:fitting-models-1}
 
 The fitting function \code{renewalCount()} has many arguments but
@@ -1082,7 +1127,7 @@ the count probability and the returned values, among others.
 As usual in non-linear optimisation, for best results informed initial values
 should be provided whenever possible.
 
-One strategy is to fit a Poisson glm model and use its parameter estimates as
+One strategy is to fit a Poisson GLM model and use its parameter estimates as
 starting values for the linear predictor of the location parameter. Since the
 models fitted by \pkg{Countr} contain additional parameters, these need to be
 set suitably. For example, the Weibull count model reduces to the Poisson if the
@@ -1118,7 +1163,7 @@ not available, the function \code{renewalNames()} can be used to get a character
 vector of names of parameters. It can be used in two ways.  The first,
 \code{renewalNames(object, target)}, has similar semantics to
 \code{renewalCoef()}. The second is \code{renewalNames(object,...)}, where
-\code{"..."} are the same argument that would be used in a call to
+\code{"..."} are the same arguments that would be used in a call to
 \code{renewalCount()}. In this case \code{renewalNames()} returns the names of
 the coefficients of the model that would be produced if \code{renewalCount()}
 was called with the same parameters. For example, changing \code{renewalCount}
@@ -1225,63 +1270,70 @@ for the \code{"BFGS"} algorithm).
 \subsubsection{Regression models on the ancillary parameters}
 
 So far we have given examples of regression models in which the parameter
-regressed on is the location parameter, or more precisely, the
-first parameter of the count distribution. \pkg{Countr} offers the possiblity
-to specify covariates on the ``ancillary'' parameters (the ones that determine
-the shape, the variance or other higher moments) via argument
-\code{anc}. \code{anc} is a named list containing formulas describing regression
-equations for the desired ancillary parameters.  Only the right-hand sides of
-the formulas in argument \code{arg} are used. This setup is modelled on
-(and is compatible with)
-package \code{flexsurv} \citep[function \code{flexsurvreg()}]{flexsurv2016}.
+regressed on is the location parameter, or more precisely, the first parameter
+of the count distribution. \pkg{Countr} offers the possiblity to specify
+covariates on the ``ancillary'' parameters (the ones that determine the shape,
+the variance or other higher moments). This can be done using either argument
+\code{anc} of \code{renewalCount()} or an extended formula syntax.
 
+If \code{anc} is supplied, it should be a named list in which each component is
+a model formula describing a regression equation for an ancillary parameter.
+Only the right-hand sides of these formulas are used. This setup is modelled on
+(and is compatible with) package \code{flexsurv} \citep[function
+\code{flexsurvreg()}]{flexsurv2016}. For example, to specify a Weibull count
+model with response variable \code{y} and covariates \code{x1}, \code{x2} and
+\code{x3}, we could use something like \code{formula = y ~ x1 + x2 + x3} and
+\code{anc = list(shape = ~x1)} in the call to \code{renewalCount()} to request
+different covariates for the scale and shape parameters.
 
-In the ancillary regression case, starting values have to be provided.  We show
-below an example of fitting such a model for the generalized gamma inter-arrival
-times with covariates applied to all the distribution parameters.  The names of
-the distribution parameters in this case are \code{"mu"} (location),
-\code{"sigma"} and \code{"Q"} (see Table~\ref{tab:distparam}).  In this example
-we will use the same formula, \code{regModel}, for the three parameters of the
-distribution, so we prepare a list for the ancilliary parameters:
+Alternatively, the regression terms for all parameters can be put on the
+right-hand side (rhs) of argument \code{formula}, separated by \code{|}.  In
+this case the left-hand side (lhs) may also contain terms separated by \code{|}
+to designate the response variable and the distribution parameters. The latter
+can be omitted if there is no ambiguity.  For example, the same model as above
+can be specified with \code{formula = y ~ x1 + x2 + x3 | x1}, or more verbosely
+by \code{formula = y | shape ~ x1 + x2 + x3 | x1}. In the latter case the i-th
+term on the lhs is paired with the i-th term on the rhs.  If the same model
+formula is desired for all parameters, there is no need to repeat the rhs. Thus,
+\code{formula = y | shape ~ x1} requests \code{~ x1} for both, the response
+variable and the shape parameter. Note that \code{x1} applies only to terms
+listed in the lhs---if \code{shape} is omitted, \code{formula = y ~ x1},
+\code{x1} will not be used for it.
+
+Formulas can be created and manipulated with standard \proglang{R} tools and
+\code{Formula::as.Formula}.  Sometimes it may be troublesome to manipulate long
+formulas, so package \pkg{Countr} provides the helper function
+\code{CountrFormula} as an aid in creating formulas suitable for
+\code{renewalCount}. Here is an illustrative example of its use:
+<<>>=
+  CountrFormula(y ~ x1 + x2 + x3, shape = ~x1)
+@
+
+We show below an example of fitting a model for the generalized gamma
+inter-arrival times with covariates applied to all the distribution parameters.
+The names of the distribution parameters in this case are \code{"mu"}
+(location), \code{"sigma"} and \code{"Q"} (see Table~\ref{tab:distparam}). To
+fit a model using the same model formula, \code{regModel}, for all parameters we
+can call \code{renewalCount} with \code{formula = regModel} and \code{anc} set
+up as follows:
 <<>>=
 anc <- list(sigma = regModel, Q = regModel)
 @
 
-As discussed earlier, we obtain informative initial values for the location parameter from a
-Poisson model. Here we can use the previously model \code{IV}.  We also set the intercepts
-for (log) \code{"sigma"} and \code{"Q"} to one and the remaining regression coefficients to
-zero. With the help of \code{renewalCoef()} all this can be done with a couple of lines:
+In the ancillary regression case, starting values have to be provided.  As
+discussed earlier, we obtain informative initial values for the location
+parameter from a Poisson model. Here we can use the previously model \code{IV}.
+We also set the intercepts for (log) \code{"sigma"} and \code{"Q"} to one and
+the remaining regression coefficients to zero. With the help of
+\code{renewalCoef()} all this can be done with a couple of lines:
 <<>>=
 startA <- renewalCoef(IV, target = "gengamma")
 startA[c("Q_", "sigma_")] <- c(1, log(1))
 startA
 @
 The above illustrates the use of the name of a count distribution for argument
-\code{target}. In that case \code{renewalCoef()} assumes that the same formula is used for
-all parameters.
-
-%% This was before renewalCoef:
-%%
-%% <<eval=FALSE>>=
-%% mu <- coef(IV)
-%% names(mu) <- paste0("mu_", names(mu))
-%%
-%% sigma <- Q <- c(1, rep(0, 10))
-%% names(sigma) <- gsub("mu_", "sigma_", names(mu))
-%% names(Q) <- gsub("mu_", "Q_", names(mu))
-%%
-%% start <- c(mu, sigma, Q)
-%% names(start) <- gsub('\\(Intercept\\)', "", names(start))
-%%
-%% anc <- list(sigma = regModel, Q = regModel)
-%%
-%% gengamModel_ext0 <- renewalCount(formula = regModel, data = fertility,
-%%   dist = "gengamma", anc = anc,
-%%   control = renewal.control(start = start, trace = 0),
-%%   computeHessian = FALSE)
-%% @
-
-We can now fit the model:
+\code{target}. In that case \code{renewalCoef()} assumes that the same formula
+is used for all parameters. The model now can be fit with:
 <<eval=FALSE>>=
 gengamModel_ext0 <- renewalCount(formula = regModel, data = fertility,
   dist = "gengamma", anc = anc,
@@ -1289,31 +1341,133 @@ gengamModel_ext0 <- renewalCount(formula = regModel, data = fertility,
   computeHessian = FALSE)
 @
 
+%%%% <<eval=FALSE>>=
+%%%% mu <- coef(IV)
+%%%% names(mu) <- paste0("mu_", names(mu))
+%%%%
+%%%% sigma <- Q <- c(1, rep(0, 10))
+%%%% names(sigma) <- gsub("mu_", "sigma_", names(mu))
+%%%% names(Q) <- gsub("mu_", "Q_", names(mu))
+%%%%
+%%%% start <- c(mu, sigma, Q)
+%%%% names(start) <- gsub('\\(Intercept\\)', "", names(start))
+%%%%
+%%%% anc <- list(sigma = regModel, Q = regModel)
+%%%%
+%%%% gengamModel_ext0 <- renewalCount(formula = regModel, data = fertility,
+%%%%   dist = "gengamma", anc = anc,
+%%%%   control = renewal.control(start = start, trace = 0),
+%%%%   computeHessian = FALSE)
+%%%% @
+
+%%%%
+%%%% This was before introducing the example with different regressions for the different
+%%%% parameters.
+%%%%
+%%%% If the optimisation didn't converge or for other reasons, we may need to fit the
+%%%% model again.  Here we want to fit the same model using the coefficients of the
+%%%% previous fit as initial values, so we can directly use
+%%%% \code{gengamModel_ext0}. We also request the \code{spg} algorithm \citep{BB2009}
+%%%% for this second iteration:
+%%%% <<eval=FALSE>>=
+%%%% startB <- coef(gengamModel_ext0)
+%%%% gengamModel_ext <- renewalCount(formula = regModel, data = fertility,
+%%%%   dist = "gengamma", anc = anc,
+%%%%   control = renewal.control(method = "spg", start = startB, trace = 0),
+%%%%   computeHessian = FALSE )
+%%%% @
+%%%%
+%%%%
+%%%% Users can make sure that the optimization did converge by investigating the
+%%%% convergence status flag in object \code{gengamModel_ext}:
+%%%% <<>>=
+%%%% gengamModel_ext$converged
+%%%% @
+%%%% % @Tarak - a thought for us:
+%%%% %  the above illustrates what I discovered in other examples - that optim() algorithm
+%%%% %  doesn't converge for some indecipherable reason, but spg declares convergence even if, as
+%%%% %  here, the parameters hardly change.
+%%%%
+
+%In the ancillary regression case, starting values have to be provided.
+To illustrate the use of different formulas for the different parameters, let us use
+\code{regModel} for the first parameter and the following specifications for the remaining
+parameters:
+<<>>=
+sigmaModel <- ~ german + university + religion + age_marriage
+QModel     <- ~ german + religion + age_marriage
+@
+For use with argument \code{anc}, we create the following list:
+<<>>=
+anc <- list(sigma = sigmaModel, Q = QModel)
+@
+For the alternative formula method we prepare an extended formula:
+<<>>=
+regModelSQ <- Formula::as.Formula(regModel, sigmaModel, QModel)
+@
+We could use also
+<<>>=
+CountrFormula(regModel, sigma = sigmaModel, Q = QModel)
+@
+As discussed earlier, we can obtain informative initial values for the location
+parameter from a Poisson model. Here we can use the previously fitted model
+\code{IV} for the location parameter.  Similarly, for the other parameters we
+fit Poisson models with the respective formulas. Some justification for this
+comes from the properties of the Poisson distribution (most notably its variance
+is equal to the mean). Also, we use \code{update()} to set the response
+variable, since \code{sigmaModel} and \code{QModel} have empty left-hand sides:
+<<>>=
+IV2 <- glm(update(sigmaModel, children ~ .),
+  family = poisson(), data = fertility)
+IV3 <- glm(update(QModel, children ~ .),
+  family = poisson(), data = fertility)
+@
+
+We construct the initial values from the above fits with the help of \code{renewalCoef()}
+and suitable settings for its argument \code{target}:
+<<>>=
+startGG <- c(renewalCoef(IV, target = "mu"),
+  renewalCoef(IV2, target = "sigma"),
+  renewalCoef(IV3, target = "Q"))
+startGG
+@
+
+This fits the model using argument \code{anc}:
+<<>>=
+fm_gengamAnc <- renewalCount(formula = regModel, data = fertility,
+  dist = "gengamma", anc = anc,
+  control = renewal.control(start = startGG, trace = 0),
+  computeHessian = FALSE)
+@
+Equivalently, the same results are obtained with the extended formula argument:
+<<>>=
+fm_gengam <- renewalCount(formula = regModelSQ, data = fertility,
+  dist = "gengamma",
+  control = renewal.control(start = startGG, trace = 0),
+  computeHessian = FALSE)
+@
+
 If the optimisation didn't converge or for other reasons, we may need to fit the
 model again.  Here we want to fit the same model using the coefficients of the
 previous fit as initial values, so we can directly use
-\code{gengamModel_ext0}. We also request the \code{spg} algorithm \citep{BB2009}
+\code{fm_gengam}. We also request the \code{spg} algorithm \citep{BB2009}
 for this second iteration:
 <<eval=FALSE>>=
-startB <- coef(gengamModel_ext0)
-gengamModel_ext <- renewalCount(formula = regModel, data = fertility,
-  dist = "gengamma", anc = anc,
-  control = renewal.control(method = "spg", start = startB, trace = 0),
+startBB <- coef(fm_gengam)
+fm_gengam_ext <- renewalCount(formula = regModelSQ, data = fertility,
+  dist = "gengamma",
+  control = renewal.control(method = "spg", start = startBB, trace = 0),
   computeHessian = FALSE )
 @
-
-
-Users can make sure that the optimization did converge by investigating the
-convergence status flag in object \code{gengamModel_ext}:
+A check of the convergence status flag reveals that the optimization did
+\Sexpr{if(fm_gengam_ext$converged) "" else " not "} %$
+converge:
 <<>>=
-gengamModel_ext$converged
+fm_gengam_ext$converged
 @
-% @Tarak - a thought for us:
-%  the above illustrates what I discovered in other examples - that optim() algorithm
-%  doesn't converge for some indecipherable reason, but spg declares convergence even if, as
-%  here, the parameters hardly change.
+%$
 
-\subsubsection{Custom inter-arrival distributions}
+\subsection{Custom inter-arrival distributions}
 \label{ssec:custom-dist}
 
 Instead of using the built-in distributions in \code{Countr},
@@ -1371,7 +1525,7 @@ to \code{renewalCount()} by defining a function whose argument is a named list
 of the distribution parameters, as in:
 <<>>=
 .getExtrapol <- function(distP) {
-    c(2, distP[["shape"]])
+  c(2, distP[["shape"]])
 }
 @
 
@@ -1395,7 +1549,7 @@ weiModelCust <- renewalCount(formula = regModel, data = fertility,
   customPars = customPars, computeHessian = FALSE)
 @
 Note that the computations in this example can be much slower than for the equivalent
-built-in distribution (that is why the hessian computation has been turned off),
+built-in distribution (that is why the Hessian computation has been turned off),
 since the crucial parts of the latter are implemented
 in~\proglang{C++}. Therefore, we recommend using built-in distributions as
 much as possible and simply consider custom inter-arrival distributions for
@@ -1469,19 +1623,22 @@ hand, university education seems not significant (p-value 0.2577), even though
 the effect (the value, $-0.1815$, of the coefficient) is almost the same as for
 vocational training. Similarly, years of schooling seems not significant. These
 variables are highly confounded, so such conclusions should not be taken at face
-value.
-
+value. Note also that the shape parameter is more than seven times greater than
+its standard error, so we have strong evidence that $\log(\beta) > 0$, \ie
+$\beta > 1$, which corresponds to under-dispersion.
 
 \subsubsection{Bootstrap standard errors}
-
 Standard errors and other quantities computed from the Hessian are based on
 assumptions, which are often difficult to check. Non-parametric bootstrap is
-often a useful alternative.  The bootstrap computations in \pkg{Countr} are
+often a useful alternative. Another alternative would be to consider
+sandwich-type standard errors. The current version of \pkg{Countr} (3.5.0) only
+implements the boostrap option and the sandwich alternative will be added in the
+next update. The bootstrap computations are
 based on function \code{boot()} from the package with the same name
 \citep{boot2017}.  Bootstrap confidence intervals rely on additional methods
 implemented in \code{confint.boot()} from package \code{car} \citep{car2011}.
 
-Bootstrap standard erros and confidence intervals can be computed by setting
+Bootstrap standard errors and confidence intervals can be computed by setting
 \code{type = "boot"} and specifying the desired number of bootstrap samples with
 argument \code{R}.  \citet[Section 2.6.4]{cameron2013regression} observe that
 $400$ bootstrap samples are often enough. This can be slow, so
@@ -1514,7 +1671,7 @@ do the following:
 weiWithBoot <- addBootSampleObject(weiModel, R = 400, parallel = "multicore",
   ncpus = 14)
 \end{verbatim}
-We use arguments \code{parallel} and \code{ncplus} to speed up the computations
+We use arguments \code{parallel} and \code{ncpus} to speed up the computations
 by using parallel processing facilities provided by \code{boot::boot}, see
 \code{help(boot::boot)}.
 Now these computations would use the stored bootstrap sample in \code{weiWithBoot}:
@@ -1534,7 +1691,7 @@ gives further examples and details.
 %@tarak: done.
 
 % \subsubsection{Comparing fitted models}
-% %% @georgi: this need to be changed and adapted to what we did in the fertility vignette
+% %% @georgi: this needs to be changed and adapted to what we did in the fertility vignette
 % %% @tarak: could you do this?
 % In the previous section, we fitted three models to the fertility data. One way
 % to select the ``best'' model is to use information criteria such as AIC or BIC.
@@ -1635,7 +1792,7 @@ The dataset used in this example is the \texttt{quine} data from package
 \texttt{MASS} \citep{Venables20102MASS}, first analysed by
 \citet{aitkin1978analysis}.
 <<load-data>>=
-data(quine, package = "MASS")
+data("quine", package = "MASS")
 @
 The dataset gives the number of days absent from school (\texttt{Days}) of
 \Sexpr{ nrow(quine) } children in a particular school year. A number of
@@ -1674,7 +1831,7 @@ Given the extreme over-dispersion observed in the \texttt{quine} data, we do not
 expect the Poisson model to perform well. Nevertheless, we can still use it as a
 starting point and treat it as a benchmark (any model worse than Poisson should
 be strongly rejected). We also consider the negative binomial (as implemented in
-\texttt{MASS:glm.nb()}) and 3 renewal-count models based on weibull, gamma and
+\texttt{MASS::glm.nb()}) and 3 renewal-count models based on Weibull, gamma and
 generalised-gamma inter-arrival times. This gives a total of five models to
 choose from. The following code fits the 5 models:
 <<models,eval=FALSE>>=
@@ -1700,30 +1857,31 @@ ratio (LR) test. This is possible when models are nested and in this case the LR
 statistic has the usual \(\chi^2(p)\) distribution, where \(p\) is the difference in
 the number of parameters in the models. Here we compare all
 renewal-count models against Poisson, negative-binomial against Poisson,
-weibull-count against generalised-gamma and gamma against the generalised-gamma.
+Weibull-count against generalised-gamma and gamma against the generalised-gamma.
 
 For non-nested models, the standard approach is to use information criteria such
 as the Akaike information criterion (AIC) and the Bayesian information criterion
-(BIC). This method can be applied to discriminate between weibull and gamma
+(BIC). This method can be applied to discriminate between Weibull and gamma
 renewal count models, and between these two models and the negative binomial.
 
-Therefore, a possible strategy can be summarised as follows:
+Therefore, a possible strategy (similar to what has been suggested in \citet[Section
+6.3.4 p233]{cameron2013regression}) can be summarised as follows:
 \begin{itemize}
 \item Use the LR test to compare Poisson with negative binomial.
-\item Use the LR test to compare Poisson with weibull-count.
+\item Use the LR test to compare Poisson with Weibull-count.
 \item Use the LR test to compare Poisson with gamma-count.
 \item Use the LR test to compare Poisson with generalised-gamma-count.
-\item Use the LR test to compare weibull-count with generalised-gamma-count.
+\item Use the LR test to compare Weibull-count with generalised-gamma-count.
 \item Use the LR test to compare gamma-count with generalised-gamma-count.
-\item Use information criteria to compare gamma-count with weibull-count.
-\item Use information criteria to compare weibull-count to negative binomial.
+\item Use information criteria to compare gamma-count with Weibull-count.
+\item Use information criteria to compare Weibull-count to negative binomial.
 \end{itemize}
 
 Here is the code for these tests \footnote{The \code{suppressWarnings()} command
 is used to avoid printing a message to complain about the model objects being
 from different class.}:
 <<lr-test-poisson>>=
-library(lmtest)
+library("lmtest")
 pois_nb <- lrtest(pois, nb)
 pois_wei <- suppressWarnings(lrtest(pois, wei))
 pois_gam <- suppressWarnings(lrtest(pois, gam))
@@ -1741,7 +1899,8 @@ As observed in Table~\ref{tab:lr_pois}, the LR test rejects the null
 hypothesis and all the alternative models are preferred to Poisson. This is due to
 the large over-dispersion.
 <<echo=FALSE,results=tex>>=
-print(xtable(pois_res, caption = "LR results against Poisson model. Each row compares an alternative model vs the Poisson model. All alternatives are preferable to Poisson.",
+print(xtable(pois_res, caption = "LR results against Poisson model. Each row compares an alternative model vs the Poisson model. All alternatives are preferable to Poisson.
+The critical value corresponds to a significance level of 5\\%",
              label = "tab:lr_pois"))
 @
 
@@ -1760,24 +1919,30 @@ gengam_res <- data.frame(Model = c("weibull", "gamma"),
 print(xtable(gengam_res, caption = "LR results against generalised-gamma model",
              label = "tab:lr_gengam"))
 @ %def
-The results in Table~\ref{tab:lr_gengam} suggest that the weibull and gamma
+The results in Table~\ref{tab:lr_gengam} suggest that the Weibull and gamma
 models should be preferred to the generalised gamma model.
 
-Finally, we use information criteria to choose the best model among the weibull
+Finally, we use information criteria to choose the best model among the Weibull
 and gamma renewal models and the negative binomial:
 <<IC-models>>=
-ic <- data.frame(Model = c("weibull", "gamma", "negative-binomial"),
-  AIC = c(AIC(wei), AIC(gam), AIC(nb)),
-  BIC = c(BIC(wei), BIC(gam), BIC(nb)), stringsAsFactors = FALSE)
+ic <- data.frame(Model = c("gamma", "weibull", "negative-binomial",
+  "generalised-gamma", "Poisson"),
+  AIC = c(AIC(gam), AIC(wei), AIC(nb), AIC(gengam), AIC(pois)),
+  BIC = c(BIC(gam), BIC(wei), BIC(nb), BIC(gengam), BIC(pois)),
+  stringsAsFactors = FALSE)
 @
 <<echo=FALSE,results=tex>>=
-print(xtable(ic, caption = "Information criteria results",
-             label = "tab:ic_models"))
+print(xtable(ic,
+             caption = "Information criteria results",
+             label = "tab:ic_models"),
+	     hline.after = c(0, 3), type = "latex"
+	     )
 @
-It is worth noting here that all models have the same degree of freedom and
-hence comparing information criteria is equivalent to comparing the
-likelihoods. According to Table~\ref{tab:ic_models}, the gamma renewal model is
-slightly preferred to the weibull model.
+According to Table~\ref{tab:ic_models}, the gamma renewal model is
+slightly preferred to the Weibull model although since the maximum differences
+of AIC is less than 2 units, the three models can be roughly seen equivalent.
+The table also confirms that the Poisson model is not able to deal with the
+large over-dispersion.
 
 We conclude this analysis by running a formal chi-square goodness of fit test
 \citep[Section 5.3.4]{cameron2013regression} to the results of the previously
@@ -1789,7 +1954,7 @@ gof
 
 The null hypothesis cannot be rejected at standard confidence levels and we
 conclude that the selected model presents a good fit to the data. Users can
-check that the same test yields similar results for the weibull and negative
+check that the same test yields similar results for the Weibull and negative
 binomial models but comfortably rejects the null hypothesis for the Poisson and
 generalised gamma models. These results confirm what we observed before.
 
@@ -1876,11 +2041,12 @@ future versions of \pkg{Countr}.
 \label{sec:acknowledgments}
 
 We would like to thank two anonymous reviewers for their thorough comments and
-constructive suggestions, which helped us to improve the quality of the
+constructive suggestions, which helped us improve the quality of the
 software and the manuscript.
 
 
-\bibliography{REFERENCES,football,quine,refresponse,var_covar}
+%\bibliography{REFERENCES,football,quine,refresponse}
+\bibliography{jss2876}
 
 <<echo=FALSE,print=FALSE>>=
 options(op) # restore options

@@ -2,7 +2,7 @@
 data(fertility)
 
 ## specify the model as in McShane(2008)
-form <- children ~ german + years_school + voc_train + university + Religion +
+form <- children ~ german + years_school + voc_train + university + religion +
     year_birth + rural + age_marriage
 
 

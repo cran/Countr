@@ -245,7 +245,9 @@ se.coef.renewal <- function(object, parm, type = c("asymptotic", "boot"), ...) {
            },
            "boot" = {
                if (is.null(object$boot)) {
-                   warning("boot sample not found. it will be created ...")
+                   cat("Precomputed boot sample not found, creating a new one.\n")
+                   cat("\tThis may take some time...\n")
+
                    pars <- list(...)
                    pars$R <- ifelse(is.null(pars$R), 100, pars$R)
                    object <- addBootSampleObject(object, pars)

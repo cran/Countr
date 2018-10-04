@@ -117,7 +117,7 @@ void doublepdf(arma::vec& pdfn, const double& h, const unsigned& nsteps) {
 void convtwo(const arma::vec& p, arma::vec& q, const double& h,
 	     const unsigned& nsteps) {
   unsigned k, j;
-  double qtemp, Tmp;
+  double qtemp;
 
   for(k = nsteps; k >= 1; k --) {
     qtemp = 0.;
@@ -255,7 +255,7 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
   }
 
   if (extrap) { // use Richardson extrapolation to reduce the error
-    unsigned i8, i4, i2;
+    // unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -341,7 +341,7 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
   }
 
   if (extrap) { // use Richardson extrapolation to reduce the error
-    unsigned i8, i4, i2;
+    // unsigned i8, i4, i2;
     // define the steps needed
     unsigned nsteps1 = nsteps / 4;
     unsigned nsteps2 = 2 * nsteps1;
@@ -511,14 +511,15 @@ arma::vec dCount_naive_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 			      const unsigned& nsteps = 100,
 			      double time = 1.0, bool extrap = true,
 			      bool logFlag = false) {
-  unsigned lnt = x.n_elem;
+  // 2018-04-12 was: unsigned lnt = x.n_elem;
+  int lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 
   if (lnt != distPars.size())
     stop("x and distPars should have same length !");
 
-  for (unsigned i = 0; i < lnt; i++) {
+  for (int i = 0; i < lnt; i++) {
     distParsi = distPars[i];
     pbs[i] = dCount_naive_scalar_bi(x[i], distParsi, dist, nsteps, time,
 				    extrap, logFlag);
@@ -555,7 +556,8 @@ arma::vec dCount_naive_vec_user(arma::Col<unsigned> x,
 				const unsigned& nsteps = 100,
 				double time = 1.0, bool extrap = true,
 				bool logFlag = false) {
-  unsigned lnt = x.n_elem;
+  // 2018-04-12 was: unsigned lnt = x.n_elem;
+  int lnt = x.n_elem;
   arma::vec pbs(lnt, fill::zeros);
   Rcpp::List distParsi;
 
@@ -565,7 +567,7 @@ arma::vec dCount_naive_vec_user(arma::Col<unsigned> x,
   if (lnt != extrapolPars.size())
     stop("x and distPars should have same length !");
 
-  for (unsigned i = 0; i < lnt; i++) {
+  for (int i = 0; i < lnt; i++) {
     distParsi = distPars[i];
     arma::vec extrapolParsi = extrapolPars[i];
     pbs[i] = dCount_naive_scalar_user(x[i], distParsi, extrapolParsi, survR,

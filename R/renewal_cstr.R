@@ -15,6 +15,43 @@ renewal <- function(...) {
     renewalCount(...)
 }
 
+.process_formula <- function(formula, dist){
+    Fo <- Formula(formula)
+    Fo.len <- length(Fo)
+    if(Fo.len[2] < 2) {
+        if(Fo.len[1] == 1)
+            return(NULL)
+        formula <- formula(Fo, lhs = 1)
+        if(Fo.len[2] == 0)
+            return(list(formula = formula, anc = NULL))
+
+        anc <- lapply(2:Fo.len[1], function(k) formula(Fo, lhs = 0))
+        lhsnames <-  sapply(2:Fo.len[1],
+                            function(k) as.character(formula(Fo, lhs = k, rhs = 0))[2] ) #  .[1] is '~'
+        names(anc) <- lhsnames
+    } else {
+        formula <- formula(Fo, lhs = 1, rhs = 1)
+        anc <- lapply(2:Fo.len[2], function(k) formula(Fo, lhs = 0, rhs = k))
+
+        lhsnames <- as.character(formula(Fo, rhs = 0))[2] # .[1] is '~'
+        lhsnames <- lhsnames[-1] # drop the first name
+        if(length(lhsnames) < length(anc)){
+            if(length(lhsnames) == 0) {
+                lhsnames <- getParNames(dist)[-1]
+            } else {
+                distnames <- getParNames(dist) # todo: 'custom' needs special treatment
+                distnames <- distnames[! distnames %in% lhsnames]
+                lhsnames <- c(lhsnames, distnames[1:(length(lhsnames) - 1)])
+            }
+        }
+        stopifnot(length(lhsnames) == length(anc))
+
+        names(anc) <- lhsnames
+    }
+
+    list(formula = formula, anc = anc)
+}
+
 #' Fit renewal count processes regression models
 #'
 #' Fit renewal regression models for count data via maximum likelihood.
@@ -24,9 +61,31 @@ renewal <- function(...) {
 #' \code{hurdle()} and \code{zeroinfl()} from package \code{pscl}. Package
 #' \code{Formula} is used to handle formulas.
 #'
-#' Distributions for inter-arrival times supported internally by this package can
-#' be chosen by setting argument \code{"dist"} to a suitable character string.
-#' Currently the built-in distributions are \code{"weibull"},
+#' Argument \code{formula} is a \code{formula} object. In the simplest case its
+#' left-hand side (lhs) designates the response variable and the right-hand side
+#' the covariates for the first parameter of the distribution (as reported by
+#' \code{\link{getParNames}}. In this case, covariates for the ancilliary
+#' parameters are specified using argument \code{anc}.
+#'
+#' The ancilliary regressions, can also be specified in argument \code{formula}
+#' by adding them to the righ-hand side, separated by the operator \sQuote{|}.
+#' For example \code{Y | shape ~ x + y | z} can be used in place of the pair
+#' \code{Y ~ x + y} and \code{anc = list(shape = ~z)}. In most cases, the name
+#' of the second parameter can be omitted, which for this example gives the
+#' equivalent \code{Y ~ x + y | z}. The actual rule is that if the parameter is
+#' missing from the left-hand side, it is inferred from the default parameter
+#' list of the distribution.
+#'
+#' As another convenience, if the parameters are to to have the same covariates,
+#' it is not necessary to repeat the rhs. For example, \code{Y | shape ~ x + y}
+#' is equivalent to \code{Y | shape ~ x + y | x + y}. Note that this is applied
+#' only to parameters listed on the lhs, so \code{Y ~ x + y} specifies
+#' covariates only for the response variable and not any other parameters.
+#'
+#'
+#' Distributions for inter-arrival times supported internally by this package
+#' can be chosen by setting argument \code{"dist"} to a suitable character
+#' string.  Currently the built-in distributions are \code{"weibull"},
 #' \code{"weibullgam"}, \code{"gamma"}, \code{"gengamma"} (generalized-gamma)
 #' and \code{"burr"}.
 #'
@@ -75,7 +134,12 @@ renewal <- function(...) {
 #' that the former is superior. For example (see below), gamModel < poisModel in
 #' 3:1
 #'
-#' @param formula single response formula object.
+#' @param formula a formula object. If it is a standard formula object, the left
+#'     hand side specifies the response variable and the right hand sides
+#'     specifies the regression equation for the first parameter of the
+#'     conditional distribution. \code{formula} can also be used to specify the
+#'     ancilliary regressions, using the operator `|`, see Details.
+#'
 #' @param data,subset,na.action, arguments controlling formula processing via
 #'     \code{model.frame}.
 #' @param weights optional numeric vector of weights.
@@ -86,9 +150,10 @@ renewal <- function(...) {
 #'     Details. Currently the built-in distributions are \code{"weibull"},
 #'     \code{"weibullgam"}, \code{"gamma"}, \code{"gengamma"}
 #'     (generalized-gamma) and \code{"burr"}.
-#' @param anc named list of formulas for ancillary regressions, if any,
+#' @param anc a named list of formulas for ancillary regressions, if any,
 #'     otherwise \code{NULL}. The formulas associated with the (exact) parameter
-#'     names are used.
+#'     names are used. The left-hand sides of the formulas in \code{anc} are
+#'     ignored.
 #' @param link named list of character strings specifying the name of the link
 #'     functions to be used in the regression. If \code{NULL}, the canonical
 #'     link function will be used, i.e, \code{log} if the parameter is supposed
@@ -113,9 +178,9 @@ renewal <- function(...) {
 #' @param computeHessian logical, should the hessian (and hence the covariance
 #'     matrix) be computed numerically at the fitted values.
 #' @param standardise logical should the covariates be standardised using
-#' \code{standardize::standardize()} function.
+#'     \code{standardize::standardize()} function.
 #' @param standardise_scale numeric the desired scale for the covariates;
-#' default to 1
+#'     default to 1
 #' @param model,y,x logicals. If \code{TRUE} the corresponding components of the
 #'     fit (model frame, response, model matrix) are returned.
 #' @param ... arguments passed to \code{renewal.control} in the default setup.
@@ -231,6 +296,16 @@ renewalCount <- function(formula, data, subset, na.action, weights, offset,
         weiMethod <- weigamMethod
     }
 
+    wrk <- .process_formula(formula, dist)
+    if(!is.null(wrk)){ # ancilliary spec's are in formula not 'anc'
+        if(!is.null(anc))
+            stop("ancilliary parameters should be in 'formula' or 'anc' but not in both")
+
+        ## !!! overwrite 'formula' and 'anc'
+        formula <- wrk$formula
+        anc <- wrk$anc
+    }
+
     ## prepare the formula setting
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "na.action"), names(mf), 0)
@@ -303,6 +378,8 @@ renewalCount <- function(formula, data, subset, na.action, weights, offset,
     method <- control$method
     hessian <- ifelse(is.null(control$hessian), FALSE, control$hessian)
     control$method <- control$start <- control$hessian <- NULL
+    ## remove warning from optimx
+    control$dowarn <- FALSE
 
     if (control$trace) {
         print("calling optimx() for parameter estimation by ML ...")

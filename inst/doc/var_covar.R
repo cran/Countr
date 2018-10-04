@@ -3,7 +3,7 @@ library(dplyr)
 library(xtable)
 
 data(fertility)
-form <- children ~ german + years_school + voc_train + university + Religion +
+form <- children ~ german + years_school + voc_train + university + religion +
                    year_birth + rural + age_marriage
 gam <- renewalCount(formula = form, data = fertility, dist = "gamma",
                     computeHessian = TRUE, 
