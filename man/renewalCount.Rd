@@ -7,9 +7,10 @@
 renewalCount(formula, data, subset, na.action, weights, offset,
   dist = c("weibull", "weibullgam", "custom", "gamma", "gengamma"),
   anc = NULL, convPars = NULL, link = NULL, time = 1,
-  control = renewal.control(...), customPars = NULL, seriesPars = NULL,
-  weiMethod = NULL, computeHessian = TRUE, standardise = FALSE,
-  standardise_scale = 1, model = TRUE, y = TRUE, x = FALSE, ...)
+  control = renewal.control(...), customPars = NULL,
+  seriesPars = NULL, weiMethod = NULL, computeHessian = TRUE,
+  standardise = FALSE, standardise_scale = 1, model = TRUE,
+  y = TRUE, x = FALSE, ...)
 }
 \arguments{
 \item{formula}{a formula object. If it is a standard formula object, the left
@@ -229,6 +230,18 @@ them has mostly smaller values than the other, there is some reason to claim
 that the former is superior. For example (see below), gamModel < poisModel in
 3:1
 }
+\examples{
+\dontrun{
+## may take some time to run depending on your CPU
+data(football)
+wei = renewalCount(formula = homeTeamGoals ~ 1,
+                    data = football, dist = "weibull", weiMethod = "series_acc",
+                    computeHessian = FALSE, control = renewal.control(trace = 0, 
+                    method = "nlminb"))
+}
+}
 \references{
+\insertRef{CountrJssArticle}{Countr}
+
 \insertRef{cameron2013regression}{Countr}
 }

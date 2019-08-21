@@ -1,3 +1,20 @@
+# Countr 3.5.4 (CRAN)
+
+- fixed wrong links in inst/doc/index.html.
+
+# Countr 3.5.3
+
+- consolidation after the refactoring of the reposotory.
+
+- created pkgdown website.
+
+- dealt with 'xtimes' problem on Windows (issue#1: the data frame
+  returned by `optimx_2018-7.10` on Windows has a column `xtime` not
+  `xtimes`).
+
+- a number of updates in connection of the forthcoming release of the
+  JSS paper.
+
 # Countr 3.5.2 (CRAN)
 
 - small adjustments before submission.

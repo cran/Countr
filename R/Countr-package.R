@@ -1,12 +1,17 @@
+#' @docType package
+#' @name Countr-package
+#' @aliases  Countr-package Countr
+#'
+#' @title
 #' Flexible Univariate Count Models Based on Renewal Processes
 #'
+#' @description
 #' Flexible univariate count models based on renewal
 #' processes. The models may include covariates and can be specified
 #' with familiar formula syntax as in glm() and 'flexsurv'.
 #'
-#' @docType package
-#' @name Countr
-#' @aliases  Countr-package
+#' @useDynLib Countr
+#'
 #' @import Matrix Rcpp Formula flexsurv dplyr
 #' @importFrom stats nobs AIC  coef  confint  confint.default
 #' @importFrom stats formula as.formula getCall  glm.fit  logLik  model.frame
@@ -25,13 +30,12 @@
 #' @importFrom lmtest lrtest
 #' @importFrom xtable xtable
 #'
-#' @useDynLib Countr
+#' @details
 #'
-#' @description
-#'
-#' The methodology is described in the forthcoming paper Kharrat et al. (2018)
+#' The methodology is described in the forthcoming paper
+#' \insertCiteOnly{CountrJssArticle}{Countr}
 #' in the Journal of Statistical Software (included in the package as vignette
-#' 'Countr_guide_paper').
+#' \code{vignette('Countr_guide_paper', package = "Countr")}).
 #'
 #' The main function is \code{\link{renewalCount}}, see its documentation for
 #' examples.
@@ -41,6 +45,9 @@
 #' \code{\link{chiSq_pearson}}.
 #'
 #' @references
+#'
+#' \insertRef{CountrJssArticle}{Countr}
+#' 
 #' \insertRef{baker2017event}{Countr}
 #'
 #' \insertRef{boshnakov2017bivariate}{Countr}

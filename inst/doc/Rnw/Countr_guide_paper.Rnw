@@ -124,9 +124,9 @@ pd <- packageDescription("Countr")
   developed methods for fast computation of the count probabilities.
   The package functionalities are illustrated using several datasets.
   \par
-  This vignette is part of package \pkg{Countr},
-  version~\Sexpr{pd$Version}. It will appear in the Journal of Statistical
-  Software.
+  This vignette is part of package \pkg{Countr}, version~\Sexpr{pd$Version}. % $
+  For citations, please use the JSS version, \citet{CountrJSSArticle} (see 
+  \code{citation("Countr")}).
 }
 \Keywords{renewal process, duration dependence, count data, Weibull distribution, convolution,
 Richardson extrapolation}
@@ -153,10 +153,10 @@ Richardson extrapolation} %% without formatting
   E-mail: \email{Tarak.Kharrat@liverpool.ac.uk}\\
 
   Georgi N. Boshnakov\\
-  School of Mathematics\\
+  Department of Mathematics\\
   The University of Manchester\\
   Oxford Road, Manchester M13 9PL, UK\\
-  URL: \url{http://www.maths.manchester.ac.uk/~gb/}
+  URL: \url{https://personalpages.manchester.ac.uk/staff/georgi.boshnakov/}
 }
 %% It is also possible to add a telephone and fax number
 %% before the e-mail in the following format:
@@ -2046,7 +2046,7 @@ software and the manuscript.
 
 
 %\bibliography{REFERENCES,football,quine,refresponse}
-\bibliography{jss2876}
+\bibliography{jss2876,CountrJSSArticle}
 
 <<echo=FALSE,print=FALSE>>=
 options(op) # restore options
