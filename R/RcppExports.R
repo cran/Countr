@@ -149,7 +149,6 @@ dCount_allProbs_vec_user <- function(x, distPars, extrapolPars, survR, nsteps = 
 #' Richardson extrapolation if \code{extrap} is \code{TRUE} using the
 #' algorithm of section 3.2.
 #'
-#' @param inheritParams dCount_naive_bi
 #' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
 #' \code{length} of \code{x}.
 #'
@@ -206,7 +205,7 @@ dCount_dePril_vec_user <- function(x, distPars, extrapolPars, survR, nsteps = 10
 #'
 #' @param cdfout logical if \code{TRUE}, the cdf will be returned instead of
 #' the count probability.
-#' @param inheritParams dCount_allProbs_bi
+#' @param dCount_allProbs_bi
 #' @return vector of probabilities P(x(i)) for i = 1, ..., n where n is
 #' \code{length} of \code{x}.
 #'

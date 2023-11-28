@@ -1,8 +1,22 @@
-# Countr 3.5.6
 
-- several documentation files had duplicated descirptions of some arguments.
+# Countr 3.5.7
 
-- changed several instances of `class(...) = "..."`to use `inherits`.
+- a missing '@' symbol had caused roxygen to generate items for 'inheritParams'
+  in the arguments section of a couple of Rd files.
+
+- fixed new warnings from the C++ compiler like ' RcppExports.cpp:528:18:
+  warning: format string is not a string literal (potentially insecure)
+  [-Wformat-security]'.
+  
+- now import selectively from 'dplyr'. Also, see the 'todo' note in
+  'Countr-package.R'.
+
+
+# Countr 3.5.6 (CRAN)
+
+- several documentation files had duplicated descriptions of some arguments.
+
+- changed several instances of `class(...) = "..."` to use `inherits`.
 
 - changed http://www.football-data.co.uk/englandm.php
   to https://www.football-data.co.uk to fix a NOTE from R check.
@@ -24,7 +38,7 @@
 
 # Countr 3.5.3
 
-- consolidation after the refactoring of the reposotory.
+- consolidation after the refactoring of the repository.
 
 - created pkgdown website.
 
@@ -62,7 +76,7 @@
 # Countr 3.4.2
 - fixed the url's in the references for the vignettes in REFERENCES.bib.
 
-# Countr 3.4.1 (2017-11-20)
+# Countr 3.4.1 (CRAN 2017-11-20)
 - bugs fixed in convolution methods.
 - option added to rescale covariates (standardise, standardise_scale).
 - new vignettes added + many examples with different datasets fitted.
@@ -80,7 +94,7 @@
 # Countr 3.3.0
 - first changes on bitbucket.
 
-# Countr 3.2.8  (2016-12-20)
+# Countr 3.2.8  (CRAN 2016-12-20)
 - the call in the printout of renewal objects (and `summary()`) could be very
   wide (annoying in Sweave output), now `print.renewal()` and
   `print.summary.renewal()` obey 'width' when possible (see helper function
@@ -88,11 +102,11 @@
 - bugs corrected in `print.summary.renewal()` when failure to compute variance
   or residuals.
 
-# Countr 3.2.7  (2016-10-06)
+# Countr 3.2.7  (CRAN 2016-10-06)
 - fixed some bugs in printing methods.
 - added a jss_paper vignette.
 
-# Countr 3.2.6 (2016-09-14)
+# Countr 3.2.6 (CRAN 2016-09-14)
 
 # Countr 3.2.4
 - merged changes done separately by T. and G. to Version 3.2.2.
@@ -113,9 +127,9 @@
 - sign in the Frank Copula package changed to be more consistent with
   the intuitive results: theta <0 -> negative dependence.
 
-# Countr 3.2.0 (2016-03-23)
+# Countr 3.2.0 (CRAN 2016-03-23)
 - consolidated the documentation.
-- to be first CRAN version.
+- first CRAN version.
 
 # Countr 3.1.x
 - clean-up for CRAN submission.

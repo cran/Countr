@@ -36,8 +36,6 @@ the count probability.}
 signature \code{function(t, distPars)} where \code{t} is a real number (>0)
 where the survival function is evaluated and \code{distPars} is a list of
 distribution parameters. It should return a double value.}
-
-\item{inheritParams}{dCount_allProbs_bi}
 }
 \value{
 vector of probabilities P(x(i)) for i = 1, ..., n where n is
