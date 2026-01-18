@@ -1,7 +1,6 @@
 #include "RcppArmadillo.h"
 #include "../inst/include/Countr_types.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 
@@ -144,7 +143,7 @@ arma::vec dRenewalFrankCopula_user(arma::Col <unsigned> x,
   Rcpp::List parX;
   Rcpp::List parY;
   unsigned n = x.n_elem;
-  arma::vec prob(n, fill::zeros);
+  arma::vec prob(n, arma::fill::zeros);
   unsigned x0, y0;
   arma::vec extParsX, extParsY;
 
@@ -203,7 +202,7 @@ arma::vec dRenewalFrankCopula_bi(arma::Col <unsigned> x,
   Rcpp::List parX;
   Rcpp::List parY;
   unsigned n = x.n_elem;
-  arma::vec prob(n, fill::zeros);
+  arma::vec prob(n, arma::fill::zeros);
   unsigned x0, y0;
   arma::vec extParsX, extParsY;
 

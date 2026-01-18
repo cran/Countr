@@ -1,7 +1,6 @@
 #include "RcppArmadillo.h"
 #include "../inst/include/Countr_types.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 
@@ -9,7 +8,7 @@ using namespace Rcpp;
 
 template <class TYPE>
 arma::vec scalarpowmatrix(double k ,  arma::Col<TYPE> M, bool ScalarBase = true) {
-  arma::vec res(M.n_elem, fill::zeros);
+  arma::vec res(M.n_elem, arma::fill::zeros);
 
   if (ScalarBase) {
     for  (unsigned i = 0; i < M.n_elem; i ++) 
@@ -32,18 +31,18 @@ arma::vec dWeibullgammaCount_mat(arma::Col<unsigned> x, double shape,
 				 unsigned jmax = 100) {
 
   unsigned lnt = x.n_elem;
-  arma::vec tVec(lnt, fill::zeros);
+  arma::vec tVec(lnt, arma::fill::zeros);
   tVec.fill(time);
-  arma::vec prob(lnt, fill::zeros);
+  arma::vec prob(lnt, arma::fill::zeros);
   
   arma::mat alpha_all = alphagen(shape, jmax + 1, max(x) + 1);		
-  arma::mat alpha_data(lnt, jmax + 1, fill::zeros);
+  arma::mat alpha_data(lnt, jmax + 1, arma::fill::zeros);
 
   for (unsigned i = 0; i < lnt; i ++)
     alpha_data.row(i) = alpha_all.col(x(i)).t();
 
-  arma::mat tmp(lnt, jmax + 1, fill::zeros);
-  arma::vec minus1(lnt, fill::zeros);
+  arma::mat tmp(lnt, jmax + 1, arma::fill::zeros);
+  arma::vec minus1(lnt, arma::fill::zeros);
   arma::vec tVecCC = log(tVec) * shape;
   double fact = 0.0;
   
@@ -79,8 +78,8 @@ arma::vec dWeibullgammaCount_mat_vec(arma::Col<unsigned> x,
 				     unsigned jmax = 100) {
 
   unsigned lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
-  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
+  arma::Col<unsigned> xi(1, arma::fill::zeros);
   arma::vec pbi;
   
   if (lnt != shape.n_elem)
@@ -112,17 +111,17 @@ arma::vec dWeibullgammaCount_mat_Covariates(arma::Col<unsigned> x, double cc,
 					    double t = 1.0, bool logFlag = false,
 					    unsigned jmax = 100) {
   unsigned lnt = x.n_elem;
-  arma::vec tVec(lnt, fill::zeros);
+  arma::vec tVec(lnt, arma::fill::zeros);
   tVec.fill(t);
-  arma::vec prob(lnt, fill::zeros);
+  arma::vec prob(lnt, arma::fill::zeros);
   arma::mat alpha_all = alphagen(cc, jmax + 1, max(x) + 1);
-  arma::mat alpha_data(lnt, jmax + 1, fill::zeros);
+  arma::mat alpha_data(lnt, jmax + 1, arma::fill::zeros);
 
   for (unsigned i = 0; i < lnt; i ++)
     alpha_data.row(i) = alpha_all.col(x(i)).t();
 
-  arma::mat tmp(lnt, jmax + 1, fill::zeros);
-  arma::vec minus1(lnt, fill::zeros);
+  arma::mat tmp(lnt, jmax + 1, arma::fill::zeros);
+  arma::vec minus1(lnt, arma::fill::zeros);
   arma::vec tVecCC = log(tVec)*cc +  Xcovar * beta;
   double fact = 0.0;
 
@@ -158,8 +157,8 @@ arma::vec dWeibullgammaCount_mat_Covariates_vec(arma::Col<unsigned> x,
 						bool logFlag = false,
 						unsigned jmax = 100) {
   unsigned lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
-  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
+  arma::Col<unsigned> xi(1, arma::fill::zeros);
   arma::vec pbi;
   
   if (lnt != cc.n_elem)
@@ -233,7 +232,7 @@ arma::mat alphaTerms_gammaHet(double r, double alphaPar, arma::vec xb,
   double ltc = log(t) * shape;
   double coeff, fact;
   unsigned lnt = x.n_elem;
-  arma::mat terms(jmax, lnt, fill::zeros);
+  arma::mat terms(jmax, lnt, arma::fill::zeros);
 
   if(max(x) >= alpha_all.n_cols)
     stop("alpha_all does not contain enough columns!");
@@ -267,7 +266,7 @@ arma::mat alphaTerms_gammaHet(double r, double alphaPar, double shape,
   double ltc = log(t) * shape;
   double coeff, fact;
   unsigned lnt = x.n_elem;
-  arma::mat terms(jmax, lnt, fill::zeros);
+  arma::mat terms(jmax, lnt, arma::fill::zeros);
 
   if(max(x) >= alpha_all.n_cols)
     stop("alpha_all does not contain enough columns!");
@@ -323,7 +322,7 @@ arma::vec dWeibullgammaCount_acc(arma::Col<unsigned> x, double shape,
   arma::Col<unsigned> x_unique = unique(x);
   arma::mat terms = alphaTerms_gammaHet(r, alpha, shape, alpha_all,
 					x_unique, time, jmax);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   double val = 0.0;
   
   for (unsigned k = 0; k < x_unique.n_elem; k ++) {
@@ -342,8 +341,8 @@ arma::vec dWeibullgammaCount_acc(arma::Col<unsigned> x, double shape,
 	Rprintf(" iterations were used to reach convergence !");
     }
 
-    uvec ind = find(x == x_unique(k));
-    arma::vec valsk(ind.n_elem, fill::ones);
+    arma::uvec ind = find(x == x_unique(k));
+    arma::vec valsk(ind.n_elem, arma::fill::ones);
     vals.elem(ind) = valsk * val;
 
   }
@@ -362,8 +361,8 @@ arma::vec dWeibullgammaCount_acc_vec(arma::Col<unsigned> x, arma::vec shape,
 				     int nmax = 300, double eps = 1e-10,
 				     bool printa = false) {
   unsigned lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
-  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
+  arma::Col<unsigned> xi(1, arma::fill::zeros);
   arma::vec pbi;
   
   if (lnt != shape.n_elem)
@@ -404,7 +403,7 @@ arma::vec dWeibullgammaCount_acc_Covariates(arma::Col<unsigned> x, double cc,
   
   arma::mat terms = alphaTerms_gammaHet(r, alpha, Xcovar * beta, cc, alpha_all,
 					x, t, jmax);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   double val = 0.0;
   
   for (unsigned k = 0; k < x.n_elem; k ++) {
@@ -446,8 +445,8 @@ arma::vec dWeibullgammaCount_acc_Covariates_vec(arma::Col<unsigned> x,
 						int nmax = 300, double eps = 1e-10,
 						bool printa = false) {
   unsigned lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
-  arma::Col<unsigned> xi(1, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
+  arma::Col<unsigned> xi(1, arma::fill::zeros);
   arma::vec pbi;
   
   if (lnt != cc.n_elem)

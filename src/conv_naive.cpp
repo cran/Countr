@@ -2,7 +2,6 @@
 #include "RcppArmadillo.h"
 #include "../inst/include/Countr_types.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 
@@ -158,13 +157,13 @@ arma::vec orgconv(unsigned xnum, const arma::vec& p0, arma::vec& pdfn,
 
   // allocate memory
   unsigned lnt = pdfn.n_elem;
-  arma::vec q(lnt, fill::zeros);
-  arma::vec probs(2, fill::zeros);
+  arma::vec q(lnt, arma::fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
   arma::Col< unsigned > binarray =
-    as < Col< unsigned > > (get_bin_digits(xnum));
+    as < arma::Col< unsigned > > (get_bin_digits(xnum));
   unsigned numdigs = binarray.n_elem;
   arma::Col< unsigned > powers(max(binarray) + 1, // check size
-			       fill::zeros);
+			       arma::fill::zeros);
   // loop index
   unsigned k, j, idoub;
   unsigned ldoub = binarray(numdigs - 1);
@@ -239,14 +238,14 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
 		   double time = 1.0, bool extrap = false) {
 
   // allocate memory and unitialize objects
-  arma::vec probs(2, fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
 
   double stl = 1.0;
   double en = (double) nsteps;
   double h = time / en;
   double xi, th, sth, tee;
   unsigned i;
-  vec pdf, p0;
+ arma::vec pdf, p0;
 
   if (xnum == 0) {
     probs(0) = surv(time, distPars, dist);
@@ -265,9 +264,9 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
     en = (double) needed;
 
     // allocate memory to the different arrays
-    p0 = zeros<vec> (needed + 1);
-    pdf = zeros<vec> (needed + 1);
-    vec fwork(needed + 1, fill::zeros);
+    p0 = arma::zeros<arma::vec> (needed + 1);
+    pdf = arma::zeros<arma::vec> (needed + 1);
+   arma::vec fwork(needed + 1, arma::fill::zeros);
 
     for(i = 1; i <= needed; i++) {
       xi = double (i);
@@ -278,10 +277,10 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
     // =========================== concolutions ================================
     // ---------- conv1
     h = time / ( (double) nsteps1);
-    vec probs1 = doOneConvolution(xnum, p0, pdf, fwork, nsteps1, 8, h);
+   arma::vec probs1 = doOneConvolution(xnum, p0, pdf, fwork, nsteps1, 8, h);
     // ---------- conv2
     h = time / ( (double) nsteps2);
-    vec probs2 = doOneConvolution(xnum, p0, pdf, fwork, nsteps2, 4, h);
+   arma::vec probs2 = doOneConvolution(xnum, p0, pdf, fwork, nsteps2, 4, h);
     // ---------- conv3
     h = time / ( (double) nsteps3);
     probs = doOneConvolution(xnum, p0, pdf, fwork, nsteps3, 2, h);
@@ -290,13 +289,13 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+   arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+   arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
   } else {
     // just do one convolution
-    p0 = zeros<vec> (nsteps + 1);
-    pdf = zeros<vec> (nsteps + 1);
+    p0 = arma::zeros<arma::vec> (nsteps + 1);
+    pdf = arma::zeros<arma::vec> (nsteps + 1);
 
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -323,14 +322,14 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
 		   double time = 1.0, bool extrap = false) {
 
   // allocate memory and unitialize objects
-  arma::vec probs(2, fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
 
   double stl = 1.0;
   double en = (double) nsteps;
   double h = time / en;
   double xi, th, sth, tee;
   unsigned i;
-  vec pdf, p0;
+ arma::vec pdf, p0;
   Rcpp::NumericVector rTemp;
 
   if (xnum == 0) {
@@ -351,9 +350,9 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
     en = (double) needed;
 
     // allocate memory to the different arrays
-    p0 = zeros<vec> (needed + 1);
-    pdf = zeros<vec> (needed + 1);
-    vec fwork(needed + 1, fill::zeros);
+    p0 = arma::zeros<arma::vec> (needed + 1);
+    pdf = arma::zeros<arma::vec> (needed + 1);
+   arma::vec fwork(needed + 1, arma::fill::zeros);
 
     for(i = 1; i <= needed; i++) {
       xi = double (i);
@@ -365,10 +364,10 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
     // =========================== concolutions ================================
     // ---------- conv1
     h = time / ( (double) nsteps1);
-    vec probs1 = doOneConvolution(xnum, p0, pdf, fwork, nsteps1, 8, h);
+   arma::vec probs1 = doOneConvolution(xnum, p0, pdf, fwork, nsteps1, 8, h);
     // ---------- conv2
     h = time / ( (double) nsteps2);
-    vec probs2 = doOneConvolution(xnum, p0, pdf, fwork, nsteps2, 4, h);
+   arma::vec probs2 = doOneConvolution(xnum, p0, pdf, fwork, nsteps2, 4, h);
     // ---------- conv3
     h = time / ( (double) nsteps3);
     probs = doOneConvolution(xnum, p0, pdf, fwork, nsteps3, 2, h);
@@ -377,13 +376,13 @@ arma::vec getProbs(unsigned xnum, const Rcpp::List distPars,
      double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+   arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+   arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
   } else {
     // just do one convolution
-    p0 = zeros<vec> (nsteps + 1);
-    pdf = zeros<vec> (nsteps + 1);
+    p0 = arma::zeros<arma::vec> (nsteps + 1);
+    pdf = arma::zeros<arma::vec> (nsteps + 1);
 
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -431,12 +430,12 @@ arma::vec dCount_naive_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 
   arma::vec extrapolPars = getextrapolPars(distPars, dist);
   arma::Col<unsigned> x_unique = unique(x);
-  arma::vec vals(x.n_elem, fill::zeros);
-  vec val;
+  arma::vec vals(x.n_elem, arma::fill::zeros);
+ arma::vec val;
 
   for (unsigned k = 0; k < x_unique.n_elem; k ++) {
-    uvec ind = find(x == x_unique(k));
-    arma::vec valsk(ind.n_elem, fill::ones);
+    arma::uvec ind = find(x == x_unique(k));
+    arma::vec valsk(ind.n_elem, arma::fill::ones);
     val = getProbs(x_unique(k), distPars, extrapolPars, dist, nsteps,
 		   time, extrap);
     vals.elem(ind) = valsk * val(cdfout);
@@ -467,12 +466,12 @@ arma::vec dCount_naive_user(arma::Col<unsigned> x, const Rcpp::List distPars,
 			    double time = 1.0, bool extrap = true,
 			    bool cdfout = false, bool logFlag = false) {
   arma::Col<unsigned> x_unique = unique(x);
-  arma::vec vals(x.n_elem, fill::zeros);
-  vec val;
+  arma::vec vals(x.n_elem, arma::fill::zeros);
+  arma::vec val;
 
   for (unsigned k = 0; k < x_unique.n_elem; k ++) {
-    uvec ind = find(x == x_unique(k));
-    arma::vec valsk(ind.n_elem, fill::ones);
+    arma::uvec ind = find(x == x_unique(k));
+    arma::vec valsk(ind.n_elem, arma::fill::ones);
     val = getProbs(x_unique(k), distPars, extrapolPars, survR, nsteps,
 		   time, extrap);
     vals.elem(ind) = valsk * val(cdfout);
@@ -512,7 +511,7 @@ arma::vec dCount_naive_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 			      bool logFlag = false) {
   // 2018-04-12 was: unsigned lnt = x.n_elem;
   int lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
   Rcpp::List distParsi;
 
   if (lnt != distPars.size())
@@ -557,7 +556,7 @@ arma::vec dCount_naive_vec_user(arma::Col<unsigned> x,
 				bool logFlag = false) {
   // 2018-04-12 was: unsigned lnt = x.n_elem;
   int lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
   Rcpp::List distParsi;
 
   if (lnt != distPars.size())

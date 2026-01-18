@@ -1,7 +1,6 @@
 #include <iostream>
 #include "RcppArmadillo.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 

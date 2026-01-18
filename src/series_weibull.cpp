@@ -1,7 +1,6 @@
 #include "RcppArmadillo.h"
 #include "../inst/include/Countr_types.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 
@@ -37,7 +36,7 @@ using namespace Rcpp;
 //' @keywords internal
 // [[Rcpp::export]]
 arma::mat alphagen(double cc , unsigned jrow, unsigned ncol) {
-  arma::mat alpha(jrow, ncol, fill::zeros);
+  arma::mat alpha(jrow, ncol, arma::fill::zeros);
   double lgam = 0.0;
   
   for (unsigned j = 0; j < jrow; j ++) {
@@ -60,7 +59,7 @@ arma::mat alphagen(double cc , unsigned jrow, unsigned ncol) {
 
 template <class TYPE>
 arma::vec scalarpowmatrix(double k ,  arma::Col<TYPE> M, bool ScalarBase = true) {
-  arma::vec res(M.n_elem, fill::zeros);
+  arma::vec res(M.n_elem, arma::fill::zeros);
 
   if (ScalarBase) {
     for  (unsigned i = 0; i < M.n_elem; i ++) 
@@ -110,21 +109,21 @@ arma::vec dWeibullCount_mat(arma::Col<unsigned> x,
 			    unsigned jmax = 50) {
   
   unsigned lnt = x.n_elem;
-  arma::vec tVec(lnt, fill::zeros);
+  arma::vec tVec(lnt, arma::fill::zeros);
   tVec.fill(time);
-  arma::vec prob(lnt, fill::zeros);
+  arma::vec prob(lnt, arma::fill::zeros);
   
   arma::mat alpha_all = alphagen(shape, jmax + 1, max(x) + 1);
-  arma::mat alpha_data(lnt, jmax+1, fill::zeros);
+  arma::mat alpha_data(lnt, jmax+1, arma::fill::zeros);
 
   for (unsigned i = 0; i < lnt; i ++)
     alpha_data.row(i) = alpha_all.col(x(i)).t();
 
-  arma::mat tmp(lnt, jmax+1, fill::zeros);
-  arma::vec minus1(lnt, fill::zeros);
+  arma::mat tmp(lnt, jmax+1, arma::fill::zeros);
+  arma::vec minus1(lnt, arma::fill::zeros);
   arma::vec tVecCC = (scale * scalarpowmatrix(shape, tVec, false));
-  arma::vec Term2i(lnt, fill::zeros);
-  arma::vec TermF(lnt, fill::zeros);
+  arma::vec Term2i(lnt, arma::fill::zeros);
+  arma::vec TermF(lnt, arma::fill::zeros);
 
   for (unsigned i = 0; i < jmax; i ++) {
     arma::Col <unsigned> xi = x + i;
@@ -173,7 +172,7 @@ arma::vec dWeibullCount_mat_vec(arma::Col<unsigned> x,
 				double time = 1.0, bool logFlag = false,
 				unsigned jmax = 50) {
   unsigned lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
   
   if (lnt != shape.n_elem)
     stop("x and shape should have same length !");
@@ -200,7 +199,7 @@ arma::mat alphaTerms(double scale, double shape, arma::mat alpha_all,
   double ltc = scale * pow(t, shape);
   double coeff;
   unsigned lnt = x.n_elem;
-  arma::mat terms(jmax, lnt, fill::zeros);
+  arma::mat terms(jmax, lnt, arma::fill::zeros);
 
   if(max(x) >= alpha_all.n_cols)
     stop("alpha_all does not contain enough columns!");
@@ -295,7 +294,7 @@ arma::vec dWeibullCount_acc(arma::Col<unsigned> x, double shape, double scale,
   
   arma::Col<unsigned> x_unique = unique(x);
   arma::mat terms = alphaTerms(scale, shape, alpha_all, x_unique, time, jmax);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   double val = 0.0;
   
   for (unsigned k = 0; k < x_unique.n_elem; k ++) {
@@ -314,8 +313,8 @@ arma::vec dWeibullCount_acc(arma::Col<unsigned> x, double shape, double scale,
 	Rprintf(" iterations were used to reach convergence !");
     }
 
-    uvec ind = find(x == x_unique(k));
-    arma::vec valsk(ind.n_elem, fill::ones);
+    arma::uvec ind = find(x == x_unique(k));
+    arma::vec valsk(ind.n_elem, arma::fill::ones);
     vals.elem(ind) = valsk * val;
   }
 
@@ -368,7 +367,7 @@ arma::vec dWeibullCount_acc_vec(arma::Col<unsigned> x,
 				bool printa = false) {
 
   unsigned lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
   
   if (lnt != shape.n_elem)
     stop("x and shape should have same length !");
@@ -396,7 +395,7 @@ arma::mat alphaTerms(arma::vec scale, arma::vec shape,
 		     double t = 1.0, unsigned jmax = 100) {
   double coeff;
   unsigned lnt = x.n_elem;
-  arma::mat terms(jmax, lnt, fill::zeros);
+  arma::mat terms(jmax, lnt, arma::fill::zeros);
 
   if(max(x) >= alpha_all.n_cols)
     stop("alpha_all does not contain enough columns!");
@@ -429,7 +428,7 @@ arma::mat alphaTerms(arma::vec scale, double shape,
   double ltc = pow(t, shape);
   double coeff;
   unsigned lnt = x.n_elem;
-  arma::mat terms(jmax, lnt, fill::zeros);
+  arma::mat terms(jmax, lnt, arma::fill::zeros);
 
   if(max(x) >= alpha_all.n_cols)
     stop("alpha_all does not contain enough columns!");
@@ -466,7 +465,7 @@ arma::vec dWeibullCount_fast0(arma::Col<unsigned> x, arma::vec shape,
 			      bool printa = false) {
   
   arma::mat terms = alphaTerms(scale, shape, alpha_all, x, t, jmax);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   double val = 0.0;
   
   for (unsigned k = 0; k < x.n_elem; k ++) {
@@ -506,7 +505,7 @@ arma::vec dWeibullCount_fast0(arma::Col<unsigned> x, double shape,
 			      bool printa = false) {
   
   arma::mat terms = alphaTerms(scale, shape, alpha_all, x, t, jmax);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   double val = 0.0;
   
   for (unsigned k = 0; k < x.n_elem; k ++) {
@@ -545,7 +544,7 @@ arma::vec dWeibullCount_fast0(arma::Col<unsigned> x, double shape, double scale,
 			      bool printa = false) {
   
   arma::mat terms = alphaTerms(scale, shape, alpha_all, x, t, jmax);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   double val = 0.0;
 
   if (shape == 1.0) {
@@ -605,9 +604,9 @@ arma::vec dWeibullCount_fast0(unsigned x, double shape, double scale,
 arma::vec cdfWeibullCount(unsigned y, double shape, double scale, 
 			  arma::mat alpha_all, double t = 1.0, unsigned jmax = 50,
 			  int nmax = 300, double eps = 1e-10) {
-  arma::vec res(2, fill::zeros);
+  arma::vec res(2, arma::fill::zeros);
   if (y == 0) {
-    arma::Col <unsigned> x (1, fill::zeros) ;
+    arma::Col <unsigned> x (1, arma::fill::zeros) ;
     arma::vec proba = dWeibullCount_fast0(x, shape, scale, alpha_all, t, false, jmax,
 					  nmax, eps);
     res(1) = proba(0); // res(0) is already zero
@@ -615,7 +614,7 @@ arma::vec cdfWeibullCount(unsigned y, double shape, double scale,
     arma::Col <unsigned> x = seq0(y);
     arma::vec proba = dWeibullCount_fast0(x, shape, scale, alpha_all, t, false, jmax,
 					  nmax, eps);
-    res(0) = sum(proba(span(0, y - 1)));
+    res(0) = sum(proba(arma::span(0, y - 1)));
     res(1) = sum(proba);
   }
 
@@ -678,7 +677,7 @@ arma::vec dWeibullInterArrivalCountFrankCopula(arma::Col <unsigned> x,
 
   double scaleXi, scaleYi;
   unsigned n = x.n_elem;
-  arma::vec prob(n, fill::zeros);
+  arma::vec prob(n, arma::fill::zeros);
   unsigned x0, y0;
 
   for (unsigned i = 0; i < n; i ++) {
@@ -686,8 +685,8 @@ arma::vec dWeibullInterArrivalCountFrankCopula(arma::Col <unsigned> x,
     scaleYi = scaleY(i);
     x0 = x(i);
     y0 = y(i);
-    arma::mat alpha_allX = alphagen(shapeX(i), jmax + max(x0) + 1, max(x0) + 1); 
-    arma::mat alpha_allY = alphagen(shapeY(i), jmax + max(y0) + 1, max(y0) + 1); 
+    arma::mat alpha_allX = alphagen(shapeX(i), jmax + arma::max(x0) + 1, arma::max(x0) + 1); 
+    arma::mat alpha_allY = alphagen(shapeY(i), jmax + arma::max(y0) + 1, arma::max(y0) + 1); 
 
     prob(i) =  BivarateWeibullCountCopulaDensity(x0, y0, shapeX(i), shapeY(i),
 						 scaleXi, scaleYi, theta,
@@ -714,7 +713,7 @@ arma::vec dWeibullInterArrivalCountFrankCopula_uni(arma::Col <unsigned> x,
 
   double scaleXi, scaleYi;
   unsigned n = x.n_elem;
-  arma::vec prob(n, fill::zeros);
+  arma::vec prob(n, arma::fill::zeros);
   unsigned x0, y0;
 
   for (unsigned i = 0; i < n; i ++) {  

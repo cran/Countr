@@ -2,7 +2,6 @@
 #include "RcppArmadillo.h"
 #include "../inst/include/Countr_types.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 
@@ -31,8 +30,8 @@ arma::vec dePril(unsigned xnum, const arma::vec& p0, arma::vec& q,
   
   // allocate memory
   unsigned lnt = q.n_elem;
-  arma::vec dfn(lnt, fill::zeros);
-  arma::vec probs(2, fill::zeros);
+  arma::vec dfn(lnt, arma::fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
   double nummin = (double) xnum - 1.0;
   double xmp = (double) xnum;
   unsigned n, j;
@@ -144,14 +143,14 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
 				       double time = 1.0, bool extrap = true) {
 
   // allocate memory and unitialize objects
-  arma::vec probs(2, fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
   
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
   double xi, th, sth, sth0, tee;
   unsigned i; 
-  vec pdf, p0, pdf0;
+  arma::vec pdf, p0, pdf0;
   
   if (xnum == 0) {
     probs(0) = surv(time, distPars0, dist0);
@@ -170,11 +169,11 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
     en = (double) needed;
 
     // allocate memory to the different arrays
-    p0 = zeros<vec> (needed + 1);
-    pdf = zeros<vec> (needed + 1);
-    pdf0 = zeros<vec> (needed + 1);
-    vec fwork0(needed + 1, fill::zeros);
-    vec fwork(needed + 1, fill::zeros);
+    p0 = arma::zeros<arma::vec> (needed + 1);
+    pdf = arma::zeros<arma::vec> (needed + 1);
+    pdf0 = arma::zeros<arma::vec> (needed + 1);
+    arma::vec fwork0(needed + 1, arma::fill::zeros);
+    arma::vec fwork(needed + 1, arma::fill::zeros);
     
     for (i = 2; i<= needed; i += 2) {
       xi = double (i);
@@ -185,10 +184,10 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
     
     // =========================== concolutions ================================
     // ---------- conv1 
-    vec probs1 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
+    arma::vec probs1 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
 					      fwork, fwork0, nsteps1, 8); 
     // ---------- conv2 
-    vec probs2 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
+    arma::vec probs2 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
 					      fwork, fwork0, nsteps2, 4); 
     // ---------- conv3 
     probs = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
@@ -197,14 +196,14 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4 
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+    arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+    arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
   } else {
     // just do one convolution
-    p0 = zeros<vec> (nsteps + 1);
-    pdf = zeros<vec> (nsteps + 1);
-    pdf0 = zeros<vec> (nsteps + 1);
+    p0 = arma::zeros<arma::vec> (nsteps + 1);
+    pdf = arma::zeros<arma::vec> (nsteps + 1);
+    pdf0 = arma::zeros<arma::vec> (nsteps + 1);
     
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -234,14 +233,14 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
 				       double time = 1.0, bool extrap = true) {
 
   // allocate memory and unitialize objects
-  arma::vec probs(2, fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
   
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
   double xi, th, sth, sth0, tee;
   unsigned i; 
-  vec pdf, p0, pdf0;
+  arma::vec pdf, p0, pdf0;
   Rcpp::NumericVector rTemp;
   
   if (xnum == 0) {
@@ -262,11 +261,11 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
     en = (double) needed;
 
     // allocate memory to the different arrays
-    p0 = zeros<vec> (needed + 1);
-    pdf = zeros<vec> (needed + 1);
-    pdf0 = zeros<vec> (needed + 1);
-    vec fwork0(needed + 1, fill::zeros);
-    vec fwork(needed + 1, fill::zeros);
+    p0 = arma::zeros<arma::vec> (needed + 1);
+    pdf = arma::zeros<arma::vec> (needed + 1);
+    pdf0 = arma::zeros<arma::vec> (needed + 1);
+    arma::vec fwork0(needed + 1, arma::fill::zeros);
+    arma::vec fwork(needed + 1, arma::fill::zeros);
     
     for (i = 2; i<= needed; i += 2) {
       xi = double (i);
@@ -279,10 +278,10 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
     
     // =========================== concolutions ================================
     // ---------- conv1 
-    vec probs1 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
+    arma::vec probs1 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
 					      fwork, fwork0, nsteps1, 8); 
     // ---------- conv2 
-    vec probs2 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
+    arma::vec probs2 = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
 					      fwork, fwork0, nsteps2, 4); 
     // ---------- conv3 
     probs = doOneConvolution_dePril_even(xnum, p0, pdf, pdf0, 
@@ -291,14 +290,14 @@ arma::vec getProbs_weibull_dePril_even(unsigned xnum,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4 
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+    arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+    arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
   } else {
     // just do one convolution
-    p0 = zeros<vec> (nsteps + 1);
-    pdf = zeros<vec> (nsteps + 1);
-    pdf0 = zeros<vec> (nsteps + 1);
+    p0 = arma::zeros<arma::vec> (nsteps + 1);
+    pdf = arma::zeros<arma::vec> (nsteps + 1);
+    pdf0 = arma::zeros<arma::vec> (nsteps + 1);
     
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -330,14 +329,14 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
 				      double time = 1.0, bool extrap = true) {
   
   // allocate memory and unitialize objects
-  arma::vec probs(2, fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
   
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
   double xi, th, sth, sth0, tee;
   unsigned i; 
-  vec pdf, p0, pdf0;
+  arma::vec pdf, p0, pdf0;
   
   if (extrap) {
     // unsigned i8, i4, i2;
@@ -350,11 +349,11 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
     en = (double) needed;
 
     // allocate memory to the different arrays
-    p0 = zeros<vec> (needed + 1);
-    pdf = zeros<vec> (needed + 1);
-    pdf0 = zeros<vec> (needed + 1);
-    vec fwork0(needed + 1, fill::zeros);
-    vec fwork(needed + 1, fill::zeros);
+    p0 = arma::zeros<arma::vec> (needed + 1);
+    pdf = arma::zeros<arma::vec> (needed + 1);
+    pdf0 = arma::zeros<arma::vec> (needed + 1);
+    arma::vec fwork0(needed + 1, arma::fill::zeros);
+    arma::vec fwork(needed + 1, arma::fill::zeros);
     
     for(i = 1; i <= needed; i++) {
       xi = double (i);
@@ -366,10 +365,10 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
     // =========================== concolutions ================================
     // ---------- conv1 
     // ---------- conv1 
-    vec probs1 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
+    arma::vec probs1 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
 					     fwork, fwork0, nsteps1, 8); 
     // ---------- conv2 
-    vec probs2 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
+    arma::vec probs2 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
 					     fwork, fwork0, nsteps2, 4); 
     // ---------- conv3 
     probs = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
@@ -378,14 +377,14 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4 
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+    arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+    arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
   } else {
     // just do one convolution
-    p0 = zeros<vec> (nsteps + 1);
-    pdf = zeros<vec> (nsteps + 1);
-    pdf0 = zeros<vec> (nsteps + 1);
+    p0 = arma::zeros<arma::vec> (nsteps + 1);
+    pdf = arma::zeros<arma::vec> (nsteps + 1);
+    pdf0 = arma::zeros<arma::vec> (nsteps + 1);
     
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -414,14 +413,14 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
 				      double time = 1.0, bool extrap = true) {
   
   // allocate memory and unitialize objects
-  arma::vec probs(2, fill::zeros);
+  arma::vec probs(2, arma::fill::zeros);
   
   double stl = 1.0;
   double stl0 = 1.0;
   double en = (double) nsteps;
   double xi, th, sth, sth0, tee;
   unsigned i; 
-  vec pdf, p0, pdf0;
+  arma::vec pdf, p0, pdf0;
   Rcpp::NumericVector rTemp;
   
   if (extrap) {
@@ -435,11 +434,11 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
     en = (double) needed;
 
     // allocate memory to the different arrays
-    p0 = zeros<vec> (needed + 1);
-    pdf = zeros<vec> (needed + 1);
-    pdf0 = zeros<vec> (needed + 1);
-    vec fwork0(needed + 1, fill::zeros);
-    vec fwork(needed + 1, fill::zeros);
+    p0 = arma::zeros<arma::vec> (needed + 1);
+    pdf = arma::zeros<arma::vec> (needed + 1);
+    pdf0 = arma::zeros<arma::vec> (needed + 1);
+    arma::vec fwork0(needed + 1, arma::fill::zeros);
+    arma::vec fwork(needed + 1, arma::fill::zeros);
     
     for(i = 1; i <= needed; i++) {
       xi = double (i);
@@ -453,10 +452,10 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
     // =========================== concolutions ================================
     // ---------- conv1 
     // ---------- conv1 
-    vec probs1 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
+    arma::vec probs1 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
 					     fwork, fwork0, nsteps1, 8); 
     // ---------- conv2 
-    vec probs2 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
+    arma::vec probs2 = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
 					     fwork, fwork0, nsteps2, 4); 
     // ---------- conv3 
     probs = doOneConvolution_dePril_odd(xnum, p0, pdf, pdf0, 
@@ -465,14 +464,14 @@ arma::vec getProbs_weibull_dePril_odd(unsigned xnum,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4 
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+    arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+    arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
   } else {
     // just do one convolution
-    p0 = zeros<vec> (nsteps + 1);
-    pdf = zeros<vec> (nsteps + 1);
-    pdf0 = zeros<vec> (nsteps + 1);
+    p0 = arma::zeros<arma::vec> (nsteps + 1);
+    pdf = arma::zeros<arma::vec> (nsteps + 1);
+    pdf0 = arma::zeros<arma::vec> (nsteps + 1);
     
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -563,7 +562,7 @@ arma::vec dmodifiedCount_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 			    bool cdfout = false, bool logFlag = false) {
 
   arma::Col<unsigned> x_unique = unique(x);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   arma::vec val;
   arma::vec extrapolPars = getextrapolPars(distPars, dist);
   arma::vec extrapolPars0 = getextrapolPars(distPars0, dist0);
@@ -571,8 +570,8 @@ arma::vec dmodifiedCount_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
 						     extrapolPars0);
   
   for (unsigned k = 0; k < x_unique.n_elem; k ++) {
-    uvec ind = find(x == x_unique(k));
-    arma::vec valsk(ind.n_elem, fill::ones);
+    arma::uvec ind = find(x == x_unique(k));
+    arma::vec valsk(ind.n_elem, arma::fill::ones);
     val = getProbsmodified_dePril(x_unique(k), distPars, dist, distPars0, dist0,
 				  extrapolParsNew, nsteps, time, extrap);
     vals.elem(ind) = valsk * val(cdfout);
@@ -611,12 +610,12 @@ arma::vec dmodifiedCount_user(arma::Col<unsigned> x, const Rcpp::List distPars,
 			      bool cdfout = false, bool logFlag = false) {
 
   arma::Col<unsigned> x_unique = unique(x);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   arma::vec val;
     
   for (unsigned k = 0; k < x_unique.n_elem; k ++) {
-    uvec ind = find(x == x_unique(k));
-    arma::vec valsk(ind.n_elem, fill::ones);
+    arma::uvec ind = find(x == x_unique(k));
+    arma::vec valsk(ind.n_elem, arma::fill::ones);
     val = getProbsmodified_dePril(x_unique(k), distPars, survR, distPars0, survR0,
 				  extrapolPars, nsteps, time, extrap);
     vals.elem(ind) = valsk * val(cdfout);

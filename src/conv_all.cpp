@@ -2,7 +2,6 @@
 #include "RcppArmadillo.h"
 #include "../inst/include/Countr_types.h"
 
-using namespace arma;
 using namespace std;
 using namespace Rcpp;
 
@@ -33,7 +32,7 @@ arma::vec convolve(unsigned nprobs, const arma::vec& df, arma::vec& p,
   unsigned klow = 1;
   unsigned n, np, k;
   double ptemp;
-  arma::vec probs(nprobs + 1, fill::zeros);
+  arma::vec probs(nprobs + 1, arma::fill::zeros);
 
   for(n = 0; n < nprobs; n++) {
     np = n + 1;
@@ -98,7 +97,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
 		      const unsigned& nsteps = 100,
 		      double time = 1.0, bool extrap = true) {
 
-  arma::vec probs(xmax + 1, fill::zeros);
+  arma::vec probs(xmax + 1, arma::fill::zeros);
 
   double stl = 1.0;
   double sth = 1.0;
@@ -106,7 +105,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   // unused: double h = time / en;
   double xi, th, tee;
   unsigned i;
-  vec df, p;
+  arma::vec df, p;
 
   if (extrap) { // use Richardson extrapolation to reduce the error
     // define the steps needed
@@ -117,9 +116,9 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     // get all the survival functions @ needed
     en = (double) needed;
 
-    p = zeros<vec> (needed + 1);
-    df = zeros<vec> (needed + 1);
-    vec fwork(needed + 1, fill::zeros);
+    p = arma::zeros<arma::vec> (needed + 1);
+    df = arma::zeros<arma::vec> (needed + 1);
+    arma::vec fwork(needed + 1, arma::fill::zeros);
 
     for(i = 1; i <= needed; i++) {
       xi = double (i);
@@ -138,13 +137,13 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+    arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+    arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
     probs(0) = fwork(needed);
   } else {
-    p = zeros<vec> (nsteps + 1);
-    df = zeros<vec> (nsteps + 1);
+    p = arma::zeros<arma::vec> (nsteps + 1);
+    df = arma::zeros<arma::vec> (nsteps + 1);
 
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -167,7 +166,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
 		      const unsigned& nsteps = 100,
 		      double time = 1.0, bool extrap = true) {
 
-  arma::vec probs(xmax + 1, fill::zeros);
+  arma::vec probs(xmax + 1, arma::fill::zeros);
 
   double stl = 1.0;
   double sth = 1.0;
@@ -175,7 +174,7 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
   // double h = time / en;
   double xi, th, tee;
   unsigned i;
-  vec df, p;
+  arma::vec df, p;
   Rcpp::NumericVector rTemp;
 
   if (extrap) { // use Richardson extrapolation to reduce the error
@@ -188,9 +187,9 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     // get all the survival functions @ needed
     en = (double) needed;
 
-    p = zeros<vec> (needed + 1);
-    df = zeros<vec> (needed + 1);
-    vec fwork(needed + 1, fill::zeros);
+    p = arma::zeros<arma::vec> (needed + 1);
+    df = arma::zeros<arma::vec> (needed + 1);
+    arma::vec fwork(needed + 1, arma::fill::zeros);
 
     for(i = 1; i <= needed; i++) {
       xi = double (i);
@@ -210,13 +209,13 @@ arma::vec getAllProbs(unsigned xmax, const Rcpp::List distPars,
     double xmult1 = pow(2, extrapolPars(0)); // 2^gamma1 defined in section 4
     double xmult = pow(2,  extrapolPars(1)); // 2^2 defined in section 4
     // update the probability
-    vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
-    vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
+    arma::vec pt1 = (xmult * probs2 - probs1) / (xmult - 1.0);
+    arma::vec pt2 = (xmult * probs - probs2)  / (xmult - 1.0);
     probs = (xmult1 * pt2 - pt1) / (xmult1 - 1.0);
     probs(0) = fwork(needed);
   } else {
-    p = zeros<vec> (nsteps + 1);
-    df = zeros<vec> (nsteps + 1);
+    p = arma::zeros<arma::vec> (nsteps + 1);
+    df = arma::zeros<arma::vec> (nsteps + 1);
 
     // prepare the starting vectors
     for(i = 1; i <= nsteps; i++) {
@@ -269,14 +268,14 @@ arma::vec dCount_allProbs_bi(arma::Col<unsigned> x, const Rcpp::List distPars,
   arma::vec extrapolPars = getextrapolPars(distPars, dist);
   arma::vec all = getAllProbs(xmax, distPars, extrapolPars, dist, nsteps,
 			      time, extrap);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   arma::Col<unsigned> x_unique = unique(x);
   double xk;
 
    for (unsigned k = 0; k < x_unique.n_elem; k ++) {
      xk = x_unique(k);
-     uvec ind = find(x == xk);
-     arma::vec valsk(ind.n_elem, fill::ones);
+     arma::uvec ind = find(x == xk);
+     arma::vec valsk(ind.n_elem, arma::fill::ones);
      vals.elem(ind) = valsk * all(xk);
    }
 
@@ -309,14 +308,14 @@ arma::vec dCount_allProbs_user(arma::Col<unsigned> x, const Rcpp::List distPars,
   double xmax = max(x);
   arma::vec all = getAllProbs(xmax, distPars, extrapolPars, survR, nsteps,
 			      time, extrap);
-  arma::vec vals(x.n_elem, fill::zeros);
+  arma::vec vals(x.n_elem, arma::fill::zeros);
   arma::Col<unsigned> x_unique = unique(x);
   double xk;
 
    for (unsigned k = 0; k < x_unique.n_elem; k ++) {
      xk = x_unique(k);
-     uvec ind = find(x == xk);
-     arma::vec valsk(ind.n_elem, fill::ones);
+     arma::uvec ind = find(x == xk);
+     arma::vec valsk(ind.n_elem, arma::fill::ones);
      vals.elem(ind) = valsk * all(xk);
    }
 
@@ -354,7 +353,7 @@ arma::vec dCount_allProbs_vec_bi(arma::Col<unsigned> x, const Rcpp::List distPar
 				 bool logFlag = false) {
   // 2018-04-12 was: unsigned lnt = x.n_elem;
   int lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
   Rcpp::List distParsi;
 
   if (lnt != distPars.size())
@@ -398,7 +397,7 @@ arma::vec dCount_allProbs_vec_user(arma::Col<unsigned> x,
 				   bool logFlag = false) {
   // 2018-04-12 was: unsigned lnt = x.n_elem;
   int lnt = x.n_elem;
-  arma::vec pbs(lnt, fill::zeros);
+  arma::vec pbs(lnt, arma::fill::zeros);
   Rcpp::List distParsi;
 
   if (lnt != distPars.size())

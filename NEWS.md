@@ -1,8 +1,26 @@
+# Countr 3.6.1
+
+- stopped using directive `using namespace arma;` in C++ code and included
+  prefix `arma::` to symbols from the `arma` namespace (this had been only
+  partially implemented in v1.1.0, see the note for that version below). This
+  avoids future conflicts, e.g. with a forthcoming switch to compiling with
+  C++20.
+
+- moved lattice and RColorBrewer to Suggests.
+
+- declared that `update.renewal` is an S3 method (the roxygen `@export`
+  directive was missing).
+
+- in DESCRIPTION, corrected a URL that was accidentally pointing to another
+  package.
+
 
 # Countr 3.6
 
 - changed the names of link functions imported from package VGAM to names ending
-  with 'link', since the old names have been removed in VGAM v1.1-14.
+  with 'link', since the old names have been removed in VGAM v1.1-14. This is an
+  *internal change* in the code of the package, the link functions providd by
+  package Countr remain the same.
 
 - added missing (roxygen) export directive for the `modelMat` method for
   `predict`.
@@ -212,7 +230,7 @@
   I actually used search and replace to replace occurences in the body of the
   functions in our cpp files, but since we can put the 'using namespace'
   directives in them, only the signatures of exported functions are important
-  for the abovde purpose.
+  for the above purpose.
 
 - replaced std::cout with calls to Rprintf() in C++ code, since direct printing
   from C++ inside R can cause problems (and is caught by R CMD check).  Also

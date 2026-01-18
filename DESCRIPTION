@@ -1,7 +1,7 @@
 Package: Countr
 Type: Package
 Title: Flexible Univariate Count Models Based on Renewal Processes
-Version: 3.6
+Version: 3.6.1
 Authors@R: c( person(given = "Tarak", family = "Kharrat",
                      role = c("aut"), 
                      email = "tarak@realanalytics.co.uk",
@@ -17,14 +17,14 @@ Description: Flexible univariate count models based on renewal processes. The
     'Countr_guide' in the package).
 License: GPL (>= 2)
 URL: https://geobosh.github.io/Countr/ (doc),
-        https://CRAN.R-project.org/package=Rdpack
+        https://CRAN.R-project.org/package=Countr
 BugReports: https://github.com/GeoBosh/Countr/issues
 Depends: R (>= 3.3.0)
 Imports: Rcpp (>= 0.11.3), flexsurv, Formula, VGAM (>= 1.1-1), optimx,
         numDeriv, boot, MASS, utils, Rdpack (>= 0.7-0), dplyr,
-        standardize, pscl, car, Matrix, lattice, RColorBrewer
+        standardize, pscl, car, Matrix
 LinkingTo: Rcpp, RcppArmadillo
-Suggests: testthat, knitr, xtable, lmtest
+Suggests: testthat, knitr, xtable, lmtest, lattice, RColorBrewer
 RdMacros: Rdpack
 VignetteBuilder: knitr
 LazyData: true
@@ -37,10 +37,10 @@ Collate: 'Countr-package.R' 'RcppExports.R' 'anc.R' 'coefnames.R'
         'renewal_IV.R' 'renewal_tools.R' 'renewal_cstr.R' 'tools.R'
         'renewal_methods.R'
 Config/build/clean-inst-doc: FALSE
-Packaged: 2025-12-04 17:43:43 UTC; georgi
+Packaged: 2026-01-18 14:57:20 UTC; georgi
 Author: Tarak Kharrat [aut] (ORCID: <https://orcid.org/0000-0001-9399-6174>),
   Georgi N. Boshnakov [aut, cre] (ORCID:
     <https://orcid.org/0000-0003-2839-346X>)
 Maintainer: Georgi N. Boshnakov <georgi.boshnakov@manchester.ac.uk>
 Repository: CRAN
-Date/Publication: 2025-12-06 11:20:08 UTC
+Date/Publication: 2026-01-18 15:40:02 UTC
